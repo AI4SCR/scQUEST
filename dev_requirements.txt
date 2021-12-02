@@ -1,0 +1,14 @@
+# tests
+pytest
+pytest-cov
+# checks
+black
+flake8
+mypy
+# docs
+sphinx
+sphinx-autodoc-typehints
+better-apidoc
+six
+sphinx_rtd_theme
+myst-parser
