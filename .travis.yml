@@ -1,6 +1,5 @@
-dist: trusty  # chose OS distribution
-
 language: python  # chose programming language
+dist: trusty  # chose OS distribution
 
 # specify the python versions for which you want to run travis
 python:
