@@ -34,7 +34,9 @@ jobs:
     - stage: Documentation
       python: 3.8
       before_install: skip
-      install: skip
+      install:
+        - pip install --progress-bar off -r requirements.txt
+        - pip install --progress-bar off -r dev_requirements.txt
       before_script: skip
       script:
         # build documentation pages
