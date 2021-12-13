@@ -1,0 +1,68 @@
+dist: trusty
+
+#services:
+#  - docker
+
+language: python
+
+python:
+  - 3.8
+
+#before_install:
+#  - sudo apt-get -y install pandoc
+
+install:
+  # install the package
+  - pip install -U pip
+  - pip install --progress-bar off -r requirements.txt
+  - pip install --progress-bar off -r dev_requirements.txt
+  - pip install .
+  - pip install "git+ssh://git@github.ibm.com/art-zurich/spatial-omics.git@master"
+
+script:
+  # test import
+  - python -c "import spatialHeterogeneity"
+
+  # run unit tests
+  - python -m pytest -sv --cov=spatialHeterogeneity --cov-fail-under=65
+
+  # static type checking
+  - python -m mypy spatialHeterogeneity
+
+  # style checking
+  - python -m black spatialHeterogeneity --check --diff --color
+  - python -m flake8 --per-file-ignores="__init__.py:F401" spatialHeterogeneity
+
+# the following stages only start if the "test" stage above all succeed
+jobs:
+  include:
+    - stage: Documentation
+      python: 3.8
+      script:
+        # export tutorial as markdown to integrate it in the docs
+#        - jupyter nbconvert --to markdown --output-dir=docs/source --output='athena.md' tutorials/getting-started.ipynb
+        - jupyter nbconvert --to markdown --output-dir=docs/source --output='introduction-spatialOmics.md' tutorials/introduction-spatialOmics.ipynb
+        - jupyter nbconvert --to markdown --output-dir=docs/source --output='documentation.md' tutorials/documentation.ipynb
+        - jupyter nbconvert --to markdown --output-dir=docs/source --output='overview.md' tutorials/overview.ipynb
+        - jupyter nbconvert --to markdown --output-dir=docs/source --output='tutorial.md' tutorials/tutorial.ipynb
+        # build documentation pages
+        - cd docs && make clean && make html && cd ..
+      deploy:
+        - provider: pages
+          skip_cleanup: true
+          repo: histocartography/athena
+          #          github_token: $GITHUB_TOKEN
+          github_token: $GITHUB_TOKEN_PUBLIC
+          # Set in the settings page of your repository, as a secure variable
+          # see https://docs.travis-ci.com/user/deployment/pages/#setting-the-github-token
+          local_dir: docs/_build/html
+          #          github_url: github.ibm.com  #  defaults to github.com
+          on:
+            branch: master
+
+notifications:
+  slack:
+    rooms:
+      - ibm-research:82jY54xYQAiJOqZ2ycRDM4jo
+    on_success: always
+    on_failure: always
