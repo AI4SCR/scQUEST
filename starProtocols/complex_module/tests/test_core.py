@@ -8,7 +8,7 @@ ALL RIGHTS RESERVED
 """
 
 import unittest
-from blueprint.complex_module.core import salutation
+from starProtocolss.complex_module.core import salutation
 
 
 class CoreTestCase(unittest.TestCase):

@@ -1,4 +1,4 @@
-# Python Blueprint Repository
+# Python starProtocols Repository
 
 ## Site contents
 
@@ -16,5 +16,5 @@ Example page with markdown source <source/wealth_dynamics_md.md>
 maxdepth: 1
 
 ---
-API of the blueprint package <api/blueprint>
+API of the starProtocols package <api/starProtocols>
 ```

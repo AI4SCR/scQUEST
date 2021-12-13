@@ -11,7 +11,7 @@ ALL RIGHTS RESERVED
 """
 
 import click
-from blueprint.complex_module.core import salutation
+from starProtocols.complex_module.core import salutation
 
 
 @click.command()

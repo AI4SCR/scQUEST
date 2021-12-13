@@ -1,6 +1,6 @@
-dist: trusty
+dist: trusty  # chose OS distribution
 
-language: python
+language: python  # chose programming language
 
 # specify the python versions for which you want to run travis
 python:
@@ -15,17 +15,17 @@ install:
 
 script:
   # test import
-  - python -c "import blueprint"
+  - python -c "import starProtocols"
 
   # run unit tests
-  - python -m pytest -sv --cov=blueprint --cov-fail-under=65
+  - python -m pytest -sv --cov=starProtocols --cov-fail-under=65
 
   # static type checking
-  - python -m mypy blueprint
+  - python -m mypy starProtocols
 
   # style checking
-  - python -m black blueprint --check --diff --color
-  - python -m flake8 --per-file-ignores="__init__.py:F401" blueprint
+  - python -m black starProtocols --check --diff --color
+  - python -m flake8 --per-file-ignores="__init__.py:F401" starProtocols
 
 # the following stages only start if the "test" stage above all succeed
 jobs:

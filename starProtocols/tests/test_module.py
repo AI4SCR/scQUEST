@@ -8,7 +8,7 @@ ALL RIGHTS RESERVED
 """
 
 import pytest
-from blueprint.module import Foo
+from starProtocolss.module import Foo
 
 
 @pytest.mark.parametrize(
