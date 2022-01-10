@@ -12,3 +12,4 @@ better-apidoc
 six
 sphinx_rtd_theme
 myst-parser
+jupyterlab

@@ -105,8 +105,14 @@ venv.bak/
 .mypy_cache/
 
 # pycharm
-/*/.idea/
+.idea/
+.idea
+.idea/*
 
 # other
 .DS_Store
+
+# RStudio
+.Rproj.user
+.Rhistory
 

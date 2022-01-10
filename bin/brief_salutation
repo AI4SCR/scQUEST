@@ -11,7 +11,7 @@ ALL RIGHTS RESERVED
 """
 
 import click
-from starProtocols.complex_module.core import salutation
+from starProtocols.individulality.core import salutation
 
 
 @click.command()

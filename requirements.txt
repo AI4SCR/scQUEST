@@ -1,2 +1,5 @@
-#pip package names required by the package, and exact versions you know to work
+numpy
+pandas
+pytorch
+scikit-learn
 
