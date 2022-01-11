@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from pandas.api.types import CategoricalDtype
 
 class Predictor(ABC):
 
@@ -12,4 +13,7 @@ class Predictor(ABC):
 
     def fit_predict(self, x, y):
         self.fit(x,y)
-        return self.transform(x,y)
+        return self.predict(x,y)
+
+def isCategorical(x):
+    return isinstance(x, CategoricalDtype)
