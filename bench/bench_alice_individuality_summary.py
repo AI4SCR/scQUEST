@@ -47,6 +47,7 @@ def calc_cell_paper(NN_row: np.ndarray, meta_data: pd.DataFrame, variable: str) 
 
     return post_p
 
+calc_cell_paper
 
 def calc_inverse_weights(NN_row: np.ndarray, meta_data: pd.DataFrame, variable: str) -> pd.Series:
     """ This function calculates the posterior probability that a cell belongs to a class of the
