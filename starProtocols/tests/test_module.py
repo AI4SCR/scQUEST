@@ -7,26 +7,12 @@ IBM Research Licensed Internal Code
 ALL RIGHTS RESERVED
 """
 
-import numpy as np
 from itertools import product
 
+import numpy as np
+import pytest
+
 from starProtocols import Individuality
-
-
-def get_two_groups_feat(n_obs: int = 10, n_feat: int = 10):
-    feat = np.zeros((n_obs, n_feat))
-    feat[:n_obs // 2] = 1
-    return feat
-
-
-def get_two_groups_label(n_obs: int = 10):
-    labs = np.zeros(n_obs)
-    labs[:n_obs // 2] = 1
-    return labs
-
-
-def get_two_groups_data(n_obs: int = 10, n_feat: int = 10):
-    return get_two_groups_feat(n_obs, n_feat), get_two_groups_label(n_obs)
 
 
 def get_n_groups_label(n_obs_per_group: list = [5, 5]):
@@ -51,26 +37,47 @@ def get_n_groups_data(n_obs_per_group: list = [5, 5]):
 
 class TestIndividuality:
 
-    def test_homogenous_groups(self, n_obs_per_group: int = 5, n_groups: int = 2, n_neighbors=None):
+    @pytest.mark.parametrize('n_obs_per_group', [[2], [2, 2], [5, 5], [3, 5, 5]])
+    def test_homogenous_groups(self, n_obs_per_group: list, n_neighbors=None):
         """Here the NN are expected to be always of the same type"""
 
         if n_neighbors is None:
-            n_neighbors = n_obs_per_group - 1
+            n_neighbors = min(n_obs_per_group) - 1
         else:
-            assert n_neighbors < n_obs_per_group
+            assert n_neighbors < min(n_obs_per_group)
 
-        # get data
-        n_obs = (n_obs_per_group) * n_groups
-        feat, labs = get_n_groups_data(n_obs, n_groups)
+        feat, labs = get_n_groups_data(n_obs_per_group)
 
         # fit
         indv = Individuality(n_neighbors=n_neighbors)
-        res = indv._predict(feat, labs)
+        res = indv.predict(feat, labs)
+        assert (np.diag(res) == np.ones(len(res))).all()
 
-    def test_all_50_propability(self):
-        pass
+    @pytest.mark.parametrize('n_obs_per_group', [[1], [2, 2]])
+    def test_0_neighbors_exception(self, n_obs_per_group: list, n_neighbors: int = 0):
+        with pytest.raises(ValueError):
+            feat, labs = get_n_groups_data(n_obs_per_group)
 
-    def test_all_10_propability(self):
+            indv = Individuality(n_neighbors=n_neighbors)
+            indv.predict(feat, labs)
+
+    def test_all_40_60_probability(self, n_obs_per_group: list = [6, 6]):
+        n_obs_per_group = np.asarray(n_obs_per_group)
+        if not (n_obs_per_group % 2 == 0).all():
+            raise ValueError(f'Each group must be a multiple of two')
+
+        feat = get_n_groups_feat(n_obs_per_group)
+        labs = get_n_groups_label((np.array(n_obs_per_group) // 2).repeat(2))
+        n_neighbors = n_obs_per_group.min() - 1
+
+        indv = Individuality(n_neighbors=n_neighbors)
+        res = indv.predict(feat, labs)
+        
+        assert np.isclose(np.diag(res), np.ones(len(res)) * 0.4).all()
+        assert (res.values == res.values.T).all()
+        assert np.isclose(res.values.sum(1), 1).all()
+
+    def test_all_10_probability(self):
         pass
 
     def test_no_neighbors(self):
@@ -79,11 +86,10 @@ class TestIndividuality:
     def test_non_numeric_labels(self):
         pass
 
-
 # %%
-n_obs_per_group: int = 5
-n_groups: int = 2
-n_neighbors = n_obs_per_group - 1
-X, labs = get_n_groups_data(n_obs_per_group * n_groups, n_groups)
-indv = Individuality(n_neighbors=n_neighbors)
-indv.predict(X, labs)
+# n_obs_per_group: list = [1]
+# n_groups: int = 2
+# n_neighbors = min(n_obs_per_group) - 1
+# X, labs = get_n_groups_data(n_obs_per_group)
+# indv = Individuality(n_neighbors=n_neighbors)
+# indv.predict(X, labs)
