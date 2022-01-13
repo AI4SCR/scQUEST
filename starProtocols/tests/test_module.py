@@ -29,30 +29,24 @@ def get_two_groups_data(n_obs: int = 10, n_feat: int = 10):
     return get_two_groups_feat(n_obs, n_feat), get_two_groups_label(n_obs)
 
 
-def get_n_groups_label(n_obs: int = 10, n_groups: int = 2):
-    if n_obs % n_groups:
-        raise ValueError(f'{n_obs} cannot be split in {n_groups} equally sized groups')
-
-    labs = np.arange(n_groups, dtype=int)
-    labs = labs.repeat(n_obs // n_groups)
-
+def get_n_groups_label(n_obs_per_group: list = [5, 5]):
+    labs = np.arange(len(n_obs_per_group), dtype=int)
+    labs = np.repeat(labs, n_obs_per_group)
     return labs
 
 
-def get_n_groups_feat(n_obs: int = 10, n_groups: int = 2):
-    if n_obs % n_groups:
-        raise ValueError(f'{n_obs} cannot be split in {n_groups} equally sized groups')
-
+def get_n_groups_feat(n_obs_per_group: list = [5, 5]):
+    n_groups = len(n_obs_per_group)
     n_feat = max(np.ceil(np.log2(n_groups)).astype(int), 1)
     feat_generator = product(*[[0, 1]] * n_feat)
     feat = np.array([next(feat_generator) for i in range(n_groups)])
-    feat = feat.repeat(n_obs // n_groups, axis=0)
+    feat = np.repeat(feat, n_obs_per_group, axis=0)
 
     return feat
 
 
-def get_n_groups_data(n_obs: int = 10, n_groups: int = 2):
-    return get_n_groups_feat(n_obs, n_groups), get_n_groups_label(n_obs, n_groups)
+def get_n_groups_data(n_obs_per_group: list = [5, 5]):
+    return get_n_groups_feat(n_obs_per_group), get_n_groups_label(n_obs_per_group)
 
 
 class TestIndividuality:
