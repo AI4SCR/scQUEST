@@ -15,12 +15,12 @@ import sys
 
 sys.path.insert(0, os.path.abspath(".."))
 
-
 # -- Project information -----------------------------------------------------
 
 project = "starProtocols"
-copyright = "IBM Corp. 2021"
+copyright = "IBM Corp. 2022"
 author = "IBM starProtocols team"
+
 
 # -- Generate API (auto) documentation ------------------------------------------------
 
@@ -61,7 +61,16 @@ extensions = [
     "sphinx_autodoc_typehints",
     "sphinx_rtd_theme",
     "myst_parser",
+    "sphinx.ext.intersphinx"
 ]
+
+# Add mappings
+intersphinx_mapping = {
+    'urllib3': ('http://urllib3.readthedocs.org/en/latest', None),
+    'python': ('http://docs.python.org/3', None),
+    'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+    'pandas': ('https://pandas.pydata.org/docs/', None)
+}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ["_templates"]
@@ -70,7 +79,6 @@ templates_path = ["_templates"]
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
-
 
 # -- Options for HTML output -------------------------------------------------
 
@@ -84,10 +92,8 @@ html_theme = "sphinx_rtd_theme"
 # so a file named "default.css" will overwrite the builtin "default.css".
 html_static_path = ["_static"]
 
-
 # -- Extension configuration -------------------------------------------------
 add_module_names = False
-
 
 napoleon_google_docstring = True
 napoleon_include_init_with_doc = True
