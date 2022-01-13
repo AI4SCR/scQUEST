@@ -8,6 +8,7 @@ mypy
 # docs
 sphinx
 sphinx-autodoc-typehints
+sphinxcontrib-napoleon
 better-apidoc
 six
 sphinx_rtd_theme
