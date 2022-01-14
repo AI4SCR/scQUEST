@@ -2,7 +2,8 @@ from dataclasses import dataclass, fields, field
 from typing import Union, Callable, Iterable, get_args
 
 import numpy as np
-from numpy.typing import ArrayLike
+
+ArrayLike = np.typing.ArrayLike
 
 import pandas as pd
 
