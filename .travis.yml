@@ -45,6 +45,7 @@ jobs:
         - provider: pages
           skip_cleanup: true
           #          github_url: github.ibm.com  # defaults to github.com
+          repo: adrianomartinelli/star-protocol
           github_url: github.com
           #          github_token: $GITHUB_TOKEN
           github_token: $PUBLIC_GITHUB_TOKEN
