@@ -3,7 +3,7 @@ from typing import Union, Callable, Iterable, get_args
 
 import numpy as np
 
-ArrayLike = np.typing.ArrayLike
+ArrayLike = np.ndarray
 
 import pandas as pd
 
