@@ -108,6 +108,7 @@ class Individuality:
 
         # compute class-wise posterior mean
         # TODO: should we exclude entries with no neighbors, i.e. posterior.sum(1) == 0?
+        # TODO: provide option for aggregation
         indices = [np.flatnonzero(num_seq_labs == i) for i in range(n_labs)]
         post_mean = np.vstack([posterior[idx].mean(axis=0) for idx in indices])
 
