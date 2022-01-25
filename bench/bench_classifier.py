@@ -1,12 +1,7 @@
 # %%
-import starProtocols as sp
-from torch import nn
-import torch
-import torch.nn.functional as F
-import pytorch_lightning as pl
 from pathlib import Path
-import anndata
 
+import starProtocols as sp
 from starProtocols.tests import dummy_annData
 
 # %%
@@ -131,3 +126,22 @@ ad_train.obs['y_id'] = ad_train.obs.groupby('y').ngroup()
 clf = EpithelialClassifier()
 clf.fit(ad_train, 'y_id')
 clf.predict(ad_pred)
+
+# %% low-level call
+from starProtocols import DefaultClassifier, LitModule, dummy_annData, AnnDataModule, EpithelialClassifier, \
+    StandardScale
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
+
+ad_train = ad_pred = dummy_annData()
+ad_train.obs['y_id'] = ad_train.obs.groupby('y').ngroup()
+
+dm = AnnDataModule(ad_train, 'y_id')
+
+model = DefaultClassifier(n_in=ad_train.shape[1])
+module = LitModule(model=model)
+
+clf = EpithelialClassifier(model=module)
+
+preprocessing = [StandardScale()]
+clf.fit(datamodule=dm,
+        early_stopping=EarlyStopping(monitor='val_loss', mode='min', patience=3, min_delta=1e-3))

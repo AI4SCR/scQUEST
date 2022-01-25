@@ -206,10 +206,10 @@ class EpithelialClassifier:
         if model is None:
             self.model = LitModule(model=DefaultClassifier(n_in=n_in))
         else:
-            if isinstance(model, nn.Module):
-                self.model = LitModule(model=model)
-            elif isinstance(model, pl.LightningModule):
+            if isinstance(model, pl.LightningModule):
                 self.model = model
+            elif isinstance(model, nn.Module):
+                self.model = LitModule(model=model)
             else:
                 raise TypeError(f'Model should be of type LightningModule or nn.Module not {type(model)}')
 
@@ -217,9 +217,10 @@ class EpithelialClassifier:
             datamodule: Optional[pl.LightningDataModule] = None,
             preprocessing: Optional[List[Preprocessor]] = None,
             early_stopping: Union[bool, EarlyStopping] = True,
-            max_epochs=100):
+            max_epochs: int = 100,
+            callbacks: list = None):
 
-        callbacks = []
+        callbacks = [] if callbacks is None else callbacks
         self.target = 'target' if target is None else target
 
         if datamodule is None:
