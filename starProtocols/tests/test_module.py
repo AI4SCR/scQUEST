@@ -11,9 +11,28 @@ import string
 from itertools import product
 
 import numpy as np
+import pandas as pd
 import pytest
 
 from starProtocols import Individuality
+
+from anndata import AnnData
+
+from torch.utils.data import Dataset, DataLoader
+import torch
+import torch.nn.functional as F
+
+from typing import Iterable, Union, Optional
+
+
+def dummy_annData(n1: int = 1000, n2: int = 1000):
+    cls1 = torch.randn((1, 5)).repeat((n1, 1)) + 5
+    cls2 = torch.randn((1, 5)).repeat((n2, 1))
+    X = torch.vstack((cls1, cls2))
+
+    y = torch.hstack((torch.tensor(0).repeat(n1), torch.tensor(1).repeat(n2)))
+    obs = pd.DataFrame(y.numpy(), columns=['y'])
+    return AnnData(X=X.numpy(), obs=obs)
 
 
 def get_n_groups_label(n_obs_per_group: list = [5, 5]):

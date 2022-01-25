@@ -3,4 +3,5 @@ torch
 scikit-learn
 numpy >= 1.2
 pytorch-lightning
-
+anndata
+torchmetrics
