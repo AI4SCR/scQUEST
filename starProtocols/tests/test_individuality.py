@@ -11,28 +11,9 @@ import string
 from itertools import product
 
 import numpy as np
-import pandas as pd
 import pytest
 
 from starProtocols import Individuality
-
-from anndata import AnnData
-
-from torch.utils.data import Dataset, DataLoader
-import torch
-import torch.nn.functional as F
-
-from typing import Iterable, Union, Optional
-
-
-def dummy_annData(n1: int = 1000, n2: int = 1000):
-    cls1 = torch.randn((1, 5)).repeat((n1, 1)) + 5
-    cls2 = torch.randn((1, 5)).repeat((n2, 1))
-    X = torch.vstack((cls1, cls2))
-
-    y = torch.hstack((torch.tensor(0).repeat(n1), torch.tensor(1).repeat(n2)))
-    obs = pd.DataFrame(y.numpy(), columns=['y'])
-    return AnnData(X=X.numpy(), obs=obs)
 
 
 def get_n_groups_label(n_obs_per_group: list = [5, 5]):
@@ -135,14 +116,7 @@ class TestIndividuality:
         assert (res.index == np.unique(str_labs)).all()
         assert (res.columns == np.unique(str_labs)).all()
 
+    @pytest.mark.parametrize('n_obs_per_group', [[2], [4, 4], [2, 4, 8]])
     def test_provide_graph(self, n_obs_per_group: list):
         labs = get_n_groups_feat(n_obs_per_group)
         np.random.random((len(labs), len(labs)))
-
-# %%
-# n_obs_per_group: list = [1]
-# n_groups: int = 2
-# n_neighbors = min(n_obs_per_group) - 1
-# X, labs = get_n_groups_data(n_obs_per_group)
-# indv = Individuality(n_neighbors=n_neighbors)
-# indv.predict(X, labs)
