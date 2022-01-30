@@ -1,5 +1,5 @@
-from .data import AnnDataset
 from torch.utils.data import Subset
+from torch.utils.data import Dataset
 
 
 class Preprocessor:
@@ -7,13 +7,13 @@ class Preprocessor:
     def __init__(self, *args, **kwargs):
         pass
 
-    def fit(self, dataset: AnnDataset):
+    def fit(self, dataset: Dataset):
         pass
 
-    def transform(self, dataset: AnnDataset, inplace: bool):
+    def transform(self, dataset: Dataset, inplace: bool):
         pass
 
-    def fit_transform(self, dataset: AnnDataset):
+    def fit_transform(self, dataset: Dataset):
         self.fit(dataset)
         return self.transform(dataset)
 
@@ -27,18 +27,18 @@ class StandardScale(Preprocessor):
         self.mean_ = None
         self.std_ = None
 
-    def fit(self, dataset: AnnDataset):
+    def fit(self, dataset: Dataset):
         data = self.get_data(dataset)
         self.mean_ = data.mean(0, keepdim=True)
         self.std_ = data.std(0, unbiased=False, keepdim=True)
 
-    def transform(self, dataset: AnnDataset):
+    def transform(self, dataset: Dataset):
         data = self.get_data(dataset)
         data = (data - self.mean_) / self.std_
         return (data - self.mean_) / self.std_
 
     def get_data(self, dataset):
-        if isinstance(dataset, AnnDataset):
+        if isinstance(dataset, Dataset):
             return dataset.data
         elif isinstance(dataset, Subset):
             return dataset.dataset.data
