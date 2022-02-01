@@ -1,2 +1,5 @@
-.. _my link: http://example.com
-.. _my other link: http://example2.com
+References
+----------
+
+.. [Wagner2019] A Single-Cell Atlas of the Tumor and Immune Ecosystem of Human Breast Cancer.
+    `Cell <https://linkinghub.elsevier.com/retrieve/pii/S0092867419302673>`_
