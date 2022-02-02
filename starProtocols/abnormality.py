@@ -2,7 +2,12 @@
 import torch
 import torch.nn as nn
 
-from typing import Iterable
+from typing import Iterable, Optional, Union, List
+from anndata import AnnData
+import pytorch_lightning as pl
+from .preprocessing import Preprocessor
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
+
 from .utils import pairwise, Estimator, LitModule
 from .data import AnnDatasetAE
 
@@ -12,6 +17,9 @@ import torchmetrics
 # %%
 
 class DefaultAE(nn.Module):
+    """
+    Default AE as implemented in [Wagner2019]_
+    """
 
     def __init__(self, n_in: int = 25, hidden: Iterable[int] = (10, 2, 10),
                  bias=True,
@@ -50,11 +58,51 @@ class AbnormalityLitModule(LitModule):
 
 
 class Abnormality(Estimator):
+    """Estimator to quantify the abnormality of a cell's expression profile.
+
+    Args:
+            model: Model used to train estimator :class:`.torch.Module` or :class:`.pytorch_lightning.Module`
+            loss_fn: Loss function used for optimization
+            metrics: Metrics tracked during test time
+    """
 
     def __init__(self, *args, **kwargs):
         super(Abnormality, self).__init__(*args, **kwargs)
 
-    def _predict(self, X):
+    def fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
+            datamodule: Optional[pl.LightningDataModule] = None,
+            preprocessing: Optional[List[Preprocessor]] = None,
+            early_stopping: Union[bool, EarlyStopping] = True,
+            max_epochs: int = 100,
+            callbacks: list = None) -> None:
+        """Fit the estimator.
+
+        Args:
+            ad: AnnData object to fit
+            target: column in AnnData.obs that should be used as target variable
+            datamodule: pytorch lightning data module with custom configurations of train, val and test splits
+            preprocessing: list of processors (:class:`~starProtocols.preprocessing.Preprocessor`) that should be applied to the dataset
+            early_stopping: configured :class:`~pytorch_lightning.callbacks.early_stopping.EarlyStopping` class
+            max_epochs: maximum epochs for which the model is trained
+            callbacks: additional `pytorch_lightning callbacks`
+
+        Returns:
+            None
+        """
+
+    def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
+        """Predict abnormality of each cell.
+
+        Args:
+            ad: AnnData object to fit
+            layer: `AnnData.X` layer to use for prediction
+            inplace: whether to manipulate the AnnData object inplace or return a copy
+
+        Returns:
+            None or AnnData depending on `inplace`.
+        """
+
+    def __predict(self, X):
         return self.model(X)
 
     def _default_model(self) -> nn.Module:

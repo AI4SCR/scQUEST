@@ -103,7 +103,13 @@ class Estimator:
                  loss_fn: Optional = None,
                  metrics: Optional = None,
                  ):
+        """Base estimator class
 
+        Args:
+            model: Model used to train estimator :class:`.torch.Module` or :class:`.pytorch_lightning.Module`
+            loss_fn: Loss function used for optimization
+            metrics: Metrics tracked during test time
+        """
         self.ad = None
         self.target = None
         self.datamodule = None
@@ -132,8 +138,43 @@ class Estimator:
             preprocessing: Optional[List[Preprocessor]] = None,
             early_stopping: Union[bool, EarlyStopping] = True,
             max_epochs: int = 100,
-            callbacks: list = None):
+            callbacks: list = None) -> None:
+        """Fit the estimator.
 
+        Args:
+            ad: AnnData object to fit
+            target: column in AnnData.obs that should be used as target variable
+            datamodule: pytorch lightning data module
+            preprocessing: list of processors that should be applied to the dataset
+            early_stopping: configured :class:`~pytorch_lightning.callbacks.early_stopping.EarlyStopping` class
+            max_epochs: maximum epochs for which the model is trained
+            callbacks: additional `pytorch_lightning callbacks`
+
+        Returns:
+            None
+        """
+
+        raise NotImplementedError()
+
+    def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
+        """
+
+        Args:
+            ad: AnnData object to fit
+            layer: AnnData.X layer to use for prediction
+            inplace: whether to manipulate the AnnData object inplace or return a copy
+
+        Returns:
+            None or AnnData depending on `inplace`.
+        """
+        raise NotImplementedError()
+
+    def _fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
+             datamodule: Optional[pl.LightningDataModule] = None,
+             preprocessing: Optional[List[Preprocessor]] = None,
+             early_stopping: Union[bool, EarlyStopping] = True,
+             max_epochs: int = 100,
+             callbacks: list = None):
         callbacks = [] if callbacks is None else callbacks
         self.target = 'target' if target is None else target
 
@@ -161,18 +202,6 @@ class Estimator:
         self.trainer.fit(model=self.model, datamodule=self.datamodule)
         self.trainer.test(model=self.model, datamodule=self.datamodule)
 
-    def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True):
-        self.ad = ad if inplace else ad.copy()
-
-        X = ad.X if layer is None else ad.layers[layer]
-        X = X.A if issparse(X) else X
-        X = torch.tensor(X).float()
-
-        self._predict(X)
-
-        if not inplace:
-            return ad
-
     def _default_model(self) -> nn.Module:
         raise NotImplementedError()
 
@@ -188,5 +217,17 @@ class Estimator:
     def _default_litModule(self):
         raise NotImplementedError()
 
-    def _predict(self, X, model, ad):
+    def _predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True):
+        self.ad = ad if inplace else ad.copy()
+
+        X = ad.X if layer is None else ad.layers[layer]
+        X = X.A if issparse(X) else X
+        X = torch.tensor(X).float()
+
+        self.__predict(X)
+
+        if not inplace:
+            return ad
+
+    def __predict(self, X):
         raise NotImplementedError()

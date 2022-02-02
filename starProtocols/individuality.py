@@ -20,7 +20,7 @@ from sklearn.neighbors import NearestNeighbors
 
 @dataclass
 class Individuality:
-    """Computes the individuality of each observation in the data set according to [ref1]_.
+    """Computes the individuality of each observation in the data set according to [Wagner2019]_.
 
     Attributes:
         n_neighbors: number of neighbors in *k*\ NN graph
@@ -63,8 +63,6 @@ class Individuality:
 
     Returns:
         Instance of :class:`Individuality`.
-
-    .. [ref1] https://linkinghub.elsevier.com/retrieve/pii/S0092867419302673
 
     """
 
