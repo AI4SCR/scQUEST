@@ -66,9 +66,11 @@ extensions = [
 
 # Add mappings
 intersphinx_mapping = {
-    'urllib3': ('http://urllib3.readthedocs.org/en/latest', None),
-    'python': ('http://docs.python.org/3', None),
-    'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+    'torch': ('https://pytorch.org/docs/stable/', None),
+    'pytorch_lightning': ('https://pytorch-lightning.readthedocs.io/en/latest/', None),
+    'urllib3': ('https://urllib3.readthedocs.org/en/latest', None),
+    'python': ('https://docs.python.org/3', None),
+    'numpy': ('https://docs.scipy.org/doc/numpy/', None),
     'pandas': ('https://pandas.pydata.org/docs/', None)
 }
 

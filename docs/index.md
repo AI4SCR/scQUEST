@@ -1,4 +1,12 @@
-. toctree::
-   :maxdepth: 2
+# Python starProtocols Repository
 
-    api/
+## API
+
+```{toctree}
+---
+maxdepth: 1
+
+---
+API of the starProtocols package <api/starProtocols>
+```
+
