@@ -1,1 +1,1 @@
-from ._datasets import breastCancerAtlasRaw
+from ._datasets import breastCancerAtlasRaw, breastCancerAtlas

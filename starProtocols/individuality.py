@@ -1,7 +1,8 @@
 from dataclasses import dataclass, fields, field
-from typing import Union, Callable, Iterable, get_args
+from typing import Union, Callable, Iterable, get_args, Optional
 
 import numpy as np
+from anndata import AnnData
 
 ArrayLike = np.ndarray
 
@@ -16,6 +17,7 @@ SparseMatrix = Union[sparse.csr_matrix, sparse.csr_matrix, sparse.csc_matrix]
 Matrix = Union[np.ndarray, SparseMatrix]
 
 from sklearn.neighbors import NearestNeighbors
+import logging
 
 
 @dataclass
@@ -33,7 +35,7 @@ class Individuality:
             If set to ``uniform`` all classes/groups have the same prior probability.
         metric: distance metric to use when constructing the graph topology
         metric_params: additional kwargs passed to :attr:`~Individuality.metric`
-        nn_params: additional kwargs passed to :class:`~sklearn.NearestNeighbors`
+        nn_params: additional kwargs passed to :class:`~.sklearn.NearestNeighbors`
 
     Notes:
         The posterior class probabilities for each observation are computed as follows:
@@ -76,11 +78,13 @@ class Individuality:
     nn_params: dict = field(default_factory=dict)
 
     def __post_init__(self):
+        self.nn_params = {'n_jobs': -1}
         self.NN = NearestNeighbors(n_neighbors=self.n_neighbors, radius=self.radius,
                                    metric=self.metric, metric_params=self.metric_params,
                                    **self.nn_params)
 
-    def predict(self, X: ArrayLike, labels: Union[Iterable, pd.Categorical] = None) -> pd.DataFrame:
+    def predict(self, ad: AnnData, labels: Union[Iterable, pd.Categorical], layer: Optional[str] = None,
+                inplace: bool = True) -> pd.DataFrame:
         """Performs prediction of the individuality of each observation and aggregates results for each label.
 
         Args:
@@ -91,6 +95,7 @@ class Individuality:
             DataFrame with rows as observations and columns with the estimated probability to belong in the given group/sample
 
         """
+        X = ad.X if layer is None else ad.layers[layer]
         uniq_labs = labels.categories.values if isCategorical(labels) else np.unique(labels)
         n_labs = len(uniq_labs)
 
@@ -113,7 +118,9 @@ class Individuality:
         col_names = idx_names = [num2lab[i] for i in unique_numeric_sequential_labels]
         df = pd.DataFrame(post_mean, columns=col_names, index=idx_names)
 
-        return df
+        ad = ad if inplace else ad.copy()
+        ad.obsm['individuality'] = posterior
+        ad.uns['individuality_agg'] = df
 
     @staticmethod
     def compute_individuality(g: Matrix, num_seq_labs: ArrayLike, prior: Union[str, ArrayLike]) -> np.ndarray:
@@ -162,46 +169,6 @@ class Individuality:
                 f'Prior value {prior} is not valid. Either choose `frequency` or `uniform` or provide a vector with the class priors')
 
         return posterior
-
-    def _predict(self, x, y: Union[Iterable, pd.Categorical] = None):
-        uniqLabs = y.categories.values if isCategorical(y) else np.unique(y)
-        nlabs = len(uniqLabs)
-
-        # convert to sequential, numerical labels starting at 0
-        numLabs = np.arange(nlabs)
-        lab2num = {j: i for i, j in zip(numLabs, uniqLabs)}
-        num2lab = {i: j for i, j in zip(numLabs, uniqLabs)}
-        labs = np.array([lab2num[i] for i in y])
-
-        g = self._build_topology(x)
-        g[np.diag_indices_from(g)] = 0  # remove self-edges
-
-        # map edges to obs labels and count
-        def map_and_count(x):
-            return np.bincount(labs[x == 1], minlength=nlabs)
-
-        counts = np.apply_along_axis(map_and_count, 1, g)
-
-        # compute probabilities
-        rowSum = counts.sum(1).reshape(-1, 1)
-        likelihood = np.divide(counts, rowSum, where=rowSum != 0, out=np.zeros_like(counts, dtype=float))
-
-        if self.prior == 'frequency':
-            prior = np.bincount(numLabs) / nlabs
-        else:
-            # uniform
-            prior = np.ones_like(likelihood) / nlabs
-
-        evidence = (prior * likelihood).sum(1).reshape(-1, 1)
-        posterior = likelihood * prior / evidence
-
-        # compute class-wise posterior mean
-        indices = [np.flatnonzero(numLabs == i) for i in range(nlabs)]
-        post_mean = np.vstack([posterior[idx].mean(axis=0) for idx in indices])
-
-        pd.DataFrame(post_mean, columns=[num2lab[i] for i in numLabs])
-
-        return post_mean
 
     def _build_topology(self, x) -> Matrix:
         if self.graph is None:

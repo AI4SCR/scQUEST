@@ -7,6 +7,7 @@ from .individuality import Individuality
 from .classifier import EpithelialClassifier
 from .preprocessing import StandardScale
 from . import dataset
+from .utils import DEFAULT_N_FEATURES, DEFAULT_MARKERS
 
 from pathlib import Path
 

@@ -19,7 +19,7 @@ from anndata import AnnData
 
 class AnnDatasetClf(Dataset):
 
-    def __init__(self, ad: AnnData, target: Optional[str], layer=None,
+    def __init__(self, ad: AnnData, target: str, layer: Optional[str] = None,
                  encode_targets_one_hot: bool = True) -> None:
         super(AnnDatasetClf, self).__init__()
         self.ad = ad
@@ -74,7 +74,7 @@ class AnnDataModule(pl.LightningDataModule):
         self.test_size = test_size
         self.validation_size = validation_size
         self.batch_size = batch_size
-        self.seed = seed
+        self.seed = seed if seed else 42
 
         self.dataset = ad_dataset_cls(ad, target=target, layer=layer)
 

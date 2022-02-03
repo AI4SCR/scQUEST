@@ -10,8 +10,10 @@ from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
 from .utils import pairwise, Estimator, LitModule
 from .data import AnnDatasetAE
+from .utils import DEFAULT_N_FEATURES
 
 import torchmetrics
+import numpy as np
 
 
 # %%
@@ -21,7 +23,7 @@ class DefaultAE(nn.Module):
     Default AE as implemented in [Wagner2019]_
     """
 
-    def __init__(self, n_in: int = 25, hidden: Iterable[int] = (10, 2, 10),
+    def __init__(self, n_in: int = DEFAULT_N_FEATURES, hidden: Iterable[int] = (10, 2, 10),
                  bias=True,
                  activation=nn.ReLU(),
                  activation_last=nn.Sigmoid(),
@@ -61,25 +63,28 @@ class Abnormality(Estimator):
     """Estimator to quantify the abnormality of a cell's expression profile.
 
     Args:
-            model: Model used to train estimator :class:`.torch.Module` or :class:`.pytorch_lightning.Module`
-            loss_fn: Loss function used for optimization
-            metrics: Metrics tracked during test time
+        model: Model used to train estimator :class:`.torch.Module` or :class:`.pytorch_lightning.Module`
+        loss_fn: Loss function used for optimization
+        metrics: Metrics tracked during test time
+
     """
 
     def __init__(self, *args, **kwargs):
         super(Abnormality, self).__init__(*args, **kwargs)
 
-    def fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
+    def fit(self, ad: Optional[AnnData] = None,
+            layer: Optional[str] = None,
             datamodule: Optional[pl.LightningDataModule] = None,
             preprocessing: Optional[List[Preprocessor]] = None,
             early_stopping: Union[bool, EarlyStopping] = True,
             max_epochs: int = 100,
-            callbacks: list = None) -> None:
-        """Fit the estimator.
+            callbacks: list = None,
+            **kwargs) -> None:
+        """Fit abnormality estimator.
 
         Args:
             ad: AnnData object to fit
-            target: column in AnnData.obs that should be used as target variable
+            layer: layer in `ad.layers` to use instead of ad.X
             datamodule: pytorch lightning data module with custom configurations of train, val and test splits
             preprocessing: list of processors (:class:`~starProtocols.preprocessing.Preprocessor`) that should be applied to the dataset
             early_stopping: configured :class:`~pytorch_lightning.callbacks.early_stopping.EarlyStopping` class
@@ -89,6 +94,8 @@ class Abnormality(Estimator):
         Returns:
             None
         """
+        self._fit(ad=ad, layer=layer, datamodule=datamodule, preprocessing=preprocessing,
+                  early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks)
 
     def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
         """Predict abnormality of each cell.
@@ -101,9 +108,15 @@ class Abnormality(Estimator):
         Returns:
             None or AnnData depending on `inplace`.
         """
+        self._predict(ad, layer, inplace)
 
-    def __predict(self, X):
-        return self.model(X)
+    def _predict_step(self, X):
+        self.ad.layers['abnormality'] = self.model(X).detach().numpy()
+
+    @staticmethod
+    def aggregate(ad, agg_fun=np.mean, key='abnormality', layer='abnormality'):
+        res = agg_fun(ad.layers[layer], axis=1)
+        ad.obs[key] = res
 
     def _default_model(self) -> nn.Module:
         return DefaultAE()

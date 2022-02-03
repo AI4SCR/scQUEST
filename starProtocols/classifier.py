@@ -13,6 +13,7 @@ import torchmetrics
 
 from .utils import pairwise, Estimator, LitModule
 from .data import AnnDatasetClf
+from .utils import DEFAULT_N_FEATURES
 
 TRAIN_DATALOADERS = EVAL_DATALOADERS = DataLoader
 
@@ -21,7 +22,7 @@ TRAIN_DATALOADERS = EVAL_DATALOADERS = DataLoader
 
 class DefaultCLF(nn.Module):
 
-    def __init__(self, n_in: int = 25, hidden: Iterable[int] = (20,), n_out: int = 2,
+    def __init__(self, n_in: int = DEFAULT_N_FEATURES, hidden: Iterable[int] = (20,), n_out: int = 2,
                  bias=True,
                  activation=nn.ReLU(),
                  activation_last=nn.Softmax(dim=1),
@@ -63,9 +64,9 @@ class EpithelialClassifier(Estimator):
     """Classifier to classify a cell as epithelial or non-epithelial cell.
 
     Args:
-            model: Model used to train estimator :class:`.torch.Module` or :class:`.pytorch_lightning.Module`
-            loss_fn: Loss function used for optimization
-            metrics: Metrics tracked during test time
+        model: Model used to train estimator :class:`.torch.Module` or :class:`.pytorch_lightning.Module`
+        loss_fn: Loss function used for optimization
+        metrics: Metrics tracked during test time
     """
 
     def __init__(self, model: Optional[nn.Module] = None,
@@ -74,6 +75,7 @@ class EpithelialClassifier(Estimator):
         super(EpithelialClassifier, self).__init__(model, loss_fn, metrics)
 
     def fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
+            layer: Optional[str] = None,
             datamodule: Optional[pl.LightningDataModule] = None,
             preprocessing: Optional[List[Preprocessor]] = None,
             early_stopping: Union[bool, EarlyStopping] = True,
@@ -84,6 +86,7 @@ class EpithelialClassifier(Estimator):
         Args:
             ad: AnnData object to fit
             target: column in AnnData.obs that should be used as target variable
+            layer: layer in `ad.layers` to use instead of ad.X
             datamodule: pytorch lightning data module with custom configurations of train, val and test splits
             preprocessing: list of processors (:class:`~starProtocols.preprocessing.Preprocessor`) that should be applied to the dataset
             early_stopping: configured :class:`~pytorch_lightning.callbacks.early_stopping.EarlyStopping` class
@@ -93,6 +96,8 @@ class EpithelialClassifier(Estimator):
         Returns:
             None
         """
+        self._fit(ad=ad, target=target, layer=layer, datamodule=datamodule, preprocessing=preprocessing,
+                  early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks)
 
     def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
         """Predict phenotype class.
@@ -105,10 +110,11 @@ class EpithelialClassifier(Estimator):
         Returns:
             None or AnnData depending on `inplace`.
         """
+        self._predict(ad, layer, inplace)
 
-    def __predict(self, X):
+    def _predict_step(self, X):
         yhat = self.model(X)
-        self.ad.obs[self.target] = yhat.numpy()
+        self.ad.obs[f'clf_{self.target}'] = yhat.numpy()
 
     def _default_model(self) -> nn.Module:
         """Default model if not provided"""

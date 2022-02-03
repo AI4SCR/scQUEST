@@ -44,5 +44,11 @@ class StandardScale(Preprocessor):
             return dataset.dataset.data
 
 
-class censore(Preprocessor):
+# for abnormality
+class MinMaxScaler(Preprocessor):
+    pass
+
+
+# for tSNE
+class Censore(Preprocessor):
     pass

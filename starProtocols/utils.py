@@ -21,6 +21,38 @@ from anndata import AnnData
 
 from .data import AnnDataModule
 
+# %%
+DEFAULT_MARKERS = {'AKT',
+                   'AR',
+                   'BCL2',
+                   'CA9',
+                   'CD24',
+                   'CD44',
+                   'CD49f',
+                   'ECadherin',
+                   'EGFR',
+                   'ERa',
+                   'EZH2',
+                   'EpCAM',
+                   'HER2',
+                   'HLADR',
+                   'K14',
+                   'K5',
+                   'K7',
+                   'K8K18',
+                   'PRB',
+                   'PTEN',
+                   'SMA',
+                   'Survivin',
+                   'Vimentin',
+                   'cMET',
+                   'cMYC',
+                   'p53',
+                   'panK'}
+DEFAULT_N_FEATURES = len(DEFAULT_MARKERS)
+
+
+# %%
 
 # NOTE: pairwise is distributed with `itertool` in python>=3.10
 def pairwise(iterable):
@@ -134,16 +166,19 @@ class Estimator:
                 raise TypeError(f'Model should be of type LightningModule or nn.Module not {type(model)}')
 
     def fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
+            layer: Optional[str] = None,
             datamodule: Optional[pl.LightningDataModule] = None,
             preprocessing: Optional[List[Preprocessor]] = None,
             early_stopping: Union[bool, EarlyStopping] = True,
             max_epochs: int = 100,
-            callbacks: list = None) -> None:
+            callbacks: list = None,
+            seed=None) -> None:
         """Fit the estimator.
 
         Args:
             ad: AnnData object to fit
             target: column in AnnData.obs that should be used as target variable
+            layer: layer in `ad.layers` to use instead of ad.X
             datamodule: pytorch lightning data module
             preprocessing: list of processors that should be applied to the dataset
             early_stopping: configured :class:`~pytorch_lightning.callbacks.early_stopping.EarlyStopping` class
@@ -170,18 +205,21 @@ class Estimator:
         raise NotImplementedError()
 
     def _fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
+             layer: Optional[str] = None,
              datamodule: Optional[pl.LightningDataModule] = None,
              preprocessing: Optional[List[Preprocessor]] = None,
              early_stopping: Union[bool, EarlyStopping] = True,
              max_epochs: int = 100,
-             callbacks: list = None):
+             callbacks: list = None,
+             seed=None):
         callbacks = [] if callbacks is None else callbacks
         self.target = 'target' if target is None else target
 
         if datamodule is None:
-            self.datamodule = AnnDataModule(ad, target,
+            self.datamodule = AnnDataModule(ad=ad, target=target, layer=layer,
                                             ad_dataset_cls=self._configure_anndata_class(),
-                                            preprocessing=preprocessing)
+                                            preprocessing=preprocessing,
+                                            seed=seed)
         else:
             self.datamodule = datamodule
 
@@ -192,7 +230,7 @@ class Estimator:
                 callbacks.append(EarlyStopping(monitor='val_loss',
                                                mode='min',
                                                min_delta=1e-3,
-                                               patience=0))
+                                               patience=10))
 
         self.trainer = pl.Trainer(logger=False,
                                   enable_checkpointing=False,
@@ -217,17 +255,17 @@ class Estimator:
     def _default_litModule(self):
         raise NotImplementedError()
 
-    def _predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True):
+    def _predict(self, ad: AnnData, layer: Optional[str] = None, inplace: bool = True):
         self.ad = ad if inplace else ad.copy()
 
         X = ad.X if layer is None else ad.layers[layer]
         X = X.A if issparse(X) else X
         X = torch.tensor(X).float()
 
-        self.__predict(X)
+        self._predict_step(X)
 
         if not inplace:
             return ad
 
-    def __predict(self, X):
+    def _predict_step(self, X):
         raise NotImplementedError()
