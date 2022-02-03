@@ -69,7 +69,7 @@ names(map.channels) = rename.channel$channel
 
 cluster_assignment = readr::read_csv(paste(root, level, 'Cluster_celltype_assignment.csv', sep='/'))
 map.cluster2class = map(cluster_assignment$class, ~ .x)
-names(map.cluster2class) = cluster_assignment$cluster
+names(map.cluster2class) = as.integer(cluster_assignment$cluster)
 
 map.cluster2celltype = map(cluster_assignment$celltype, ~ .x)
 names(map.cluster2celltype) = cluster_assignment$cluster
@@ -81,7 +81,7 @@ VAR = NULL
 fcs.header = list()
 
 f.count = 0
-for(f in files.fcs){
+for(f in files.fcs[1:3]){
   f.count = f.count + 1
   cat(f.count, '/', length(files.fcs), ' reading in file ', f, '\n')
   file.name = paste(root, level, f, sep='/')
@@ -89,7 +89,7 @@ for(f in files.fcs){
   header = read.FCSheader(file.name)
   header.tbl = tibble(keyword = names(header[[1]]), value=header[[1]])
   
-  fcs <- read.FCS(file.name)
+  fcs <- read.FCS(file.name, truncate_max_range = FALSE)
   
   obs = metaFromFileName(f)[rep(1, nrow(fcs)), ]
   var = parameters(fcs)@data %>% select(-range, -minRange, -maxRange)
@@ -114,8 +114,9 @@ obs = X[, VAR$desc %in% var2obs] %>% as_tibble()
 names(obs) = VAR$desc[VAR$desc %in% var2obs]
 OBS %<>% cbind(obs)
 OBS %<>% rename(cluster = CellType) %>%
-  mutate(celltype = unlist(map.cluster2celltype[cluster]),
-         celltype_class = unlist(map.cluster2class[cluster]))
+  mutate(cluster = as.integer(cluster)) %>%
+  mutate(celltype = unlist(map.cluster2celltype[as.character(cluster)]),
+         celltype_class = unlist(map.cluster2class[as.character(cluster)]))
   
 X = X[, !VAR$desc %in% var2obs]
 VAR %<>% filter(!VAR$desc %in% var2obs)
