@@ -2,13 +2,14 @@
 import pytest
 from starProtocols.classifier import DefaultCLF, EpithelialClassifier
 from .utils import dummy_annData
+from starProtocols import DEFAULT_N_FEATURES
 
 
 # %%
 
 @pytest.fixture
 def dummy_ad():
-    return dummy_annData(n_feat=25)
+    return dummy_annData(n_feat=DEFAULT_N_FEATURES)
 
 
 @pytest.mark.parametrize('n_in,hidden', [(8, []), (8, [4, ]), (8, [4, 4])])
