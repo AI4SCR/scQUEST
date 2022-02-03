@@ -81,7 +81,7 @@ VAR = NULL
 fcs.header = list()
 
 f.count = 0
-for(f in files.fcs[1:3]){
+for(f in files.fcs){
   f.count = f.count + 1
   cat(f.count, '/', length(files.fcs), ' reading in file ', f, '\n')
   file.name = paste(root, level, f, sep='/')

@@ -6,9 +6,11 @@ import anndata
 from pathlib import Path
 
 # %% load data
-f_lab = Path(
-    '/Users/art/Library/CloudStorage/Box-Box/STAR_protocol/Data/Cells_CisPtneg_GDneg_subset_clusterlabeled/ad_labelled.h5ad')
-ad = anndata.read_h5ad(f_lab)
+# f_lab = Path(
+#     '/Users/art/Library/CloudStorage/Box-Box/STAR_protocol/Data/Cells_CisPtneg_GDneg_subset_clusterlabeled/ad_labelled.h5ad')
+# ad = anndata.read_h5ad(f_lab)
+
+ad = sp.dataset.breastCancerAtlas()
 mask = np.zeros(ad.shape[1]).astype(bool)
 for i in sp.utils.DEFAULT_MARKERS:
     tmp = ad.var.desc.str.contains('_' + i)
