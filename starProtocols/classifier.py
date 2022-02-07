@@ -26,7 +26,7 @@ class DefaultCLF(nn.Module):
                  bias=True,
                  activation=nn.ReLU(),
                  activation_last=nn.Softmax(dim=1),
-                 seed: int = 0):
+                 seed: Optional[int] = None):
         super(DefaultCLF, self).__init__()
 
         self.n_in = n_in
@@ -35,7 +35,7 @@ class DefaultCLF(nn.Module):
         self.bias = bias
         self.activation = activation
         self.activation_last = activation_last
-        self.seed = seed
+        self.seed = seed if seed else 41
 
         # fix seeds
         torch.manual_seed(self.seed)
@@ -71,8 +71,9 @@ class EpithelialClassifier(Estimator):
 
     def __init__(self, model: Optional[nn.Module] = None,
                  loss_fn: Optional = None,
-                 metrics: Optional = None, ):
-        super(EpithelialClassifier, self).__init__(model, loss_fn, metrics)
+                 metrics: Optional = None,
+                 seed: Optional[int] = None):
+        super(EpithelialClassifier, self).__init__(model=model, loss_fn=loss_fn, metrics=metrics, seed=seed)
 
     def fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
             layer: Optional[str] = None,
@@ -80,7 +81,9 @@ class EpithelialClassifier(Estimator):
             preprocessing: Optional[List[Preprocessor]] = None,
             early_stopping: Union[bool, EarlyStopping] = True,
             max_epochs: int = 100,
-            callbacks: list = None) -> None:
+            callbacks: list = None,
+            seed: Optional[int] = None,
+            ) -> None:
         """Fit the estimator.
 
         Args:
@@ -92,12 +95,13 @@ class EpithelialClassifier(Estimator):
             early_stopping: configured :class:`~pytorch_lightning.callbacks.early_stopping.EarlyStopping` class
             max_epochs: maximum epochs for which the model is trained
             callbacks: additional `pytorch_lightning callbacks`
+            seed: Seed for data split
 
         Returns:
             None
         """
         self._fit(ad=ad, target=target, layer=layer, datamodule=datamodule, preprocessing=preprocessing,
-                  early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks)
+                  early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks, seed=seed)
 
     def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
         """Predict phenotype class.
@@ -116,9 +120,9 @@ class EpithelialClassifier(Estimator):
         yhat = self.model(X)
         self.ad.obs[f'clf_{self.target}'] = yhat.numpy()
 
-    def _default_model(self) -> nn.Module:
+    def _default_model(self, *args, **kwargs) -> nn.Module:
         """Default model if not provided"""
-        return DefaultCLF()
+        return DefaultCLF(*args, **kwargs)
 
     def _default_loss(self):
         """Default loss if not provided"""

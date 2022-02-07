@@ -63,7 +63,7 @@ class AnnDataModule(pl.LightningDataModule):
                  layer: Optional[str] = None,
                  preprocessing: Optional[Iterable[Preprocessor]] = None,
                  test_size: float = 0.25, validation_size: float = 1 / 3,
-                 batch_size: int = 32, seed: int = 42):
+                 batch_size: int = 32, seed: Optional[int] = None):
         super(AnnDataModule, self).__init__()
 
         self.ad = ad

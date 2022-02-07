@@ -134,6 +134,7 @@ class Estimator:
     def __init__(self, model: Optional[nn.Module] = None,
                  loss_fn: Optional = None,
                  metrics: Optional = None,
+                 seed: Optional[int] = None,
                  ):
         """Base estimator class
 
@@ -141,6 +142,7 @@ class Estimator:
             model: Model used to train estimator :class:`.torch.Module` or :class:`.pytorch_lightning.Module`
             loss_fn: Loss function used for optimization
             metrics: Metrics tracked during test time
+            seed: Seed for model weight initialisation
         """
         self.ad = None
         self.target = None
@@ -149,10 +151,12 @@ class Estimator:
 
         self.loss_fn = loss_fn if loss_fn else self._default_loss()
         self.metrics = metrics if metrics else self._default_metric()
+        self.seed = seed if seed else 41
+
         LM = self._default_litModule()
 
         if model is None:
-            self.model = LM(model=self._default_model(),
+            self.model = LM(model=self._default_model(seed=self.seed),
                             loss_fn=self.loss_fn,
                             metrics=self.metrics)
         else:
@@ -172,7 +176,7 @@ class Estimator:
             early_stopping: Union[bool, EarlyStopping] = True,
             max_epochs: int = 100,
             callbacks: list = None,
-            seed=None) -> None:
+            seed: Optional[int] = None) -> None:
         """Fit the estimator.
 
         Args:
@@ -184,6 +188,7 @@ class Estimator:
             early_stopping: configured :class:`~pytorch_lightning.callbacks.early_stopping.EarlyStopping` class
             max_epochs: maximum epochs for which the model is trained
             callbacks: additional `pytorch_lightning callbacks`
+            seed: Seed for data split
 
         Returns:
             None
@@ -211,7 +216,7 @@ class Estimator:
              early_stopping: Union[bool, EarlyStopping] = True,
              max_epochs: int = 100,
              callbacks: list = None,
-             seed=None):
+             seed: Optional[int] = None):
         callbacks = [] if callbacks is None else callbacks
         self.target = 'target' if target is None else target
 
@@ -240,7 +245,7 @@ class Estimator:
         self.trainer.fit(model=self.model, datamodule=self.datamodule)
         self.trainer.test(model=self.model, datamodule=self.datamodule)
 
-    def _default_model(self) -> nn.Module:
+    def _default_model(self, *args, **kwargs) -> nn.Module:
         raise NotImplementedError()
 
     def _configure_anndata_class(self) -> nn.Module:

@@ -27,7 +27,7 @@ class DefaultAE(nn.Module):
                  bias=True,
                  activation=nn.ReLU(),
                  activation_last=nn.Sigmoid(),
-                 seed: int = 0):
+                 seed: Optional[int] = None):
         super(DefaultAE, self).__init__()
 
         self.n_in = n_in
@@ -35,7 +35,7 @@ class DefaultAE(nn.Module):
         self.bias = bias
         self.activation = activation
         self.activation_last = activation_last
-        self.seed = seed
+        self.seed = seed if seed else 41
 
         # fix seeds
         torch.manual_seed(self.seed)
@@ -69,8 +69,11 @@ class Abnormality(Estimator):
 
     """
 
-    def __init__(self, *args, **kwargs):
-        super(Abnormality, self).__init__(*args, **kwargs)
+    def __init__(self, model: Optional[nn.Module] = None,
+                 loss_fn: Optional = None,
+                 metrics: Optional = None,
+                 seed: Optional[int] = None):
+        super(Abnormality, self).__init__(model=model, loss_fn=loss_fn, metrics=metrics, seed=seed)
 
     def fit(self, ad: Optional[AnnData] = None,
             layer: Optional[str] = None,
@@ -79,6 +82,7 @@ class Abnormality(Estimator):
             early_stopping: Union[bool, EarlyStopping] = True,
             max_epochs: int = 100,
             callbacks: list = None,
+            seed: Optional[int] = None,
             **kwargs) -> None:
         """Fit abnormality estimator.
 
@@ -90,12 +94,13 @@ class Abnormality(Estimator):
             early_stopping: configured :class:`~pytorch_lightning.callbacks.early_stopping.EarlyStopping` class
             max_epochs: maximum epochs for which the model is trained
             callbacks: additional `pytorch_lightning callbacks`
+            seed: Seed for data split
 
         Returns:
             None
         """
         self._fit(ad=ad, layer=layer, datamodule=datamodule, preprocessing=preprocessing,
-                  early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks)
+                  early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks, seed=seed)
 
     def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
         """Predict abnormality of each cell.
@@ -118,8 +123,8 @@ class Abnormality(Estimator):
         res = agg_fun(ad.layers[layer], axis=1)
         ad.obs[key] = res
 
-    def _default_model(self) -> nn.Module:
-        return DefaultAE()
+    def _default_model(self, *args, **kwargs) -> nn.Module:
+        return DefaultAE(*args, **kwargs)
 
     def _default_loss(self):
         return nn.MSELoss()

@@ -49,6 +49,10 @@ class MinMaxScaler(Preprocessor):
     pass
 
 
+class asinh(Preprocessor):
+    pass
+
+
 # for tSNE
 class Censore(Preprocessor):
     pass
