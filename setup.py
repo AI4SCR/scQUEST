@@ -87,6 +87,8 @@ setup(
         'numpy >= 1.2',
         'pytorch-lightning',
         'anndata',
+        'matplotlib',
+        'seaborn',
         'torchmetrics',
         'pytorch_lightning',
     ],
