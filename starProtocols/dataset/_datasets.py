@@ -8,6 +8,6 @@ breastCancerAtlas = DataSet(
 
 breastCancerAtlasRaw = DataSet(
     name='breastCancerAtlasRaw',
-    url='https://figshare.com/ndownloader/files/33953000',
+    url='https://figshare.com/ndownloader/files/34036679',
     doc_header='Raw breast cancer atlas from https://doi.org/10.1016/j.cell.2019.03.005'
 )

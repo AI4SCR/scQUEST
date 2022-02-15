@@ -2,7 +2,7 @@
 import torch
 import torch.nn as nn
 
-from typing import Iterable, Optional, Union, List
+from typing import Iterable, Optional, Union, List, Callable
 from anndata import AnnData
 import pytorch_lightning as pl
 from .preprocessing import Preprocessor
@@ -23,7 +23,7 @@ class DefaultAE(nn.Module):
     Default AE as implemented in [Wagner2019]_
     """
 
-    def __init__(self, n_in: int = DEFAULT_N_FEATURES, hidden: Iterable[int] = (10, 2, 10),
+    def __init__(self, n_in: int, hidden: Iterable[int] = (10, 2, 10),
                  bias=True,
                  activation=nn.ReLU(),
                  activation_last=nn.Sigmoid(),
@@ -63,17 +63,20 @@ class Abnormality(Estimator):
     """Estimator to quantify the abnormality of a cell's expression profile.
 
     Args:
+        n_in: number of feature for estimator
         model: Model used to train estimator :class:`.torch.Module` or :class:`.pytorch_lightning.Module`
         loss_fn: Loss function used for optimization
         metrics: Metrics tracked during test time
 
     """
 
-    def __init__(self, model: Optional[nn.Module] = None,
+    def __init__(self,
+                 n_in: int,
+                 model: Optional[nn.Module] = None,
                  loss_fn: Optional = None,
                  metrics: Optional = None,
                  seed: Optional[int] = None):
-        super(Abnormality, self).__init__(model=model, loss_fn=loss_fn, metrics=metrics, seed=seed)
+        super(Abnormality, self).__init__(n_in=n_in, model=model, loss_fn=loss_fn, metrics=metrics, seed=seed)
 
     def fit(self, ad: Optional[AnnData] = None,
             layer: Optional[str] = None,
@@ -119,8 +122,11 @@ class Abnormality(Estimator):
         self.ad.layers['abnormality'] = self.model(X).detach().numpy()
 
     @staticmethod
-    def aggregate(ad, agg_fun=np.mean, key='abnormality', layer='abnormality'):
-        res = agg_fun(ad.layers[layer], axis=1)
+    def aggregate(ad, agg_fun: Union[str, Callable] = 'mse', key='abnormality', layer='abnormality'):
+        if agg_fun == 'mse':
+            res = (ad.layers[layer] ** 2).mean(axis=1)
+        else:
+            res = agg_fun(ad.layers[layer], axis=1)
         ad.obs[key] = res
 
     def _default_model(self, *args, **kwargs) -> nn.Module:

@@ -17,6 +17,18 @@ from scipy.sparse import issparse
 from anndata import AnnData
 
 
+class DS(Dataset):
+
+    def __init__(self, x):
+        self.data = x
+
+    def __getitem__(self, item):
+        return self.data[item], self.data[item]
+
+    def __len__(self):
+        return len(self.data)
+
+
 class AnnDatasetClf(Dataset):
 
     def __init__(self, ad: AnnData, target: str, layer: Optional[str] = None,
@@ -62,8 +74,8 @@ class AnnDataModule(pl.LightningDataModule):
                  ad_dataset_cls,
                  layer: Optional[str] = None,
                  preprocessing: Optional[Iterable[Preprocessor]] = None,
-                 test_size: float = 0.25, validation_size: float = 1 / 3,
-                 batch_size: int = 32, seed: Optional[int] = None):
+                 test_size: float = 0.10, validation_size: float = 0.1,
+                 batch_size: int = 256, seed: Optional[int] = None):
         super(AnnDataModule, self).__init__()
 
         self.ad = ad

@@ -22,7 +22,7 @@ TRAIN_DATALOADERS = EVAL_DATALOADERS = DataLoader
 
 class DefaultCLF(nn.Module):
 
-    def __init__(self, n_in: int = DEFAULT_N_FEATURES, hidden: Iterable[int] = (20,), n_out: int = 2,
+    def __init__(self, n_in: int, hidden: Iterable[int] = (20,), n_out: int = 2,
                  bias=True,
                  activation=nn.ReLU(),
                  activation_last=nn.Softmax(dim=1),
@@ -64,16 +64,18 @@ class EpithelialClassifier(Estimator):
     """Classifier to classify a cell as epithelial or non-epithelial cell.
 
     Args:
+        n_in: number of features
         model: Model used to train estimator :class:`.torch.Module` or :class:`.pytorch_lightning.Module`
         loss_fn: Loss function used for optimization
         metrics: Metrics tracked during test time
     """
 
-    def __init__(self, model: Optional[nn.Module] = None,
+    def __init__(self, n_in: int,
+                 model: Optional[nn.Module] = None,
                  loss_fn: Optional = None,
                  metrics: Optional = None,
                  seed: Optional[int] = None):
-        super(EpithelialClassifier, self).__init__(model=model, loss_fn=loss_fn, metrics=metrics, seed=seed)
+        super(EpithelialClassifier, self).__init__(n_in=n_in, model=model, loss_fn=loss_fn, metrics=metrics, seed=seed)
 
     def fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
             layer: Optional[str] = None,

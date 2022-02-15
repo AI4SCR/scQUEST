@@ -22,6 +22,43 @@ from anndata import AnnData
 from .data import AnnDataModule
 
 # %%
+DEFAULT_MARKER_CLF = ['139La_H3K27me3',
+                      '141Pr_K5',
+                      '142Nd_PTEN',
+                      '143Nd_CD44',
+                      '144Nd_K8K18',
+                      '145Nd_CD31',
+                      '146Nd_FAP',
+                      '147Sm_cMYC',
+                      '148Nd_SMA',
+                      '149Sm_CD24',
+                      '150Nd_CD68',
+                      '151Eu_HER2',
+                      '152Sm_AR',
+                      '153Eu_BCL2',
+                      '154Sm_p53',
+                      '155Gd_EpCAM',
+                      '156Gd_CyclinB1',
+                      '158Gd_PRB',
+                      '159Tb_CD49f',
+                      '160Gd_Survivin',
+                      '161Dy_EZH2',
+                      '162Dy_Vimentin',
+                      '163Dy_cMET',
+                      '164Dy_AKT',
+                      '165Ho_ERa',
+                      '166Er_CA9',
+                      '167Er_ECadherin',
+                      '168Er_Ki67',
+                      '169Tm_EGFR',
+                      '170Er_K14',
+                      '171Yb_HLADR',
+                      '172Yb_clCASP3clPARP1',
+                      '173Yb_CD3',
+                      '174Yb_K7',
+                      '175Lu_panK',
+                      '176Yb_CD45']
+
 DEFAULT_MARKERS = {'AKT',
                    'AR',
                    'BCL2',
@@ -49,10 +86,11 @@ DEFAULT_MARKERS = {'AKT',
                    'cMYC',
                    'p53',
                    'panK'}
-DEFAULT_N_FEATURES = len(DEFAULT_MARKERS)
+DEFAULT_N_FEATURES = len(DEFAULT_MARKER_CLF)
 
 
 # %%
+
 
 # NOTE: pairwise is distributed with `itertool` in python>=3.10
 def pairwise(iterable):
@@ -131,7 +169,8 @@ class LitModule(pl.LightningModule):
 
 class Estimator:
 
-    def __init__(self, model: Optional[nn.Module] = None,
+    def __init__(self, n_in: int = None,
+                 model: Optional[nn.Module] = None,
                  loss_fn: Optional = None,
                  metrics: Optional = None,
                  seed: Optional[int] = None,
@@ -139,6 +178,7 @@ class Estimator:
         """Base estimator class
 
         Args:
+            n_in: number of feature for estimator
             model: Model used to train estimator :class:`.torch.Module` or :class:`.pytorch_lightning.Module`
             loss_fn: Loss function used for optimization
             metrics: Metrics tracked during test time
@@ -148,7 +188,9 @@ class Estimator:
         self.target = None
         self.datamodule = None
         self.trainer = None
+        self.logger = MyLogger()
 
+        self.n_in = n_in
         self.loss_fn = loss_fn if loss_fn else self._default_loss()
         self.metrics = metrics if metrics else self._default_metric()
         self.seed = seed if seed else 41
@@ -156,7 +198,7 @@ class Estimator:
         LM = self._default_litModule()
 
         if model is None:
-            self.model = LM(model=self._default_model(seed=self.seed),
+            self.model = LM(model=self._default_model(n_in=n_in, seed=self.seed),
                             loss_fn=self.loss_fn,
                             metrics=self.metrics)
         else:
@@ -217,6 +259,7 @@ class Estimator:
              max_epochs: int = 100,
              callbacks: list = None,
              seed: Optional[int] = None):
+
         callbacks = [] if callbacks is None else callbacks
         self.target = 'target' if target is None else target
 
@@ -237,7 +280,7 @@ class Estimator:
                                                min_delta=1e-3,
                                                patience=10))
 
-        self.trainer = pl.Trainer(logger=False,
+        self.trainer = pl.Trainer(logger=self.logger,
                                   enable_checkpointing=False,
                                   max_epochs=max_epochs,
                                   callbacks=callbacks,
@@ -274,3 +317,57 @@ class Estimator:
 
     def _predict_step(self, X):
         raise NotImplementedError()
+
+
+from pytorch_lightning.utilities import rank_zero_only
+from pytorch_lightning.loggers import LightningLoggerBase
+from pytorch_lightning.loggers.base import rank_zero_experiment
+import collections
+
+
+class MyLogger(LightningLoggerBase):
+    def __init__(self):
+        super().__init__()
+        self.history = collections.defaultdict(list)
+
+    @property
+    def name(self):
+        return "MyLogger"
+
+    @property
+    @rank_zero_experiment
+    def experiment(self):
+        # Return the experiment object associated with this logger.
+        pass
+
+    @property
+    def version(self):
+        # Return the experiment version, int or str.
+        return "0.1"
+
+    @rank_zero_only
+    def log_hyperparams(self, params):
+        # params is an argparse.Namespace
+        # your code to record hyperparameters goes here
+        pass
+
+    @rank_zero_only
+    def log_metrics(self, metrics, step):
+        # metrics is a dictionary of metric names and values
+        # your code to record metrics goes here
+        for metric_name, metric_value in metrics.items():
+            if metric_name != 'epoch':
+                self.history[metric_name].append(metric_value)
+
+    @rank_zero_only
+    def save(self):
+        # Optional. Any code necessary to save logger data goes here
+        # If you implement this, remember to call `super().save()`
+        # at the start of the method (important for aggregation of metrics)
+        super().save()
+
+    @rank_zero_only
+    def finalize(self, status):
+        # Optional. Any code that needs to be run after training
+        # finishes goes here
+        pass

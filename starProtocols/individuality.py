@@ -113,10 +113,11 @@ class Individuality:
         # TODO: should we exclude entries with no neighbors, i.e. posterior.sum(1) == 0?
         # TODO: provide option for aggregation
         indices = [np.flatnonzero(num_seq_labs == i) for i in range(n_labs)]
-        post_mean = np.vstack([posterior[idx].mean(axis=0) for idx in indices])
+        post_agg = np.vstack([posterior[idx].mean(axis=0) for idx in indices])
+        # post_agg = np.vstack([np.median(posterior[idx], axis=0) for idx in indices])
 
         col_names = idx_names = [num2lab[i] for i in unique_numeric_sequential_labels]
-        df = pd.DataFrame(post_mean, columns=col_names, index=idx_names)
+        df = pd.DataFrame(post_agg, columns=col_names, index=idx_names)
 
         ad = ad if inplace else ad.copy()
         ad.obsm['individuality'] = posterior
