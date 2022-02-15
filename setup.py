@@ -81,5 +81,13 @@ setup(
         # because your dependencies also have dependencies and so on ...
         # being too strict here will make dependency resolution harder
         "click",
+        'pandas',
+        'torch',
+        'scikit-learn',
+        'numpy >= 1.2',
+        'pytorch-lightning',
+        'anndata',
+        'torchmetrics',
+        'pytorch_lightning',
     ],
 )

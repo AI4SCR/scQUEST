@@ -7,7 +7,7 @@
 maxdepth: 1
 
 ---
-Install 
+Install <install.md>
 API of the starProtocols package <api/starProtocols>
 ```
 
