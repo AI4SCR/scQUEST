@@ -12,7 +12,7 @@ metaFromFileName = function(f){
   regex_breast = '.*BB[0-9]{3}([LR]?).*'
   regex_tumor_region = '.*BB[0-9]{3}[LR]?([ab])?.*'
   regex_plate = 'Plate[1-2]?'
-  regex_plate.location = '[12]-[B-F][0-9]{1,2}'
+  regex_plate.location = '[12]-[A-Z][0-9]{1,2}'
   regex_gadolinium = '.*_GD(neg|pos).fcs$'
   
   # extract
@@ -87,6 +87,7 @@ for(f in files.fcs){
   
   X = rbind(X,x)
   OBS = rbind(OBS, obs)
+  stopifnot(!any(is.na(OBS$tissue_type)))
   
   if(is.null(VAR)) VAR = var
   else stopifnot(all(VAR == var))

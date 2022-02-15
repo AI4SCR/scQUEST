@@ -7,6 +7,7 @@
 maxdepth: 1
 
 ---
+Install 
 API of the starProtocols package <api/starProtocols>
 ```
 
