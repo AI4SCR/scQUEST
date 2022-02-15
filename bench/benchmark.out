@@ -1,0 +1,26 @@
+Small: 3K
+Large: 20M
+
+(100000, 50)	torch   torch   mean:0.66, max: 0.67, min: 0.65
+(100000, 50)	large_torch	torch   mean:1.35, max: 1.39, min: 1.32
+(100000, 50)	keras   keras   mean:0.57, max: 0.68, min: 0.51
+(100000, 50)	large_keras	keras   mean:1.34, max: 1.47, min: 1.24
+
+(100000, 50)	light   light_default   mean:1.19, max: 1.25, min: 1.09
+(100000, 50)	light   light_noCheckNoLog  mean:1.13, max: 1.23, min: 1.09
+(100000, 50)	light   light_AccPrec   mean:1.42, max: 1.67, min: 1.31
+(100000, 50)	large_light	light_default   mean:2.51, max: 2.77, min: 2.14
+(100000, 50)    large_light	light_noCheckNoLog	mean:2.51, max: 2.71, min: 2.39
+(100000, 50)	large_light	light_AccPrec   mean:3.67, max: 4.02, min: 3.50
+
+(1500000, 50)	torch	torch	mean:11.27, max: 13.04, min: 10.09
+(1500000, 50)	large_torch	torch	mean:26.03, max: 28.57, min: 24.08
+(1500000, 50)	keras	keras	mean:6.73, max: 7.11, min: 6.25
+(1500000, 50)	large_keras	keras	mean:11.70, max: 12.30, min: 10.65
+
+(1500000, 50)	light	light_default	mean:23.30, max: 24.19, min: 22.67
+(1500000, 50)	light	light_noCheckNoLog	mean:22.61, max: 24.84, min: 21.46
+(1500000, 50)	light	light_AccPrec	mean:29.36, max: 31.02, min: 24.77
+(1500000, 50)	large_light	light_default	mean:36.26, max: 40.88, min: 30.10
+(1500000, 50)	large_light	light_noCheckNoLog	mean:35.24, max: 36.04, min: 33.99
+(1500000, 50)	large_light	light_AccPrec	mean:45.62, max: 52.94, min: 40.92
