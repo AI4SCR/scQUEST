@@ -169,7 +169,7 @@ class LitModule(pl.LightningModule):
             self.log(f'{step}_{metric}', m)
 
 
-class Estimator(ABC):
+class Estimator():
 
     def __init__(self, n_in: int = None,
                  model: Optional[nn.Module] = None,
