@@ -1,3 +1,5 @@
+import abc
+
 from pandas.api.types import CategoricalDtype
 from itertools import tee
 
@@ -167,7 +169,7 @@ class LitModule(pl.LightningModule):
             self.log(f'{step}_{metric}', m)
 
 
-class Estimator:
+class Estimator(ABC):
 
     def __init__(self, n_in: int = None,
                  model: Optional[nn.Module] = None,
@@ -357,7 +359,7 @@ class MyLogger(LightningLoggerBase):
         # your code to record metrics goes here
         for metric_name, metric_value in metrics.items():
             if metric_name != 'epoch':
-                self.history[metric_name].append(metric_value)
+                self.history[metric_name].append((step, metric_value))
 
     @rank_zero_only
     def save(self):
