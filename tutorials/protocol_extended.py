@@ -68,7 +68,7 @@ fig.show()
 
 # %% train classifier
 clf = sp.EpithelialClassifier(n_in=ad_anno.shape[1], seed=1)
-clf.fit(ad_anno, layer=layer_name, target='is_epithelial', max_epochs=1, seed=1)
+clf.fit(ad_anno, layer=layer_name, target='is_epithelial', max_epochs=100, seed=1)
 
 # %% loss classifier
 hist = clf.logger.history
