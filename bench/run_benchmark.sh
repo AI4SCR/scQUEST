@@ -1,16 +1,12 @@
 #!/bin/bash
 
 #conda activate starProtocols
-python /Users/art/Documents/star-protocols/bench/benchmark_lightning.py torch torch
-python /Users/art/Documents/star-protocols/bench/benchmark_lightning.py large_torch torch
+python benchmark.py 'torch' 1000000 small 10 256 10
+python benchmark.py 'torch' 1000000 large 10 256 10
+python benchmark.py 'light' 1000000 small 10 256 10
+python benchmark.py 'light' 1000000 large 10 256 10
 #
-python /Users/art/Documents/star-protocols/bench/benchmark_lightning.py keras keras
-python /Users/art/Documents/star-protocols/bench/benchmark_lightning.py large_keras keras
-#
-python /Users/art/Documents/star-protocols/bench/benchmark_lightning.py light light_default
-python /Users/art/Documents/star-protocols/bench/benchmark_lightning.py light light_noCheckNoLog
-python /Users/art/Documents/star-protocols/bench/benchmark_lightning.py light light_AccPrec
-#
-python /Users/art/Documents/star-protocols/bench/benchmark_lightning.py large_light light_default
-python /Users/art/Documents/star-protocols/bench/benchmark_lightning.py large_light light_noCheckNoLog
-python /Users/art/Documents/star-protocols/bench/benchmark_lightning.py large_light light_AccPrec
+python benchmark.py 'torch' 10000 small 10 256 10
+python benchmark.py 'torch' 10000 large 10 256 10
+python benchmark.py 'light' 10000 small 10 256 10
+python benchmark.py 'light' 10000 large 10 256 10
