@@ -353,3 +353,126 @@ fig, ax = plt.subplots()
 sns.boxplot(data=dat, x='tissue_type', y='individuality', ax=ax, whis=[0, 100])
 sns.stripplot(data=dat, x='tissue_type', y='individuality', ax=ax)
 fig.show()
+
+# %% set up example with custom AE model and datamodule
+import starProtocols as sp
+import torch
+import torch.nn as nn
+from torch.utils.data import Dataset, DataLoader, random_split
+
+import torchmetrics
+import pytorch_lightning as pl
+
+
+class MyTorchModel(nn.Module):
+
+    def __init__(self, n_in: int):
+        super().__init__()
+        self.model = nn.Sequential(nn.Linear(n_in, 20), nn.ReLU(),
+                                   nn.Linear(20, 10), nn.ReLU(),
+                                   nn.Linear(10, 2), nn.ReLU(),
+                                   nn.Linear(2, 10), nn.ReLU(),
+                                   nn.Linear(10, 20), nn.ReLU(),
+                                   nn.Linear(20, n_in), nn.Sigmoid())
+
+    def forward(self, x):
+        return self.model(x)
+
+
+class MyLightningModule(pl.LightningModule):
+    def __init__(self, n_in: int):
+        super().__init__()
+        self.model = MyTorchModel(n_in=n_in)
+        self.loss = nn.MSELoss()
+        self.metric_mse = torchmetrics.MeanSquaredError()
+
+    def forward(self, x):
+        return x - self.model(x)
+
+    def training_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self.model(x)  # self(x) would call self.forward(x)
+        loss = self.loss(y_hat, y)
+        self.log('train_mse', self.metric_mse(y_hat, y))
+        return loss
+
+    def validation_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self.model(x)  # self(x) would call self.forward(x)
+        loss = self.loss(y_hat, y)
+        self.log('val_mse', self.metric_mse(y_hat, y))
+        return loss
+
+    def test_step(self, batch, batch_idx):
+        x, y = batch
+        y_hat = self.model(x)  # self(x) would call self.forward(x)
+        loss = self.loss(y_hat, y)
+        self.log('test_mse', self.metric_mse(y_hat, y))
+        return loss
+
+    def configure_optimizers(self):
+        return torch.optim.Adam(self.parameters(), lr=1e-3)
+
+
+class MyDataset(Dataset):
+    def __init__(self, X):
+        super().__init__()
+        self.data = torch.tensor(X).float()
+
+    def __getitem__(self, item):
+        return self.data[item], self.data[item]
+
+    def __len__(self):
+        return len(self.data)
+
+
+class MyDataModule(pl.LightningDataModule):
+    def __init__(self, dataset, test_size: float = 0.2, validation_size: float = 0.1, batch_size: int = 256,
+                 shuffle=True):
+        super().__init__()
+        l = len(dataset)
+
+        dataset.data = dataset.data[
+            torch.randperm(len(dataset))] if shuffle else dataset.data  # this has a side-effect on dataset!
+        self.ds: Dataset = dataset
+
+        self.test_size = int(test_size * l)
+        self.train_size = l - self.test_size
+        self.validation_size = int(self.train_size * validation_size)
+        self.fit_size = self.train_size - self.validation_size
+
+        self.batch_size = batch_size
+
+    def setup(self, stage=None):
+        self.fit, self.test = random_split(self.ds, [self.train_size, self.test_size])
+        self.fit, self.validation = random_split(self.fit, [self.fit_size, self.validation_size])
+
+    def train_dataloader(self):
+        return DataLoader(self.fit, batch_size=self.batch_size, shuffle=True)
+
+    def val_dataloader(self):
+        return DataLoader(self.validation, batch_size=self.batch_size, shuffle=True)
+
+    def test_dataloader(self):
+        return DataLoader(self.test, batch_size=self.batch_size, shuffle=True)
+
+
+# %% custom AE example continued
+
+# data
+ad = sp.dataset.breastCancerAtlas()
+ad = ad[(ad.obs.celltype_class == 'epithelial') & (ad.obs.tissue_type == 'N'), :10]
+
+# convert to torch dataset
+ds = MyDataset(ad.X)
+
+# convert to lightning datamodule
+dm = MyDataModule(ds, batch_size=128)
+
+# lightning module
+module = MyLightningModule(n_in=ad.shape[1])
+print(module)
+
+# training with custom model and data
+Abn = sp.Abnormality(model=module)
+Abn.fit(datamodule=dm, early_stopping=[], max_epochs=1)

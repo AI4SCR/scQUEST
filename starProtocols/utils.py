@@ -171,7 +171,7 @@ class LitModule(pl.LightningModule):
 
 class Estimator():
 
-    def __init__(self, n_in: int = None,
+    def __init__(self, n_in: Optional[int] = None,
                  model: Optional[nn.Module] = None,
                  loss_fn: Optional = None,
                  metrics: Optional = None,

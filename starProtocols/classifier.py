@@ -70,7 +70,7 @@ class EpithelialClassifier(Estimator):
         metrics: Metrics tracked during test time
     """
 
-    def __init__(self, n_in: int,
+    def __init__(self, n_in: Optional[int],
                  model: Optional[nn.Module] = None,
                  loss_fn: Optional = None,
                  metrics: Optional = None,

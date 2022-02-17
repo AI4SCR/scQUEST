@@ -71,7 +71,7 @@ class Abnormality(Estimator):
     """
 
     def __init__(self,
-                 n_in: int,
+                 n_in: Optional[int] = None,
                  model: Optional[nn.Module] = None,
                  loss_fn: Optional = None,
                  metrics: Optional = None,
