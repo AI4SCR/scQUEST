@@ -32,7 +32,7 @@ def train_autoencoder(x_train, x_test, d1, d2=10, d3=2):
 
 
 # %%
-import starProtocols as sp
+import scQUEST as sp
 import pandas as pd
 import numpy as np
 

@@ -1,5 +1,5 @@
 # %%
-import starProtocols as sp
+import scQUEST as sp
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np

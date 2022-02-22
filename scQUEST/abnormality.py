@@ -93,7 +93,7 @@ class Abnormality(Estimator):
             ad: AnnData object to fit
             layer: layer in `ad.layers` to use instead of ad.X
             datamodule: pytorch lightning data module with custom configurations of train, val and test splits
-            preprocessing: list of processors (:class:`~starProtocols.preprocessing.Preprocessor`) that should be applied to the dataset
+            preprocessing: list of processors (:class:`~scQUEST.preprocessing.Preprocessor`) that should be applied to the dataset
             early_stopping: configured :class:`~pytorch_lightning.callbacks.early_stopping.EarlyStopping` class
             max_epochs: maximum epochs for which the model is trained
             callbacks: additional `pytorch_lightning callbacks`

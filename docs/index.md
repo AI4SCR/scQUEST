@@ -1,4 +1,4 @@
-# Python starProtocols Repository
+# Python scQUEST Repository
 
 ## API
 
@@ -8,6 +8,6 @@ maxdepth: 1
 
 ---
 Install <install.md>
-API of the starProtocols package <api/starProtocols>
+API of the scQUEST package <api/scQUEST>
 ```
 

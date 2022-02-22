@@ -17,9 +17,9 @@ sys.path.insert(0, os.path.abspath(".."))
 
 # -- Project information -----------------------------------------------------
 
-project = "starProtocols"
+project = "scQUEST"
 copyright = "IBM Corp. 2022"
-author = "IBM starProtocols team"
+author = "IBM scQUEST team"
 
 
 # -- Generate API (auto) documentation ------------------------------------------------
@@ -40,7 +40,7 @@ def run_apidoc(app):
             "--separate",
             "-o",
             os.path.join(".", "api"),
-            os.path.join("..", "starProtocols"),
+            os.path.join("..", "scQUEST"),
         ]
     )
 

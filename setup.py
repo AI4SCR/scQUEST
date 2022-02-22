@@ -40,20 +40,20 @@ except FileNotFoundError:
 
 # TODO: Update these values according to the name of the module.
 setup(
-    name="starProtocols",
-    version=read_version("starProtocols/__init__.py"),  # single place for version
-    description="Installable starProtocols package. Modify as needed.",
+    name="scQUEST",
+    version=read_version("scQUEST/__init__.py"),  # single place for version
+    description="Installable scQUEST package. Modify as needed.",
     long_description=open("README.md").read(),
-    url="https://github.ibm.com/art-zurich/starProtocols-python-package",
+    url="https://github.ibm.com/art-zurich/scQUEST-python-package",
     author="Adriano Martinelli",
     author_email="art@zurich.ibm.com",
     # the following exclusion is to prevent shipping of tests.
     # if you do include them, add pytest to the required packages.
     packages=find_packages(".", exclude=["*tests*"]),
-    package_data={"starProtocols": ["py.typed"]},
+    package_data={"scQUEST": ["py.typed"]},
     entry_points="""
         [console_scripts]
-        salutation=starProtocols.complex_module.core:formal_introduction
+        salutation=scQUEST.complex_module.core:formal_introduction
     """,
     scripts=["bin/brief_salutation", "bin/a_shell_script"],
     extras_require={

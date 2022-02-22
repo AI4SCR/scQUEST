@@ -11,7 +11,7 @@ ALL RIGHTS RESERVED
 """
 
 import click
-from starProtocols.individulality.core import salutation
+from scQUEST.individulality.core import salutation
 
 
 @click.command()

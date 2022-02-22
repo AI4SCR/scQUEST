@@ -1,5 +1,5 @@
 # %%
-import starProtocols as sp
+import scQUEST as sp
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -355,7 +355,7 @@ sns.stripplot(data=dat, x='tissue_type', y='individuality', ax=ax)
 fig.show()
 
 # %% set up example with custom AE model and datamodule
-import starProtocols as sp
+import scQUEST as sp
 import torch
 import torch.nn as nn
 from torch.utils.data import Dataset, DataLoader, random_split

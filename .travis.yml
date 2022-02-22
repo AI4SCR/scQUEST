@@ -16,17 +16,17 @@ install:
 
 script:
   # test import
-  - python -c "import starProtocols"
+  - python -c "import scQUEST"
 
   # run unit tests
-  - python -m pytest -sv --cov=starProtocols --cov-fail-under=65
+  - python -m pytest -sv --cov=scQUEST --cov-fail-under=65
 
   # static type checking
-  - python -m mypy starProtocols
+  - python -m mypy scQUEST
 
   # style checking
-  - python -m black starProtocols --check --diff --color
-  - python -m flake8 --per-file-ignores="__init__.py:F401" starProtocols
+  - python -m black scQUEST --check --diff --color
+  - python -m flake8 --per-file-ignores="__init__.py:F401" scQUEST
 
 # the following stages only start if the "test" stage above all succeed
 jobs:

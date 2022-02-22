@@ -1,7 +1,7 @@
 # %%
 import pytest
 
-from starProtocols.data import AnnDatasetAE, AnnDatasetClf
+from scQUEST.data import AnnDatasetAE, AnnDatasetClf
 from .utils import dummy_annData
 
 

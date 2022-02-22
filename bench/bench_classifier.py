@@ -1,8 +1,8 @@
 # %%
 from pathlib import Path
 
-import starProtocols as sp
-from starProtocols.tests import dummy_annData
+import scQUEST as sp
+from scQUEST.tests import dummy_annData
 
 # %%
 f_ad_labeled = Path(
@@ -41,24 +41,24 @@ clf.fit(ad_train, target='y_id')
 clf.predict(ad_pred)
 
 # %%
-from starProtocols import DefaultClassifier
+from scQUEST import DefaultClassifier
 
 clf = DefaultClassifier(10)
 
 # %%
-from starProtocols import LitModule
+from scQUEST import LitModule
 
 module = LitModule(clf)
 
 # %%
-from starProtocols import AnnDataset, dummy_annData
+from scQUEST import AnnDataset, dummy_annData
 
 ad = dummy_annData()
 ds = AnnDataset(ad, 'y')
 ds = AnnDataset(ad, 'y', encode_targets_one_hot=False)
 
 # %%
-from starProtocols import StandardScale, dummy_annData, AnnDataset
+from scQUEST import StandardScale, dummy_annData, AnnDataset
 from torch.utils.data import random_split
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -82,15 +82,15 @@ ss.fit_transform(a)
 ss.transform(b)
 
 # %%
-from starProtocols import AnnDataModule, dummy_annData
+from scQUEST import AnnDataModule, dummy_annData
 
 ad = dummy_annData()
 dm = AnnDataModule(ad, 'y')
 dm.setup()
 
 # %%
-from starProtocols import AnnDataModule, dummy_annData
-from starProtocols import StandardScale
+from scQUEST import AnnDataModule, dummy_annData
+from scQUEST import StandardScale
 
 ad = dummy_annData()
 dm = AnnDataModule(ad, 'y')
@@ -101,7 +101,7 @@ dm_norm.setup()
 
 # %%
 import pytorch_lightning as pl
-from starProtocols import DefaultClassifier, LitModule, dummy_annData, AnnDataModule
+from scQUEST import DefaultClassifier, LitModule, dummy_annData, AnnDataModule
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
 ad = dummy_annData()
@@ -119,7 +119,7 @@ trainer = pl.Trainer(logger=False, callbacks=callbacks, max_epochs=30)
 trainer.fit(model=clf, datamodule=dm)
 trainer.test(model=clf, datamodule=dm)
 # %%
-from starProtocols import dummy_annData, EpithelialClassifier
+from scQUEST import dummy_annData, EpithelialClassifier
 
 ad_train = ad_pred = dummy_annData()
 ad_train.obs['y_id'] = ad_train.obs.groupby('y').ngroup()
@@ -128,7 +128,7 @@ clf.fit(ad_train, 'y_id')
 clf.predict(ad_pred)
 
 # %% low-level call
-from starProtocols import DefaultClassifier, LitModule, dummy_annData, AnnDataModule, EpithelialClassifier, \
+from scQUEST import DefaultClassifier, LitModule, dummy_annData, AnnDataModule, EpithelialClassifier, \
     StandardScale
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 

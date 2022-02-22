@@ -1,8 +1,8 @@
 # %%
 import pytest
-from starProtocols.classifier import DefaultCLF, EpithelialClassifier
+from scQUEST.classifier import DefaultCLF, EpithelialClassifier
 from .utils import dummy_annData
-from starProtocols import DEFAULT_N_FEATURES
+from scQUEST import DEFAULT_N_FEATURES
 
 
 # %%

@@ -11,5 +11,5 @@ from .utils import DEFAULT_N_FEATURES, DEFAULT_MARKERS
 
 from pathlib import Path
 
-ROOT = Path('~/.starProtocols').expanduser()
+ROOT = Path('~/.scQUEST').expanduser()
 ROOT.mkdir(exist_ok=True)

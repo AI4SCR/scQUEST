@@ -10,8 +10,8 @@ import pytorch_lightning as pl
 from pytorch_lightning.utilities.types import STEP_OUTPUT
 
 import os
-import starProtocols as sp
-from starProtocols.data import DS
+import scQUEST as sp
+from scQUEST.data import DS
 
 from typing import Optional
 
@@ -21,7 +21,7 @@ from tensorflow.keras.layers import Input, Dense, Dropout
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 
-p = Path('~/Documents/star-protocols/bench/benchmark.out').expanduser()
+p = Path('//bench/benchmark.out').expanduser()
 # %%
 ad = sp.dataset.breastCancerAtlasRaw()
 

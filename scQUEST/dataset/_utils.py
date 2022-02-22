@@ -57,7 +57,7 @@ class DataSet(ABC):
         blocknum = 0
 
         try:
-            with urlopen(Request(url, headers={"User-agent": "starProtocols-user"})) as rsp:
+            with urlopen(Request(url, headers={"User-agent": "scQUEST-user"})) as rsp:
                 total = rsp.info().get("content-length", None)
                 with tqdm(
                         unit="B",

@@ -13,14 +13,14 @@ from tensorflow.keras.layers import Input, Dense, Dropout
 from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 import os
-import starProtocols as sp
-from starProtocols.data import DS
+import scQUEST as sp
+from scQUEST.data import DS
 
 from typing import Optional
 
 from pathlib import Path
 
-p = Path('~/Documents/star-protocols/bench/benchmark.out').expanduser()
+p = Path('//bench/benchmark.out').expanduser()
 # %%
 ad = sp.dataset.breastCancerAtlasRaw()
 
@@ -330,7 +330,7 @@ for i in range(n):
     start = time.time()
     model = get_torch_model(d1)
     fit_torch(model, x_train, None, epochs=epochs)
-    res['torch'].append((time.time() - start) / epochs )
+    res['torch'].append((time.time() - start) / epochs)
 
 for i in range(n):
     start = time.time()
@@ -342,25 +342,25 @@ for i in range(n):
     start = time.time()
     model = get_lightning_model(d1)
     fit_lightning(model, x_train, None, epochs=epochs)
-    res['lightning'].append((time.time() - start)/ epochs)
+    res['lightning'].append((time.time() - start) / epochs)
 
 for i in range(n):
     start = time.time()
     model = get_large_torch_model(d1)
     fit_torch(model, x_train, None, epochs=epochs)
-    res['large_torch'].append((time.time() - start)/ epochs)
+    res['large_torch'].append((time.time() - start) / epochs)
 
 for i in range(n):
     start = time.time()
     model = get_large_keras_model(d1)
     fit_keras(model, x_train, None, epochs=epochs)
-    res['large_keras'].append((time.time() - start)/ epochs)
+    res['large_keras'].append((time.time() - start) / epochs)
 
 for i in range(n):
     start = time.time()
     model = get_lightning_model(d1)
     fit_lightning(model, x_train, None, epochs=epochs)
-    res['larger_lightning'].append((time.time() - start)/ epochs)
+    res['larger_lightning'].append((time.time() - start) / epochs)
 
 # %%
 import numpy as np

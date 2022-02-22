@@ -1,5 +1,5 @@
 # %%
-import starProtocols as sp
+import scQUEST as sp
 import pandas as pd
 import numpy as np
 

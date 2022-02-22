@@ -13,7 +13,7 @@ from itertools import product
 import numpy as np
 import pytest
 
-from starProtocols import Individuality
+from scQUEST import Individuality
 
 
 def get_n_groups_label(n_obs_per_group: list = [5, 5]):

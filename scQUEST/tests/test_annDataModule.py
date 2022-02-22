@@ -1,8 +1,8 @@
 # %%
 import pytest
 
-from starProtocols.preprocessing import StandardScale
-from starProtocols.data import AnnDataModule, AnnDatasetAE, AnnDatasetClf
+from scQUEST.preprocessing import StandardScale
+from scQUEST.data import AnnDataModule, AnnDatasetAE, AnnDatasetClf
 from .utils import dummy_annData
 
 from itertools import product

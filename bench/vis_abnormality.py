@@ -6,7 +6,7 @@ from tensorflow.keras.layers import Input, Dense, Dropout
 from tensorflow.keras.models import Model
 from tensorflow.keras.callbacks import EarlyStopping
 
-import starProtocols as sp
+import scQUEST as sp
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd

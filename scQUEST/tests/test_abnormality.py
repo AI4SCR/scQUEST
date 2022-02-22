@@ -2,8 +2,8 @@
 import pytest
 from .utils import dummy_annData
 
-from starProtocols.abnormality import DefaultAE, Abnormality, AbnormalityLitModule
-from starProtocols import DEFAULT_N_FEATURES
+from scQUEST.abnormality import DefaultAE, Abnormality, AbnormalityLitModule
+from scQUEST import DEFAULT_N_FEATURES
 
 import numpy as np
 from anndata import AnnData

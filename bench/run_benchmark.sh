@@ -1,6 +1,6 @@
 #!/bin/bash
 
-#conda activate starProtocols
+#conda activate scQUEST
 #
 python benchmark.py 'torch' 10000 small 10 256 10
 python benchmark.py 'torch' 10000 large 10 256 10
