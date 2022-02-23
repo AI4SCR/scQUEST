@@ -39,10 +39,16 @@ def run_apidoc(app):
             "--no-toc",
             "--separate",
             "-o",
-            os.path.join(".", "api"),
-            os.path.join("..", "scQUEST"),
+            os.path.join(".", f"{project}_api"),
+            os.path.join("..", f"{project}"),
         ]
     )
+
+
+# This is the expected signature of the handler for this event, cf doc
+def autodoc_skip_test_handler(app, what, name, obj, skip, options):
+    # Basic approach; you might want a regex instead
+    return name.startswith("*test*")
 
 
 # -- General configuration ---------------------------------------------------
@@ -123,3 +129,4 @@ todo_include_todos = True
 
 def setup(app):
     app.connect("builder-inited", run_apidoc)
+    app.connect('autodoc-skip-member', autodoc_skip_test_handler)
