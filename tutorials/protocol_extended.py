@@ -1,5 +1,5 @@
 # %%
-import scQUEST as sp
+import scQUEST as scq
 import matplotlib.pyplot as plt
 import seaborn as sns
 import pandas as pd
@@ -9,8 +9,8 @@ from sklearn.metrics import confusion_matrix, roc_curve
 from functools import partial
 
 # %% load annotated data
-ad_anno = sp.dataset.breastCancerAtlas()
-marker = sp.utils.DEFAULT_MARKER_CLF
+ad_anno = scq.dataset.breastCancerAtlas()
+marker = scq._utils.DEFAULT_MARKER_CLF
 
 # %% plotting config
 marker_plot_fnc = partial(sns.histplot, bins=50)
@@ -35,6 +35,10 @@ X = ad_anno.X.copy()
 cofactor = 5
 np.divide(X, cofactor, out=X)
 np.arcsinh(X, out=X)
+
+# minMax
+minMax = MinMaxScaler()
+X = minMax.fit_transform(X)
 
 layer_name = 'arcsinh'
 ad_anno.layers[layer_name] = X
@@ -67,8 +71,8 @@ fig.tight_layout()
 fig.show()
 
 # %% train classifier
-clf = sp.EpithelialClassifier(n_in=ad_anno.shape[1], seed=1)
-clf.fit(ad_anno, layer=layer_name, target='is_epithelial', max_epochs=100, seed=1)
+clf = scq.EpithelialClassifier(n_in=ad_anno.shape[1], seed=1)
+clf.fit(ad_anno, layer=layer_name, target='is_epithelial', max_epochs=1, seed=1)
 
 # %% loss classifier
 hist = clf.logger.history
@@ -117,7 +121,7 @@ plt.show()
 
 # %% prepare the whole dataset for celltype classification
 
-ad = sp.dataset.breastCancerAtlasRaw()
+ad = scq.dataset.breastCancerAtlasRaw()
 
 mask = []
 for m in marker:
@@ -135,9 +139,11 @@ cofactor = 5
 np.divide(X, cofactor, out=X)
 np.arcsinh(X, out=X)
 
+X = minMax.transform(X)
+
 layer_name = 'arcsinh'
 ad_pred.layers[layer_name] = X
-
+del minMax
 # %%
 clf.predict(ad_pred, layer=layer_name)
 ad.obs['is_epithelial'] = ad_pred.obs.clf_is_epithelial.values
@@ -194,7 +200,7 @@ patients = ['N_BB013', 'N_BB028', 'N_BB034', 'N_BB035', 'N_BB037', 'N_BB046', 'N
             'N_BB155', 'N_BB167', 'N_BB192', 'N_BB194', 'N_BB197', 'N_BB201', 'N_BB204', 'N_BB209', 'N_BB210',
             'N_BB214',
             'N_BB221']
-patients = [i.split('N_')[1] for i in patients]
+patients = [i.scqlit('N_')[1] for i in patients]
 markers = set(
     ['Vol7', 'H3K27me3', 'K5', 'PTEN', 'CD44', 'K8K18', 'cMYC', 'SMA', 'CD24', 'HER2', 'AR', 'BCL2', 'p53',
      'EpCAM', 'CyclinB1',
@@ -231,7 +237,7 @@ layer_name = 'arcsinh_norm'
 ad_train.layers[layer_name] = X
 
 # %% train AE for abnormality
-Abn = sp.Abnormality(n_in=ad_train.shape[1])
+Abn = scq.Abnormality(n_in=ad_train.shape[1])
 Abn.fit(ad_train, layer=layer_name, max_epochs=100)
 
 del ad_train
@@ -286,7 +292,7 @@ for ax, dat, title in zip(axs.flat, [y, yhat, err], ['Input', 'Reconstruction', 
     ax: plt.Axes
     cmap = 'seismic' if title == 'Error' else 'viridis'
     im = ax.imshow(dat, cmap=cmap)
-    ax.set_aspect(dat.shape[1] * 3 / dat.shape[0])
+    ax.set_ascqect(dat.shape[1] * 3 / dat.shape[0])
     ax.set_xticks([])
     ax.set_yticks([])
     ax.set_xlabel('features')
@@ -330,7 +336,7 @@ indices = np.array(indices)
 ad_indiv = ad_indiv[indices]
 
 # %%
-Indiv = sp.Individuality()
+Indiv = scq.Individuality()
 Indiv.predict(ad_indiv, ad_indiv.obs.sample_id, layer=layer_name)
 
 # ad.obsm['individuality']
@@ -355,10 +361,10 @@ sns.stripplot(data=dat, x='tissue_type', y='individuality', ax=ax)
 fig.show()
 
 # %% set up example with custom AE model and datamodule
-import scQUEST as sp
+import scQUEST as scq
 import torch
 import torch.nn as nn
-from torch.utils.data import Dataset, DataLoader, random_split
+from torch.utils.data import Dataset, DataLoader, random_scqlit
 
 import torchmetrics
 import pytorch_lightning as pl
@@ -444,8 +450,8 @@ class MyDataModule(pl.LightningDataModule):
         self.batch_size = batch_size
 
     def setup(self, stage=None):
-        self.fit, self.test = random_split(self.ds, [self.train_size, self.test_size])
-        self.fit, self.validation = random_split(self.fit, [self.fit_size, self.validation_size])
+        self.fit, self.test = random_scqlit(self.ds, [self.train_size, self.test_size])
+        self.fit, self.validation = random_scqlit(self.fit, [self.fit_size, self.validation_size])
 
     def train_dataloader(self):
         return DataLoader(self.fit, batch_size=self.batch_size, shuffle=True)
@@ -460,7 +466,7 @@ class MyDataModule(pl.LightningDataModule):
 # %% custom AE example continued
 
 # data
-ad = sp.dataset.breastCancerAtlas()
+ad = scq.dataset.breastCancerAtlas()
 ad = ad[(ad.obs.celltype_class == 'epithelial') & (ad.obs.tissue_type == 'N'), :10]
 
 # convert to torch dataset
@@ -474,5 +480,5 @@ module = MyLightningModule(n_in=ad.shape[1])
 print(module)
 
 # training with custom model and data
-Abn = sp.Abnormality(model=module)
+Abn = scq.Abnormality(model=module)
 Abn.fit(datamodule=dm, early_stopping=[], max_epochs=1)

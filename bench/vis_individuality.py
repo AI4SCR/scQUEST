@@ -7,7 +7,7 @@ import numpy as np
 
 # %%
 ad = sp.dataset.breastCancerAtlasRaw()
-marker = sp.utils.DEFAULT_MARKER_CLF
+marker = sp._utils.DEFAULT_MARKER_CLF
 
 # %%
 mask = []

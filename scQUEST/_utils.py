@@ -21,7 +21,7 @@ TRAIN_DATALOADERS = EVAL_DATALOADERS = DataLoader
 from scipy.sparse import issparse
 from anndata import AnnData
 
-from .data import AnnDataModule
+from ._data import AnnDataModule
 
 # %%
 DEFAULT_MARKER_CLF = ['139La_H3K27me3',

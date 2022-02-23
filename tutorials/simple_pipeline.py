@@ -13,7 +13,7 @@ from pathlib import Path
 
 ad = sp.dataset.breastCancerAtlas()
 mask = np.zeros(ad.shape[1]).astype(bool)
-for i in sp.utils.DEFAULT_MARKERS:
+for i in sp._utils.DEFAULT_MARKERS:
     tmp = ad.var.desc.str.contains('_' + i)
     mask = mask | tmp
 

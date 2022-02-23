@@ -14,7 +14,7 @@ from tensorflow.keras.models import Model
 from tensorflow.keras.optimizers import Adam
 import os
 import scQUEST as sp
-from scQUEST.data import DS
+from scQUEST._data import DS
 
 from typing import Optional
 

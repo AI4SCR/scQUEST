@@ -10,14 +10,13 @@ import pandas as pd
 
 from scipy import sparse
 
-from .utils import isCategorical
+from ._utils import isCategorical
 
 DistFunc = Callable[[np.ndarray, np.ndarray], float]
 SparseMatrix = Union[sparse.csr_matrix, sparse.csr_matrix, sparse.csc_matrix]
 Matrix = Union[np.ndarray, SparseMatrix]
 
 from sklearn.neighbors import NearestNeighbors
-import logging
 
 
 @dataclass

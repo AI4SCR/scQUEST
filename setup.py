@@ -42,20 +42,15 @@ except FileNotFoundError:
 setup(
     name="scQUEST",
     version=read_version("scQUEST/__init__.py"),  # single place for version
-    description="Installable scQUEST package. Modify as needed.",
+    description="scQUEST package",
     long_description=open("README.md").read(),
-    url="https://github.ibm.com/art-zurich/scQUEST-python-package",
+    url="https://github.ibm.com/art-zurich/scQUEST",
     author="Adriano Martinelli",
     author_email="art@zurich.ibm.com",
     # the following exclusion is to prevent shipping of tests.
     # if you do include them, add pytest to the required packages.
     packages=find_packages(".", exclude=["*tests*"]),
     package_data={"scQUEST": ["py.typed"]},
-    entry_points="""
-        [console_scripts]
-        salutation=scQUEST.complex_module.core:formal_introduction
-    """,
-    scripts=["bin/brief_salutation", "bin/a_shell_script"],
     extras_require={
         "vcs": VCS_REQUIREMENTS,
         "test": ["pytest", "pytest-cov"],

@@ -8,12 +8,10 @@ import pytorch_lightning as pl
 from .preprocessing import Preprocessor
 from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
-from .utils import pairwise, Estimator, LitModule
-from .data import AnnDatasetAE
-from .utils import DEFAULT_N_FEATURES
+from ._utils import pairwise, Estimator, LitModule
+from ._data import AnnDatasetAE
 
 import torchmetrics
-import numpy as np
 
 
 # %%

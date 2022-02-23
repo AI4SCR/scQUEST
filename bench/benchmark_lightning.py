@@ -11,7 +11,7 @@ from pytorch_lightning.utilities.types import STEP_OUTPUT
 
 import os
 import scQUEST as sp
-from scQUEST.data import DS
+from scQUEST._data import DS
 
 from typing import Optional
 

@@ -11,9 +11,8 @@ from torch.utils.data import DataLoader
 
 import torchmetrics
 
-from .utils import pairwise, Estimator, LitModule
-from .data import AnnDatasetClf
-from .utils import DEFAULT_N_FEATURES
+from ._utils import pairwise, Estimator, LitModule
+from ._data import AnnDatasetClf
 
 TRAIN_DATALOADERS = EVAL_DATALOADERS = DataLoader
 

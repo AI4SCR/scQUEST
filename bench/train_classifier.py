@@ -12,7 +12,7 @@ f_lab = Path(
 ad_train = sp.dataset.breastCancerAtlas()
 
 # %%
-marker = sp.utils.DEFAULT_MARKER_CLF
+marker = sp._utils.DEFAULT_MARKER_CLF
 
 mask = []
 for m in marker:
@@ -42,7 +42,7 @@ del ad_train
 # %% predict phenotypes - preprocessing
 
 ad = sp.dataset.breastCancerAtlasRaw()
-marker = sp.utils.DEFAULT_MARKER_CLF
+marker = sp._utils.DEFAULT_MARKER_CLF
 
 mask = []
 for m in marker:

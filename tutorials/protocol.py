@@ -12,7 +12,7 @@ f_lab = Path(
 
 # %% load annotated data
 ad_anno = sp.dataset.breastCancerAtlas()
-marker = sp.utils.DEFAULT_MARKER_CLF
+marker = sp._utils.DEFAULT_MARKER_CLF
 
 # %% define the markers used in the classifier
 mask = []
