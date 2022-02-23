@@ -1,7 +1,7 @@
 # %%
 import pytest
 from scQUEST.classifier import DefaultCLF, EpithelialClassifier
-from .utils import dummy_annData
+from ._utils import dummy_annData
 from scQUEST import DEFAULT_N_FEATURES
 
 

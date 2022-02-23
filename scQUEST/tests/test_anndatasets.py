@@ -1,8 +1,8 @@
 # %%
 import pytest
 
-from scQUEST.data import AnnDatasetAE, AnnDatasetClf
-from .utils import dummy_annData
+from scQUEST._data import AnnDatasetAE, AnnDatasetClf
+from ._utils import dummy_annData
 
 
 # %%

@@ -2,8 +2,8 @@
 import pytest
 
 from scQUEST.preprocessing import StandardScale
-from scQUEST.data import AnnDataModule, AnnDatasetAE, AnnDatasetClf
-from .utils import dummy_annData
+from scQUEST._data import AnnDataModule, AnnDatasetAE, AnnDatasetClf
+from ._utils import dummy_annData
 
 from itertools import product
 

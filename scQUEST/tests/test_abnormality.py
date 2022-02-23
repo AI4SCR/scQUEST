@@ -1,6 +1,6 @@
 # %%
 import pytest
-from .utils import dummy_annData
+from ._utils import dummy_annData
 
 from scQUEST.abnormality import DefaultAE, Abnormality, AbnormalityLitModule
 from scQUEST import DEFAULT_N_FEATURES

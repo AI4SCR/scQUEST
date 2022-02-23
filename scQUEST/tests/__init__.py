@@ -1,1 +1,1 @@
-from .utils import dummy_annData
+from ._utils import dummy_annData
