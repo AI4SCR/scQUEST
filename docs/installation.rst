@@ -7,7 +7,7 @@ ____________________
 
     conda create -y -n myenv python=3.8
     conda activate myenv
-    pip install "git+git://github.com/AI4SCR/scQUEST.git@master"
+    pip install "git+https://github.com/AI4SCR/scQUEST.git@master"
 
 Miniconda Installation
 ______________________
