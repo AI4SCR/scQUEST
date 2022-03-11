@@ -6,7 +6,7 @@ def breastCancerAtlas():
     return DataSet(
         name='breastCancerAtlas',
         url='https://figshare.com/ndownloader/files/33966143',
-        doc_header='Processed breast cancer atlas from https://doi.org/10.1016/j.cell.2019.03.005')
+        doc_header='Processed breast cancer atlas from https://doi.org/10.1016/j.cell.2019.03.005')()
 
 
 def breastCancerAtlasRaw():
@@ -15,4 +15,4 @@ def breastCancerAtlasRaw():
         name='breastCancerAtlasRaw',
         url='https://figshare.com/ndownloader/files/34036679',
         doc_header='Raw breast cancer atlas from https://doi.org/10.1016/j.cell.2019.03.005'
-    )
+    )()
