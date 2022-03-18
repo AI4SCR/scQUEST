@@ -64,6 +64,12 @@ rename.channel = readr::read_csv(paste(root, level, 'Channel_rename.csv', sep='/
 map.channels = map(rename.channel$channel_rename, ~ .x)
 names(map.channels) = rename.channel$channel
 
+# meta data
+file.meta = '/Users/art/Library/CloudStorage/Box-Box/STAR_protocol/scQUEST_Patient_Metadata.csv'
+#toDrop = c('HealthStatus', 'HistoSimple', 'rPrefix', 'yPrefix', 'T_postfix', 'N_postfix', 'M_postfix', 'G_postfix', 'Ki67bin', "condition","fnames","tissue","distance_to_healthy","uniqueness")
+meta = read_csv(file.meta)
+meta %<>% rename(patient_number = `Patient ID`) %>% drop_na()
+
 # load FCS file
 X = NULL
 OBS = NULL
@@ -100,13 +106,16 @@ for(f in files.fcs){
 VAR %<>% rename(channel = name) %>%
   mutate(desc = unlist(map.channels[channel]))
 
-var2obs = c('Center', 'EventLength', 'Offset', 'Residual', 'Time', 'Width', 'beadDist')
-obs = X[, VAR$desc %in% var2obs] %>% as_tibble()
-names(obs) = VAR$desc[VAR$desc %in% var2obs]
-OBS %<>% cbind(obs)
+#var2obs = c('Center', 'EventLength', 'Offset', 'Residual', 'Time', 'Width', 'beadDist')
+#obs = X[, VAR$desc %in% var2obs] %>% as_tibble()
+#names(obs) = VAR$desc[VAR$desc %in% var2obs]
+#OBS %<>% cbind(obs)
 
-X = X[, !VAR$desc %in% var2obs]
-VAR %<>% filter(!VAR$desc %in% var2obs)
+#X = X[, !VAR$desc %in% var2obs]
+#VAR %<>% filter(!VAR$desc %in% var2obs)
+
+# add meta data
+OBS = merge(OBS, meta)
 
 # create AnnData object
 ad = AnnData(
@@ -118,13 +127,5 @@ ad = AnnData(
   )
 )
 
-# range_max = apply(ad$X, 1, function(x) max(x))
-# range_min = apply(ad$X, 1, function(x) min(x))
-# ad$obs %<>% mutate(range_min = range_min, range_max = range_max)
-# 
-# range_max = apply(ad$X, 2, function(x) max(x))
-# range_min = apply(ad$X, 2, function(x) min(x))
-# ad$var %<>% mutate(range_min = range_min, range_max = range_max)
-
-saveRDS(ad, paste(root, level, 'ad.rds', sep='/'))
+#saveRDS(ad, paste(root, level, 'ad.rds', sep='/'))
 anndata::write_h5ad(ad, paste(root, level, 'ad.h5ad', sep='/'))

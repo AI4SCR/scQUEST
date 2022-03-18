@@ -74,6 +74,12 @@ names(map.cluster2class) = as.integer(cluster_assignment$cluster)
 map.cluster2celltype = map(cluster_assignment$celltype, ~ .x)
 names(map.cluster2celltype) = cluster_assignment$cluster
 
+# meta data
+file.meta = '/Users/art/Library/CloudStorage/Box-Box/STAR_protocol/scQUEST_Patient_Metadata.csv'
+#toDrop = c('HealthStatus', 'HistoSimple', 'rPrefix', 'yPrefix', 'T_postfix', 'N_postfix', 'M_postfix', 'G_postfix', 'Ki67bin', "condition","fnames","tissue","distance_to_healthy","uniqueness")
+meta = read_csv(file.meta)
+meta %<>% rename(patient_number = `Patient ID`) %>% drop_na()
+
 # load FCS file
 X = NULL
 OBS = NULL
@@ -109,17 +115,23 @@ for(f in files.fcs){
 VAR %<>% rename(channel = name) %>%
   mutate(desc = unlist(map.channels[channel]))
 
-var2obs = c('Center', 'EventLength', 'Offset', 'Residual', 'Time', 'Width', 'beadDist', 'CellType')
+# var2obs = c('Center', 'EventLength', 'Offset', 'Residual', 'Time', 'Width', 'beadDist', 'CellType')
+var2obs = c('CellType')
 obs = X[, VAR$desc %in% var2obs] %>% as_tibble()
 names(obs) = VAR$desc[VAR$desc %in% var2obs]
 OBS %<>% cbind(obs)
+
+X = X[, !VAR$desc %in% var2obs]
+VAR %<>% filter(!VAR$desc %in% var2obs)
+
 OBS %<>% rename(cluster = CellType) %>%
   mutate(cluster = as.integer(cluster)) %>%
   mutate(celltype = unlist(map.cluster2celltype[as.character(cluster)]),
          celltype_class = unlist(map.cluster2class[as.character(cluster)]))
-  
-X = X[, !VAR$desc %in% var2obs]
-VAR %<>% filter(!VAR$desc %in% var2obs)
+
+# add meta data
+OBS = merge(OBS, meta)
+
 
 # create AnnData object
 ad = AnnData(
@@ -131,22 +143,5 @@ ad = AnnData(
   )
 )
 
-saveRDS(ad, paste(root, level, 'ad_labelled.rds', sep='/'))
+# saveRDS(ad, paste(root, level, 'ad_labelled.rds', sep='/'))
 anndata::write_h5ad(ad, paste(root, level, 'ad_labelled.h5ad', sep='/'))
-
-
-# f = files.fcs[1]
-# file.name = paste(root, level, f, sep='/')
-# 
-# fcs <- read.FCS(file.name)
-# 
-# obs = metaFromFileName(f)[rep(1, nrow(fcs)), ]
-# var = parameters(fcs)@data
-# x = exprs(fcs)
-# 
-# minRange = apply(x, 2, function(y) min(y))
-# maxRange = apply(x, 2, function(y) max(y))
-# 
-# ranges = var %>% select(minRange, maxRange) %>% bind_cols(tibble(min.Range = minRange, max.Range = maxRange))
-# ranges %<>% mutate(diff.minRange = minRange - min.Range,
-#                   diff.maxRange = maxRange - max.Range)
