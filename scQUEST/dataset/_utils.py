@@ -17,6 +17,7 @@ from ..__init__ import ROOT
 class DataSet(ABC):
     name: str
     url: str
+    force_load: bool = False
 
     doc_header: str = field(default=None, repr=False)
     path: PathLike = field(default=None, repr=False)
@@ -39,7 +40,7 @@ class DataSet(ABC):
         if not fpath.endswith(self._extension):
             fpath += self._extension
 
-        if not os.path.isfile(fpath):
+        if not os.path.isfile(fpath) or self.force_load:
             # download file
             dirname = Path(fpath).parent
             if not dirname.is_dir():
