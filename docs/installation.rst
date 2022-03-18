@@ -5,8 +5,8 @@ Package Installation
 ____________________
 .. code-block:: bash
 
-    conda create -y -n myenv python=3.8
-    conda activate myenv
+    conda create -y -n scquest python=3.8
+    conda activate scquest
     pip install "git+https://github.com/AI4SCR/scQUEST.git@master"
 
 Miniconda Installation
