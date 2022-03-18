@@ -80,6 +80,8 @@ file.meta = '/Users/art/Library/CloudStorage/Box-Box/STAR_protocol/scQUEST_Patie
 meta = read_csv(file.meta)
 meta %<>% rename(patient_number = `Patient ID`) %>% drop_na()
 
+
+
 # load FCS file
 X = NULL
 OBS = NULL
@@ -130,8 +132,9 @@ OBS %<>% rename(cluster = CellType) %>%
          celltype_class = unlist(map.cluster2class[as.character(cluster)]))
 
 # add meta data
-OBS = merge(OBS, meta)
-
+indices = match(OBS$patient_number, meta$patient_number)
+META = meta[indices,]
+OBS = cbind(OBS, META %>% select(-patient_number))
 
 # create AnnData object
 ad = AnnData(
