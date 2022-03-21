@@ -2,7 +2,7 @@ from ._utils import DataSet
 
 
 def breastCancerAtlas(force_load=False):
-    """Flow cytometry dataset with annotated epithelial cells. Locally stored at ~/.scQUEST"""
+    """Flow cytometry dataset with annotated epithelial cells in `['celltype', 'celltype_class']` of `ad.obs`. Locally stored at ~/.scQUEST"""
     return DataSet(
         name='breastCancerAtlas',
         url='https://figshare.com/ndownloader/files/34432184',

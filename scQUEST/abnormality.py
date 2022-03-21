@@ -58,7 +58,8 @@ class AbnormalityLitModule(LitModule):
 
 
 class Abnormality(Estimator):
-    """Estimator to quantify the abnormality of a cell's expression profile.
+    """Estimator to quantify the abnormality of a cell's expression profile. Abnormality is defined as the average
+    reconstruction error of the trained autoencoder.
 
     Args:
         n_in: number of feature for estimator
@@ -85,7 +86,9 @@ class Abnormality(Estimator):
             callbacks: list = None,
             seed: Optional[int] = None,
             **kwargs) -> None:
-        """Fit abnormality estimator.
+        """Fit abnormality estimator (autoencoder). Given the cell-expression profile given in ad.X[layer], an
+        autoencoder is fitted. By default the given data is randomly split 90/10 in training and test set. If you wish to
+        customize training provide a datamodule with the given train/validation/test splits.
 
         Args:
             ad: AnnData object to fit
@@ -104,7 +107,7 @@ class Abnormality(Estimator):
                   early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks, seed=seed)
 
     def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
-        """Predict abnormality of each cell.
+        """Predict abnormality of each cell-feature as the difference between target and reconstruction (y-pred).
 
         Args:
             ad: AnnData object to fit
@@ -121,6 +124,13 @@ class Abnormality(Estimator):
 
     @staticmethod
     def aggregate(ad, agg_fun: Union[str, Callable] = 'mse', key='abnormality', layer='abnormality'):
+        """Aggregate the high-dimensional (number of features) reconstruction error of each cell.
+
+        :param ad: AnnData object
+        :param agg_fun: `mse` or function used to aggregate the observed reconstruciton errors
+        :param key: key under which the results should be stored in ad.obs
+        :param layer: layer in X used to compute the aggregation
+        """
         if agg_fun == 'mse':
             res = (ad.layers[layer] ** 2).mean(axis=1)
         else:

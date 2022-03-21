@@ -84,7 +84,8 @@ class Individuality:
 
     def predict(self, ad: AnnData, labels: Union[Iterable, pd.Categorical], layer: Optional[str] = None,
                 inplace: bool = True) -> pd.DataFrame:
-        """Performs prediction of the individuality of each observation and aggregates results for each label.
+        """Performs prediction of the individuality of each observation and aggregates (average) results for each label.
+        If you wish to access the posterior probabilities for each observation (cell) use :func:`~compute_individuality`.
 
         Args:
             X: matrix with observations as rows and columns as features.

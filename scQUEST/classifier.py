@@ -60,7 +60,8 @@ class ClfLitModule(LitModule):
 
 
 class EpithelialClassifier(Estimator):
-    """Classifier to classify a cell as epithelial or non-epithelial cell.
+    """Classifier to classify a cell as epithelial or non-epithelial cell. Classifier uses a shallow neural network to discriminate
+    between epithelial and non-epithelial cells. To fit the classifier a pre-annotated sample is needed.
 
     Args:
         n_in: number of features
@@ -85,10 +86,12 @@ class EpithelialClassifier(Estimator):
             callbacks: list = None,
             seed: Optional[int] = None,
             ) -> None:
-        """Fit the estimator.
+        """Fit the estimator on annotated data. Expression profiles in ad.layers[layer] are used to predict the phenotype given
+        in ad.obs[target]. By default the given data is randomly split 90/10 in training and test set. If you wish to
+        customize training provide a datamodule with the given train/validation/test splits.
 
         Args:
-            ad: AnnData object to fit
+            ad: AnnData object with annotated cell types (given by the target parameter)
             target: column in AnnData.obs that should be used as target variable
             layer: layer in `ad.layers` to use instead of ad.X
             datamodule: pytorch lightning data module with custom configurations of train, val and test splits
@@ -105,7 +108,8 @@ class EpithelialClassifier(Estimator):
                   early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks, seed=seed)
 
     def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
-        """Predict phenotype class.
+        """Predict phenotype class. Uses the trained classifier to predict the phenotype of a given cell expression profile.
+        The result is stored in ad.obs['clf_{TARGET_NAME}].
 
         Args:
             ad: AnnData object to fit
