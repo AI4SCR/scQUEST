@@ -6,6 +6,7 @@ scQUEST - Quantifying disease ecosystem heterogeneity from mass or flow cytometr
 
     installation
     overview
+    Tutorial <scQUEST_tutorial.md>
     API <scQUEST_api/scQUEST>
     references
 

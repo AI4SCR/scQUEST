@@ -37,7 +37,8 @@ jobs:
       install:
         - pip install --progress-bar off -r requirements.txt
         - pip install --progress-bar off -r dev_requirements.txt
-      before_script: skip
+      before_script:
+        - jupyter-nbconvert --to markdown --execute --output-dir ../docs/ ./tutorials/scQUEST_tutorial.ipynb
       script:
         # build documentation pages
         - cd docs && make html && cd ..
