@@ -10,9 +10,10 @@ before_install: skip
 install:
   # install the package
   - pip install -U pip
-  - pip install --progress-bar off -r requirements.txt
+  # - pip install --progress-bar off -r requirements.txt
   - pip install --progress-bar off -r dev_requirements.txt
-  - pip install .
+  # - pip install .
+  - pip install "git+https://github.com/AI4SCR/scQUEST.git@master"
 
 script:
   # test import
@@ -35,8 +36,9 @@ jobs:
       python: 3.8
       before_install: skip
       install:
-        - pip install --progress-bar off -r requirements.txt
-        - pip install --progress-bar off -r dev_requirements.txt
+        - pip install jupyterlab
+        - pip install "git+https://github.com/AI4SCR/scQUEST.git@master"
+        - pip install umap-learn
       before_script:
         - jupyter-nbconvert --to markdown --execute --output-dir ../docs/ ./tutorials/scQUEST_tutorial.ipynb
       script:
