@@ -36,6 +36,7 @@ jobs:
       python: 3.8
       before_install: skip
       install:
+        - pip install --progress-bar off -r dev_requirements.txt
         - pip install jupyterlab
         - pip install "git+https://github.com/AI4SCR/scQUEST.git@master"
       #        - pip install umap-learn
