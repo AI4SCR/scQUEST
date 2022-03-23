@@ -116,3 +116,5 @@ venv.bak/
 
 # pytorch lightning
 lightning_logs/
+*.h5py
+/bench
