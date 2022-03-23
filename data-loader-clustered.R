@@ -76,11 +76,8 @@ names(map.cluster2celltype) = cluster_assignment$cluster
 
 # meta data
 file.meta = '/Users/art/Library/CloudStorage/Box-Box/STAR_protocol/scQUEST_Patient_Metadata.csv'
-#toDrop = c('HealthStatus', 'HistoSimple', 'rPrefix', 'yPrefix', 'T_postfix', 'N_postfix', 'M_postfix', 'G_postfix', 'Ki67bin', "condition","fnames","tissue","distance_to_healthy","uniqueness")
 meta = read_csv(file.meta)
 meta %<>% rename(patient_number = `Patient ID`) %>% drop_na()
-
-
 
 # load FCS file
 X = NULL
