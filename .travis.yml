@@ -40,7 +40,7 @@ jobs:
         - pip install "git+https://github.com/AI4SCR/scQUEST.git@master"
       #        - pip install umap-learn
       before_script:
-        - jupyter-nbconvert --to markdown --output-dir ../docs/ ./tutorials/scQUEST_tutorial.ipynb
+        - jupyter-nbconvert --to markdown --output-dir docs/ ./tutorials/scQUEST_tutorial.ipynb
       script:
         # build documentation pages
         - cd docs && make html && cd ..
