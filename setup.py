@@ -86,5 +86,6 @@ setup(
         'seaborn',
         'torchmetrics',
         'pytorch_lightning',
+        'ipywidgets'
     ],
 )
