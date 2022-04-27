@@ -2,11 +2,11 @@ scQUEST - Quantifying disease ecosystem heterogeneity from mass or flow cytometr
 ======================================================================================
 
 .. toctree::
-    :maxdepth: 1
+    :maxdepth: 2
 
     installation
     overview
-    Tutorial <scQUEST_tutorial.md>
+    tutorials
     API <scQUEST_api/scQUEST>
     references
 
