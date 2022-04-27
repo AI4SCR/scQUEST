@@ -104,7 +104,7 @@ class Abnormality(Estimator):
             None
         """
         self._fit(ad=ad, layer=layer, datamodule=datamodule, preprocessing=preprocessing,
-                  early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks, seed=seed)
+                  early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks, seed=seed, **kwargs)
 
     def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
         """Predict abnormality of each cell-feature as the difference between target and reconstruction (y-pred).

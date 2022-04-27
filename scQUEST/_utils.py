@@ -220,7 +220,8 @@ class Estimator():
             early_stopping: Union[bool, EarlyStopping] = True,
             max_epochs: int = 100,
             callbacks: list = None,
-            seed: Optional[int] = None) -> None:
+            seed: Optional[int] = None,
+            **kwargs) -> None:
         """Fit the estimator.
 
         Args:
@@ -257,10 +258,11 @@ class Estimator():
              layer: Optional[str] = None,
              datamodule: Optional[pl.LightningDataModule] = None,
              preprocessing: Optional[List[Preprocessor]] = None,
-             early_stopping: Union[bool, EarlyStopping] = True,
-             max_epochs: int = 100,
+             early_stopping: Union[bool, EarlyStopping] = False,
+             max_epochs: int = 300,
              callbacks: list = None,
-             seed: Optional[int] = None):
+             seed: Optional[int] = None,
+             **kwargs):
 
         callbacks = [] if callbacks is None else callbacks
         self.target = 'target' if target is None else target
@@ -286,7 +288,8 @@ class Estimator():
                                   enable_checkpointing=False,
                                   max_epochs=max_epochs,
                                   callbacks=callbacks,
-                                  reload_dataloaders_every_epoch=False)
+                                  reload_dataloaders_every_epoch=False,
+                                  **kwargs)
         self.trainer.fit(model=self.model, datamodule=self.datamodule)
         self.trainer.test(model=self.model, datamodule=self.datamodule)
 

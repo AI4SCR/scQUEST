@@ -85,6 +85,7 @@ class EpithelialClassifier(Estimator):
             max_epochs: int = 100,
             callbacks: list = None,
             seed: Optional[int] = None,
+            **kwargs
             ) -> None:
         """Fit the estimator on annotated data. Expression profiles in ad.layers[layer] are used to predict the phenotype given
         in ad.obs[target]. By default the given data is randomly split 90/10 in training and test set. If you wish to
@@ -105,7 +106,7 @@ class EpithelialClassifier(Estimator):
             None
         """
         self._fit(ad=ad, target=target, layer=layer, datamodule=datamodule, preprocessing=preprocessing,
-                  early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks, seed=seed)
+                  early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks, seed=seed, **kwargs)
 
     def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
         """Predict phenotype class. Uses the trained classifier to predict the phenotype of a given cell expression profile.
