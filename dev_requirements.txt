@@ -14,3 +14,4 @@ six
 sphinx_rtd_theme
 myst-parser
 jupyterlab
+"Jinja2<3.1"
