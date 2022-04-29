@@ -59,7 +59,7 @@ class ClfLitModule(LitModule):
         return self.model(x).argmax(axis=1)
 
 
-class EpithelialClassifier(Estimator):
+class Classifier(Estimator):
     """Classifier to classify a cell as epithelial or non-epithelial cell. Classifier uses a shallow neural network to discriminate
     between epithelial and non-epithelial cells. To fit the classifier a pre-annotated sample is needed.
 
@@ -75,7 +75,7 @@ class EpithelialClassifier(Estimator):
                  loss_fn: Optional = None,
                  metrics: Optional = None,
                  seed: Optional[int] = None):
-        super(EpithelialClassifier, self).__init__(n_in=n_in, model=model, loss_fn=loss_fn, metrics=metrics, seed=seed)
+        super(Classifier, self).__init__(n_in=n_in, model=model, loss_fn=loss_fn, metrics=metrics, seed=seed)
 
     def fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
             layer: Optional[str] = None,

@@ -1,6 +1,6 @@
 # %%
 import pytest
-from scQUEST.classifier import DefaultCLF, EpithelialClassifier
+from scQUEST.classifier import DefaultCLF, Classifier
 from ._utils import dummy_annData
 from scQUEST import DEFAULT_N_FEATURES
 
@@ -32,5 +32,5 @@ def test_reproducible_model_init():
 
 
 def test_default(dummy_ad):
-    est = EpithelialClassifier()
+    est = Classifier()
     est.fit(dummy_ad, target='y_id', max_epochs=5)

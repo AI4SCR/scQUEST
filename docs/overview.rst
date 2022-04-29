@@ -7,7 +7,7 @@ _______
 
     ~scQUEST.abnormality.Abnormality
     ~scQUEST.individuality.Individuality
-    ~scQUEST.classifier.EpithelialClassifier
+    ~scQUEST.classifier.Classifier
 
 Datasets
 ________
