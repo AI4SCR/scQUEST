@@ -118,3 +118,9 @@ venv.bak/
 lightning_logs/
 *.h5py
 /bench
+
+# %% tutorial output files
+abnormality_boxplots.pdf
+all_epithelial_cells.csv
+epithelial_metadata.csv
+umap.png

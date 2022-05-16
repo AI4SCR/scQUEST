@@ -288,7 +288,6 @@ class Estimator():
                                   enable_checkpointing=False,
                                   max_epochs=max_epochs,
                                   callbacks=callbacks,
-                                  reload_dataloaders_every_epoch=False,
                                   **kwargs)
         self.trainer.fit(model=self.model, datamodule=self.datamodule)
         self.trainer.test(model=self.model, datamodule=self.datamodule)
