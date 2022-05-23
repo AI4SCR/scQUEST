@@ -1,7 +1,9 @@
-
 # load packages
 pkgs = readr::read_lines('fcs-requirements.txt')
 for(i in pkgs) suppressPackageStartupMessages(library(i, character.only = TRUE))
+
+# define the python interpreter to use
+reticulate::use_python('/usr/local/Caskroom/miniconda/base/envs/r-reticulate-env/bin/python')
 
 # helper
 metaFromFileName = function(f){
