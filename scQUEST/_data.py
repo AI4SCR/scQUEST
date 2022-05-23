@@ -1,6 +1,6 @@
 import torch
 import torch.nn.functional as F
-from torch.utils.data import Dataset
+from torch.utils.data import Dataset, Subset
 
 import torch
 
@@ -15,6 +15,8 @@ TRAIN_DATALOADERS = EVAL_DATALOADERS = DataLoader
 
 from scipy.sparse import issparse
 from anndata import AnnData
+from sklearn.model_selection import StratifiedShuffleSplit
+import numpy as np
 
 
 class DS(Dataset):
@@ -32,7 +34,7 @@ class DS(Dataset):
 class AnnDatasetClf(Dataset):
 
     def __init__(self, ad: AnnData, target: str, layer: Optional[str] = None,
-                 encode_targets_one_hot: bool = True) -> None:
+                 encode_targets_one_hot: bool = False) -> None:
         super(AnnDatasetClf, self).__init__()
         self.ad = ad
         self.target = target
@@ -42,6 +44,9 @@ class AnnDatasetClf(Dataset):
         self.data = torch.tensor(data.A).float() if issparse(data) else torch.tensor(data).float()
 
         targets = torch.tensor(ad.obs[target])
+        if (not targets.min() == 0) or (not targets.max() == len(torch.unique(targets)) - 1):
+            raise ValueError(
+                'targets are not the range [0,C). Please provide class indices where C is the number of classes.')
         self.targets = F.one_hot(targets).float() if encode_targets_one_hot else targets.float()
 
     def __getitem__(self, item) -> (torch.TensorType, torch.TensorType):
@@ -89,6 +94,13 @@ class AnnDataModule(pl.LightningDataModule):
         self.seed = seed if seed else 42
 
         self.dataset = ad_dataset_cls(ad, target=target, layer=layer)
+        self.sss_train_test = StratifiedShuffleSplit(n_splits=1, test_size=self.test_size, random_state=self.seed)
+        self.sss_fit_val = StratifiedShuffleSplit(n_splits=1, test_size=self.validation_size, random_state=self.seed)
+
+        # dataset indices
+        self.train_idx, self.test_idx = next(self.sss_train_test.split(np.zeros(len(self.dataset)), ad.obs[target]))
+        self.fit_idx, self.val_idx = next(self.sss_fit_val.split(np.zeros(len(self.train_idx)),
+                                                                 ad.obs[target][self.train_idx]))
 
         # datasets
         self.train = None
@@ -96,27 +108,16 @@ class AnnDataModule(pl.LightningDataModule):
         self.val = None
         self.test = None
 
-    # TODO: How should we preprocess the data? Preprocessing should be part of the DataModule to keep everything related to data together
-    #   however, in its current form we have to implement the Processor for torch Datasets and Subsets.
     def setup(self, stage: Optional[str] = None) -> None:
-        dataset = self.dataset
-        n_test = int(len(dataset) * self.test_size)
-        n_train = len(dataset) - n_test
-
-        self.train, self.test = random_split(dataset, [n_train, n_test],
-                                             generator=torch.Generator().manual_seed(self.seed))
+        self.train, self.test = Subset(self.dataset, self.train_idx), Subset(self.dataset, self.test_idx)
         self._fit_preprocessors()  # TODO: Should we fit the preprocessors on the whole train or on fit,val individually?
 
         if stage in ('fit', None):
-            train = self.train
             if self.preprocessing:
                 for pp in self.preprocessing:
                     self.train.dataset.data = pp.transform(self.train)
 
-            n_val = int(len(train) * self.validation_size)
-            n_fit = len(train) - n_val
-
-            self.fit, self.val = random_split(train, [n_fit, n_val], generator=torch.Generator().manual_seed(self.seed))
+            self.fit, self.val = Subset(self.test, self.fit_idx), Subset(self.test, self.val_idx)
 
         if stage in ('test', None):
             if self.preprocessing:
