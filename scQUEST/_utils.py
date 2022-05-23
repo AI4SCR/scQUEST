@@ -117,7 +117,7 @@ class LitModule(pl.LightningModule):
         self.model = model
         self.loss = loss_fn
 
-        # we create for each metric a own attribute to use be able to automatic logging with lightning
+        # we create for each metric a own attribute to be able to automatic logging with lightning
         self.metric_attrs = []
         for metric in metrics:
             attr = f'metric_{metric._get_name()}'.lower()
@@ -134,7 +134,6 @@ class LitModule(pl.LightningModule):
         yhat = self.model(x)
         loss = self.loss(yhat, y)
         self.log('fit_loss', loss.detach())
-        self.log_metrics('train', y, yhat)
         return loss
 
     def validation_step(self, batch, batch_idx) -> Optional[STEP_OUTPUT]:
@@ -142,7 +141,6 @@ class LitModule(pl.LightningModule):
         yhat = self.model(x)
         loss = self.loss(yhat, y)
         self.log('val_loss', loss.detach())
-        self.log_metrics('val', y, yhat)
         return loss
 
     def test_step(self, batch, batch_idx) -> Optional[STEP_OUTPUT]:
@@ -150,7 +148,7 @@ class LitModule(pl.LightningModule):
         yhat = self.model(x)
         loss = self.loss(yhat, y)
         self.log('test_loss', loss.detach())
-        self.log_metrics('test', y, yhat)
+        self.log_metrics('test', y, self(x))
 
         return loss
 
@@ -161,7 +159,7 @@ class LitModule(pl.LightningModule):
 
     def log_metrics(self, step, y, yhat):
         # https://pytorch-lightning.readthedocs.io/en/stable/extensions/logging.html
-        true_cls, pred_cls = y.argmax(axis=1), yhat.argmax(axis=1)
+        true_cls, pred_cls = y, yhat
 
         for metric in self.metric_attrs:
             m = getattr(self, metric)
@@ -175,7 +173,7 @@ class Estimator():
                  model: Optional[nn.Module] = None,
                  loss_fn: Optional = None,
                  metrics: Optional = None,
-                 seed: Optional[int] = None,
+                 seed: Optional[int] = None
                  ):
         """Base estimator class
 
@@ -276,6 +274,7 @@ class Estimator():
             self.datamodule = datamodule
 
         if early_stopping:
+            print('early stopping enabled')
             if isinstance(early_stopping, EarlyStopping):
                 callbacks.append(early_stopping)
             else:
