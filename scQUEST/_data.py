@@ -4,7 +4,7 @@ from torch.utils.data import Dataset, Subset
 
 import torch
 
-from torch.utils.data import random_split, DataLoader
+from torch.utils.data import DataLoader
 
 import pytorch_lightning as pl
 
@@ -15,7 +15,7 @@ TRAIN_DATALOADERS = EVAL_DATALOADERS = DataLoader
 
 from scipy.sparse import issparse
 from anndata import AnnData
-from sklearn.model_selection import StratifiedShuffleSplit
+from sklearn.model_selection import StratifiedShuffleSplit, ShuffleSplit
 import numpy as np
 
 
@@ -47,7 +47,8 @@ class AnnDatasetClf(Dataset):
         if (not targets.min() == 0) or (not targets.max() == len(torch.unique(targets)) - 1):
             raise ValueError(
                 'targets are not the range [0,C). Please provide class indices where C is the number of classes.')
-        self.targets = F.one_hot(targets).float() if encode_targets_one_hot else targets.float()
+        # ATTENTION: pytorch crossentropy interprest one_hot encoded targets as class probabilities!
+        self.targets = F.one_hot(targets).float() if encode_targets_one_hot else targets.long()
 
     def __getitem__(self, item) -> (torch.TensorType, torch.TensorType):
         return self.data[item], self.targets[item]
@@ -94,13 +95,27 @@ class AnnDataModule(pl.LightningDataModule):
         self.seed = seed if seed else 42
 
         self.dataset = ad_dataset_cls(ad, target=target, layer=layer)
-        self.sss_train_test = StratifiedShuffleSplit(n_splits=1, test_size=self.test_size, random_state=self.seed)
-        self.sss_fit_val = StratifiedShuffleSplit(n_splits=1, test_size=self.validation_size, random_state=self.seed)
 
         # dataset indices
-        self.train_idx, self.test_idx = next(self.sss_train_test.split(np.zeros(len(self.dataset)), ad.obs[target]))
-        self.fit_idx, self.val_idx = next(self.sss_fit_val.split(np.zeros(len(self.train_idx)),
-                                                                 ad.obs[target][self.train_idx]))
+        if target is None:
+            # autoencoder
+            self.sss_train_test = ShuffleSplit(n_splits=1, test_size=self.test_size, random_state=self.seed)
+            self.sss_fit_val = ShuffleSplit(n_splits=1, test_size=self.validation_size, random_state=self.seed)
+
+            self.train_idx, self.test_idx = next(self.sss_train_test.split(np.zeros(len(self.dataset))))
+            self.fit_idx, self.val_idx = next(self.sss_fit_val.split(np.zeros(len(self.train_idx))))
+        else:
+            # classification
+            self.sss_train_test = StratifiedShuffleSplit(n_splits=1, test_size=self.test_size, random_state=self.seed)
+            self.sss_fit_val = StratifiedShuffleSplit(n_splits=1, test_size=self.validation_size,
+                                                      random_state=self.seed)
+
+            self.train_idx, self.test_idx = next(self.sss_train_test.split(np.zeros(len(self.dataset)), ad.obs[target]))
+            self.fit_idx, self.val_idx = next(self.sss_fit_val.split(np.zeros(len(self.train_idx)),
+                                                                     ad.obs[target][self.train_idx]))
+
+        self.fit_idx = self.train_idx[self.fit_idx]
+        self.val_idx = self.train_idx[self.val_idx]
 
         # datasets
         self.train = None
@@ -117,7 +132,8 @@ class AnnDataModule(pl.LightningDataModule):
                 for pp in self.preprocessing:
                     self.train.dataset.data = pp.transform(self.train)
 
-            self.fit, self.val = Subset(self.test, self.fit_idx), Subset(self.test, self.val_idx)
+            # here we subset the generated training indices with the generated fitting and validation indices
+            self.fit, self.val = Subset(self.dataset, self.fit_idx), Subset(self.dataset, self.val_idx)
 
         if stage in ('test', None):
             if self.preprocessing:
