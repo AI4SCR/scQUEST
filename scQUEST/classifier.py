@@ -70,7 +70,7 @@ class Classifier(Estimator):
         metrics: Metrics tracked during test time
     """
 
-    def __init__(self, n_in: Optional[int],
+    def __init__(self, n_in: Optional[int] = None,
                  model: Optional[nn.Module] = None,
                  loss_fn: Optional = None,
                  metrics: Optional = None,
@@ -81,7 +81,7 @@ class Classifier(Estimator):
             layer: Optional[str] = None,
             datamodule: Optional[pl.LightningDataModule] = None,
             preprocessing: Optional[List[Preprocessor]] = None,
-            early_stopping: Union[bool, EarlyStopping] = True,
+            early_stopping: Union[bool, EarlyStopping] = False,
             max_epochs: int = 100,
             callbacks: list = None,
             seed: Optional[int] = None,
@@ -132,6 +132,7 @@ class Classifier(Estimator):
 
     def _default_loss(self):
         """Default loss if not provided"""
+
         return nn.CrossEntropyLoss()
 
     def _default_metric(self):
