@@ -81,7 +81,7 @@ class Abnormality(Estimator):
             layer: Optional[str] = None,
             datamodule: Optional[pl.LightningDataModule] = None,
             preprocessing: Optional[List[Preprocessor]] = None,
-            early_stopping: Union[bool, EarlyStopping] = True,
+            early_stopping: Union[bool, EarlyStopping] = False,
             max_epochs: int = 100,
             callbacks: list = None,
             seed: Optional[int] = None,

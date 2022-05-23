@@ -80,7 +80,7 @@ setup(
         'scikit-learn>=1.0',
         'numpy>=1.2',
         'pytorch-lightning>=1.6',
-        'anndata>=0.7',
+        'anndata>0.7',
         'matplotlib>=3.5',
         'seaborn>=0.11',
         'torchmetrics>=0.7',

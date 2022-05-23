@@ -33,7 +33,7 @@ class DefaultCLF(nn.Module):
         self.n_out = n_out
         self.bias = bias
         self.activation = activation
-        self.activation_last = activation_last
+        # self.activation_last = activation_last
         self.seed = seed if seed else 41
 
         # fix seeds
@@ -47,7 +47,8 @@ class DefaultCLF(nn.Module):
     def forward(self, x):
         for layer in self.layers[:-1]:
             x = self.activation(layer(x))
-        return self.activation_last(self.layers[-1](x))
+        # return self.activation_last(self.layers[-1](x))  # nn.CrossEntropy expects raw, unnormalised scores
+        return self.layers[-1](x)  # nn.CrossEntropy expects raw, unnormalised scores
 
 
 class ClfLitModule(LitModule):
@@ -137,7 +138,10 @@ class Classifier(Estimator):
 
     def _default_metric(self):
         """Default metrics if not provided"""
-        return (torchmetrics.Accuracy(), torchmetrics.Precision())
+        return (torchmetrics.Accuracy(multiclass=True),
+                torchmetrics.F1Score(multiclass=True),
+                torchmetrics.Precision(multiclass=True),
+                torchmetrics.Recall(multiclass=True))
 
     def _default_litModule(self):
         """Lightning module architecture for classifier"""
