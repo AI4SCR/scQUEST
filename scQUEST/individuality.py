@@ -10,7 +10,7 @@ import pandas as pd
 
 from scipy import sparse
 
-from ._utils import isCategorical
+from .utils import isCategorical
 
 DistFunc = Callable[[np.ndarray, np.ndarray], float]
 SparseMatrix = Union[sparse.csr_matrix, sparse.csr_matrix, sparse.csc_matrix]
@@ -69,21 +69,30 @@ class Individuality:
 
     n_neighbors: Union[None, int] = 100
     radius: Union[None, float] = 1.0
-    graph_type: str = 'knn'
+    graph_type: str = "knn"
     graph: Union[None, Matrix] = None
-    prior: Union[str, ArrayLike] = 'frequency'
-    metric: Union[DistFunc, str] = 'minkowski'
+    prior: Union[str, ArrayLike] = "frequency"
+    metric: Union[DistFunc, str] = "minkowski"
     metric_params: dict = field(default_factory=dict)
     nn_params: dict = field(default_factory=dict)
 
     def __post_init__(self):
-        self.nn_params = {'n_jobs': -1}
-        self.NN = NearestNeighbors(n_neighbors=self.n_neighbors, radius=self.radius,
-                                   metric=self.metric, metric_params=self.metric_params,
-                                   **self.nn_params)
+        self.nn_params = {"n_jobs": -1}
+        self.NN = NearestNeighbors(
+            n_neighbors=self.n_neighbors,
+            radius=self.radius,
+            metric=self.metric,
+            metric_params=self.metric_params,
+            **self.nn_params,
+        )
 
-    def predict(self, ad: AnnData, labels: Union[Iterable, pd.Categorical], layer: Optional[str] = None,
-                inplace: bool = True) -> pd.DataFrame:
+    def predict(
+        self,
+        ad: AnnData,
+        labels: Union[Iterable, pd.Categorical],
+        layer: Optional[str] = None,
+        inplace: bool = True,
+    ) -> pd.DataFrame:
         """Performs prediction of the individuality of each observation and aggregates (average) results for each label.
         If you wish to access the posterior probabilities for each observation (cell) use :func:`~compute_individuality`.
 
@@ -96,7 +105,9 @@ class Individuality:
 
         """
         X = ad.X if layer is None else ad.layers[layer]
-        uniq_labs = labels.categories.values if isCategorical(labels) else np.unique(labels)
+        uniq_labs = (
+            labels.categories.values if isCategorical(labels) else np.unique(labels)
+        )
         n_labs = len(uniq_labs)
 
         # convert to sequential, numerical labels starting at 0
@@ -120,11 +131,13 @@ class Individuality:
         df = pd.DataFrame(post_agg, columns=col_names, index=idx_names)
 
         ad = ad if inplace else ad.copy()
-        ad.obsm['individuality'] = posterior
-        ad.uns['individuality_agg'] = df
+        ad.obsm["individuality"] = posterior
+        ad.uns["individuality_agg"] = df
 
     @staticmethod
-    def compute_individuality(g: Matrix, num_seq_labs: ArrayLike, prior: Union[str, ArrayLike]) -> np.ndarray:
+    def compute_individuality(
+        g: Matrix, num_seq_labs: ArrayLike, prior: Union[str, ArrayLike]
+    ) -> np.ndarray:
         """
         Computes the observation-level individuality based on a given graph structure and labels.
         See :class:`Individuality` for an in-depth description.
@@ -152,34 +165,43 @@ class Individuality:
         # NOTE: this could be optimised to work on the sparse matrix
         K_i = np.apply_along_axis(map_and_count, 1, g.A if sparse.issparse(g) else g)
 
-        if prior == 'frequency':
+        if prior == "frequency":
             posterior = K_i / g.sum(1).reshape(-1, 1)
-        elif prior == 'uniform':
+        elif prior == "uniform":
             N_i = np.bincount(num_seq_labs)
             evidence = (K_i / N_i).sum(1).reshape(-1, 1)
             posterior = K_i / N_i / evidence
         elif isinstance(prior, ArrayLike):
             prior = np.asarray(prior)
-            assert np.isclose(prior.sum(), 1), f'prior probabilities do not sum to 1 but {prior.sum()}'
+            assert np.isclose(
+                prior.sum(), 1
+            ), f"prior probabilities do not sum to 1 but {prior.sum()}"
 
             N_i = np.bincount(num_seq_labs)
             evidence = (K_i / N_i * prior).sum(1).reshape(-1, 1)
             posterior = K_i * prior / N_i / evidence
         else:
             raise ValueError(
-                f'Prior value {prior} is not valid. Either choose `frequency` or `uniform` or provide a vector with the class priors')
+                f"Prior value {prior} is not valid. Either choose `frequency` or `uniform` or provide a vector with the class priors"
+            )
 
         return posterior
 
     def _build_topology(self, x) -> Matrix:
         if self.graph is None:
             self.NN.fit(x)
-            self.graph_builder = self.NN.kneighbors_graph if self.graph_type == 'knn' else self.NN.radius_neighbors_graph
+            self.graph_builder = (
+                self.NN.kneighbors_graph
+                if self.graph_type == "knn"
+                else self.NN.radius_neighbors_graph
+            )
             return self.graph_builder()
         elif isinstance(self.graph, get_args(Matrix)):
             return self.graph
         else:
-            raise TypeError(f'`graph` is of type {type(self.graph)} but should be (sparse) matrix.')
+            raise TypeError(
+                f"`graph` is of type {type(self.graph)} but should be (sparse) matrix."
+            )
 
     def _check_args(self) -> None:
         for field in fields(self):

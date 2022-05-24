@@ -1,11 +1,12 @@
 # %%
 import pytest
 
-from scQUEST._data import AnnDatasetAE, AnnDatasetClf
+from scQUEST.data import AnnDatasetAE, AnnDatasetClf
 from ._utils import dummy_annData
 
 
 # %%
+
 
 @pytest.fixture
 def dummy_ad():
@@ -19,7 +20,7 @@ def fruit_bowl():
 
 
 def test_clf_dataloading(fruit_bowl, dummy_ad):
-    dsCLF = AnnDatasetClf(dummy_ad, target='y_id')
+    dsCLF = AnnDatasetClf(dummy_ad, target="y_id")
     assert len(dsCLF[0]) == 2
 
 

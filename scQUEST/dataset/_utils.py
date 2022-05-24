@@ -28,7 +28,7 @@ class DataSet(ABC):
 
     @property
     def _extension(self) -> str:
-        return '.h5py'
+        return ".h5py"
 
     def __call__(self, path: PathLike = None):
         return self.load(path)
@@ -61,12 +61,12 @@ class DataSet(ABC):
             with urlopen(Request(url, headers={"User-agent": "scQUEST-user"})) as rsp:
                 total = rsp.info().get("content-length", None)
                 with tqdm(
-                        unit="B",
-                        unit_scale=True,
-                        miniters=1,
-                        unit_divisor=1024,
-                        total=total if total is None else int(total)
-                ) as t, fpath.open('wb') as f:
+                    unit="B",
+                    unit_scale=True,
+                    miniters=1,
+                    unit_divisor=1024,
+                    total=total if total is None else int(total),
+                ) as t, fpath.open("wb") as f:
                     block = rsp.read(blocksize)
                     while block:
                         f.write(block)

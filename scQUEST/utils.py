@@ -22,70 +22,74 @@ from anndata import AnnData
 from .data import AnnDataModule
 
 # %%
-DEFAULT_MARKER_CLF = ['139La_H3K27me3',
-                      '141Pr_K5',
-                      '142Nd_PTEN',
-                      '143Nd_CD44',
-                      '144Nd_K8K18',
-                      '145Nd_CD31',
-                      '146Nd_FAP',
-                      '147Sm_cMYC',
-                      '148Nd_SMA',
-                      '149Sm_CD24',
-                      '150Nd_CD68',
-                      '151Eu_HER2',
-                      '152Sm_AR',
-                      '153Eu_BCL2',
-                      '154Sm_p53',
-                      '155Gd_EpCAM',
-                      '156Gd_CyclinB1',
-                      '158Gd_PRB',
-                      '159Tb_CD49f',
-                      '160Gd_Survivin',
-                      '161Dy_EZH2',
-                      '162Dy_Vimentin',
-                      '163Dy_cMET',
-                      '164Dy_AKT',
-                      '165Ho_ERa',
-                      '166Er_CA9',
-                      '167Er_ECadherin',
-                      '168Er_Ki67',
-                      '169Tm_EGFR',
-                      '170Er_K14',
-                      '171Yb_HLADR',
-                      '172Yb_clCASP3clPARP1',
-                      '173Yb_CD3',
-                      '174Yb_K7',
-                      '175Lu_panK',
-                      '176Yb_CD45']
+DEFAULT_MARKER_CLF = [
+    "139La_H3K27me3",
+    "141Pr_K5",
+    "142Nd_PTEN",
+    "143Nd_CD44",
+    "144Nd_K8K18",
+    "145Nd_CD31",
+    "146Nd_FAP",
+    "147Sm_cMYC",
+    "148Nd_SMA",
+    "149Sm_CD24",
+    "150Nd_CD68",
+    "151Eu_HER2",
+    "152Sm_AR",
+    "153Eu_BCL2",
+    "154Sm_p53",
+    "155Gd_EpCAM",
+    "156Gd_CyclinB1",
+    "158Gd_PRB",
+    "159Tb_CD49f",
+    "160Gd_Survivin",
+    "161Dy_EZH2",
+    "162Dy_Vimentin",
+    "163Dy_cMET",
+    "164Dy_AKT",
+    "165Ho_ERa",
+    "166Er_CA9",
+    "167Er_ECadherin",
+    "168Er_Ki67",
+    "169Tm_EGFR",
+    "170Er_K14",
+    "171Yb_HLADR",
+    "172Yb_clCASP3clPARP1",
+    "173Yb_CD3",
+    "174Yb_K7",
+    "175Lu_panK",
+    "176Yb_CD45",
+]
 
-DEFAULT_MARKERS = {'AKT',
-                   'AR',
-                   'BCL2',
-                   'CA9',
-                   'CD24',
-                   'CD44',
-                   'CD49f',
-                   'ECadherin',
-                   'EGFR',
-                   'ERa',
-                   'EZH2',
-                   'EpCAM',
-                   'HER2',
-                   'HLADR',
-                   'K14',
-                   'K5',
-                   'K7',
-                   'K8K18',
-                   'PRB',
-                   'PTEN',
-                   'SMA',
-                   'Survivin',
-                   'Vimentin',
-                   'cMET',
-                   'cMYC',
-                   'p53',
-                   'panK'}
+DEFAULT_MARKERS = {
+    "AKT",
+    "AR",
+    "BCL2",
+    "CA9",
+    "CD24",
+    "CD44",
+    "CD49f",
+    "ECadherin",
+    "EGFR",
+    "ERa",
+    "EZH2",
+    "EpCAM",
+    "HER2",
+    "HLADR",
+    "K14",
+    "K5",
+    "K7",
+    "K8K18",
+    "PRB",
+    "PTEN",
+    "SMA",
+    "Survivin",
+    "Vimentin",
+    "cMET",
+    "cMYC",
+    "p53",
+    "panK",
+}
 DEFAULT_N_FEATURES = len(DEFAULT_MARKER_CLF)
 
 
@@ -107,10 +111,13 @@ def isCategorical(x):
 class LitModule(pl.LightningModule):
     """pytorch_module that handles the training of the model"""
 
-    def __init__(self, model: nn.Module,
-                 loss_fn,
-                 metrics: Iterable[torchmetrics.Metric],
-                 learning_rate=1e-3):
+    def __init__(
+        self,
+        model: nn.Module,
+        loss_fn,
+        metrics: Iterable[torchmetrics.Metric],
+        learning_rate=1e-3,
+    ):
         super(LitModule, self).__init__()
 
         self.model = model
@@ -119,7 +126,7 @@ class LitModule(pl.LightningModule):
         # we create for each metric a own attribute to be able to automatic logging with lightning
         self.metric_attrs = []
         for metric in metrics:
-            attr = f'metric_{metric._get_name()}'.lower()
+            attr = f"metric_{metric._get_name()}".lower()
             setattr(self, attr, metric)
             self.metric_attrs.append(attr)
 
@@ -133,23 +140,23 @@ class LitModule(pl.LightningModule):
         yhat = self.model(x)
         loss = self.loss(yhat, y)
         if batch_idx % 5:
-            self.log('fit_loss', loss.detach())
+            self.log("fit_loss", loss.detach())
         return loss
 
     def validation_step(self, batch, batch_idx) -> Optional[STEP_OUTPUT]:
         x, y = batch
         yhat = self.model(x)
         loss = self.loss(yhat, y)
-        self.log('val_loss', loss.detach())
+        self.log("val_loss", loss.detach())
         return loss
 
     def test_step(self, batch, batch_idx) -> Optional[STEP_OUTPUT]:
         x, y = batch
         yhat = self.model(x)
         loss = self.loss(yhat, y)
-        self.log('test_loss', loss.detach())
+        self.log("test_loss", loss.detach())
         yhat = yhat if y.shape == yhat.shape else yhat.argmax(axis=1)
-        self.log_metrics('test', y, yhat)
+        self.log_metrics("test", y, yhat)
         return loss
 
     def configure_optimizers(self):
@@ -164,17 +171,18 @@ class LitModule(pl.LightningModule):
         for metric in self.metric_attrs:
             m = getattr(self, metric)
             m(pred_cls, true_cls)
-            self.log(f'{step}_{metric}', m)
+            self.log(f"{step}_{metric}", m)
 
 
 class Estimator:
-
-    def __init__(self, n_in: Optional[int] = None,
-                 model: Optional[nn.Module] = None,
-                 loss_fn: Optional = None,
-                 metrics: Optional = None,
-                 seed: Optional[int] = None
-                 ):
+    def __init__(
+        self,
+        n_in: Optional[int] = None,
+        model: Optional[nn.Module] = None,
+        loss_fn: Optional = None,
+        metrics: Optional = None,
+        seed: Optional[int] = None,
+    ):
         """Base estimator class
 
         Args:
@@ -198,26 +206,32 @@ class Estimator:
         LM = self._default_litModule()
 
         if model is None:
-            self.model = LM(model=self._default_model(n_in=n_in, seed=self.seed),
-                            loss_fn=self.loss_fn,
-                            metrics=self.metrics)
+            self.model = LM(
+                model=self._default_model(n_in=n_in, seed=self.seed),
+                loss_fn=self.loss_fn,
+                metrics=self.metrics,
+            )
         else:
             if isinstance(model, pl.LightningModule):
                 self.model = model
             elif isinstance(model, nn.Module):
-                self.model = LM(model=model,
-                                loss_fn=self.loss_fn,
-                                metrics=self.metrics)
+                self.model = LM(model=model, loss_fn=self.loss_fn, metrics=self.metrics)
             else:
-                raise TypeError(f'Model should be of type LightningModule or nn.Module not {type(model)}')
+                raise TypeError(
+                    f"Model should be of type LightningModule or nn.Module not {type(model)}"
+                )
 
-    def fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
-            layer: Optional[str] = None,
-            datamodule: Optional[pl.LightningDataModule] = None,
-            max_epochs: int = 100,
-            callbacks: list = None,
-            seed: Optional[int] = None,
-            **kwargs) -> None:
+    def fit(
+        self,
+        ad: Optional[AnnData] = None,
+        target: Optional[str] = None,
+        layer: Optional[str] = None,
+        datamodule: Optional[pl.LightningDataModule] = None,
+        max_epochs: int = 100,
+        callbacks: list = None,
+        seed: Optional[int] = None,
+        **kwargs,
+    ) -> None:
         """Fit the estimator.
 
         Args:
@@ -235,7 +249,9 @@ class Estimator:
 
         raise NotImplementedError()
 
-    def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
+    def predict(
+        self, ad: AnnData, layer: Optional[str] = None, inplace=True
+    ) -> AnnData:
         """
 
         Args:
@@ -248,29 +264,39 @@ class Estimator:
         """
         raise NotImplementedError()
 
-    def _fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
-             layer: Optional[str] = None,
-             datamodule: Optional[pl.LightningDataModule] = None,
-             max_epochs: int = 100,
-             callbacks: list = None,
-             seed: Optional[int] = None,
-             **kwargs):
+    def _fit(
+        self,
+        ad: Optional[AnnData] = None,
+        target: Optional[str] = None,
+        layer: Optional[str] = None,
+        datamodule: Optional[pl.LightningDataModule] = None,
+        max_epochs: int = 100,
+        callbacks: list = None,
+        seed: Optional[int] = None,
+        **kwargs,
+    ):
 
         callbacks = [] if callbacks is None else callbacks
-        self.target = 'target' if target is None else target
+        self.target = "target" if target is None else target
 
         if datamodule is None:
-            self.datamodule = AnnDataModule(ad=ad, target=target, layer=layer,
-                                            ad_dataset_cls=self._configure_anndata_class(),
-                                            seed=seed)
+            self.datamodule = AnnDataModule(
+                ad=ad,
+                target=target,
+                layer=layer,
+                ad_dataset_cls=self._configure_anndata_class(),
+                seed=seed,
+            )
         else:
             self.datamodule = datamodule
 
-        self.trainer = pl.Trainer(logger=self.logger,
-                                  enable_checkpointing=False,
-                                  max_epochs=max_epochs,
-                                  callbacks=callbacks,
-                                  **kwargs)
+        self.trainer = pl.Trainer(
+            logger=self.logger,
+            enable_checkpointing=False,
+            max_epochs=max_epochs,
+            callbacks=callbacks,
+            **kwargs,
+        )
         self.trainer.fit(model=self.model, datamodule=self.datamodule)
         self.trainer.test(model=self.model, datamodule=self.datamodule)
 
@@ -342,7 +368,7 @@ class MyLogger(LightningLoggerBase):
         # metrics is a dictionary of metric names and values
         # your code to record metrics goes here
         for metric_name, metric_value in metrics.items():
-            if metric_name != 'epoch':
+            if metric_name != "epoch":
                 self.history[metric_name].append((step, metric_value))
 
     @rank_zero_only

@@ -13,16 +13,21 @@ from .utils import pairwise, Estimator, LitModule
 
 # %%
 
+
 class DefaultAE(nn.Module):
     """
     Default AE as implemented in [Wagner2019]_
     """
 
-    def __init__(self, n_in: int, hidden: Iterable[int] = (10, 2, 10),
-                 bias=True,
-                 activation=nn.ReLU(),
-                 activation_last=nn.Sigmoid(),
-                 seed: Optional[int] = None):
+    def __init__(
+        self,
+        n_in: int,
+        hidden: Iterable[int] = (10, 2, 10),
+        bias=True,
+        activation=nn.ReLU(),
+        activation_last=nn.Sigmoid(),
+        seed: Optional[int] = None,
+    ):
         super(DefaultAE, self).__init__()
 
         self.n_in = n_in
@@ -69,21 +74,28 @@ class Abnormality(Estimator):
 
     """
 
-    def __init__(self,
-                 n_in: Optional[int] = None,
-                 model: Optional[nn.Module] = None,
-                 loss_fn: Optional = None,
-                 metrics: Optional = None,
-                 seed: Optional[int] = None):
-        super(Abnormality, self).__init__(n_in=n_in, model=model, loss_fn=loss_fn, metrics=metrics, seed=seed)
+    def __init__(
+        self,
+        n_in: Optional[int] = None,
+        model: Optional[nn.Module] = None,
+        loss_fn: Optional = None,
+        metrics: Optional = None,
+        seed: Optional[int] = None,
+    ):
+        super(Abnormality, self).__init__(
+            n_in=n_in, model=model, loss_fn=loss_fn, metrics=metrics, seed=seed
+        )
 
-    def fit(self, ad: Optional[AnnData] = None,
-            layer: Optional[str] = None,
-            datamodule: Optional[pl.LightningDataModule] = None,
-            max_epochs: int = 100,
-            callbacks: list = None,
-            seed: Optional[int] = None,
-            **kwargs) -> None:
+    def fit(
+        self,
+        ad: Optional[AnnData] = None,
+        layer: Optional[str] = None,
+        datamodule: Optional[pl.LightningDataModule] = None,
+        max_epochs: int = 100,
+        callbacks: list = None,
+        seed: Optional[int] = None,
+        **kwargs,
+    ) -> None:
         """Fit abnormality estimator (autoencoder). Given the cell-expression profile given in ad.X or ad.layer[layer], an
         autoencoder is fitted. By default the given data is randomly split 90/10 in training and test set. If you wish to
         customize training provide a datamodule with the given train/validation/test splits.
@@ -101,10 +113,19 @@ class Abnormality(Estimator):
         Returns:
             None
         """
-        self._fit(ad=ad, layer=layer, datamodule=datamodule, max_epochs=max_epochs, callbacks=callbacks, seed=seed,
-                  **kwargs)
+        self._fit(
+            ad=ad,
+            layer=layer,
+            datamodule=datamodule,
+            max_epochs=max_epochs,
+            callbacks=callbacks,
+            seed=seed,
+            **kwargs,
+        )
 
-    def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
+    def predict(
+        self, ad: AnnData, layer: Optional[str] = None, inplace=True
+    ) -> AnnData:
         """Predict abnormality of each cell-feature as the difference between target and reconstruction (y-pred).
 
         Args:
@@ -118,10 +139,15 @@ class Abnormality(Estimator):
         self._predict(ad, layer, inplace)
 
     def _predict_step(self, X):
-        self.ad.layers['abnormality'] = self.model(X).detach().numpy()
+        self.ad.layers["abnormality"] = self.model(X).detach().numpy()
 
     @staticmethod
-    def aggregate(ad, agg_fun: Union[str, Callable] = 'mse', key='abnormality', layer='abnormality'):
+    def aggregate(
+        ad,
+        agg_fun: Union[str, Callable] = "mse",
+        key="abnormality",
+        layer="abnormality",
+    ):
         """Aggregate the high-dimensional (number of features) reconstruction error of each cell.
 
         :param ad: AnnData object
@@ -129,7 +155,7 @@ class Abnormality(Estimator):
         :param key: key under which the results should be stored in ad.obs
         :param layer: layer in X used to compute the aggregation
         """
-        if agg_fun == 'mse':
+        if agg_fun == "mse":
             res = (ad.layers[layer] ** 2).mean(axis=1)
         else:
             res = agg_fun(ad.layers[layer], axis=1)

@@ -17,13 +17,18 @@ TRAIN_DATALOADERS = EVAL_DATALOADERS = DataLoader
 
 # %%
 
-class DefaultCLF(nn.Module):
 
-    def __init__(self, n_in: int, hidden: Iterable[int] = (20,), n_out: int = 2,
-                 bias=True,
-                 activation=nn.ReLU(),
-                 activation_last=nn.Softmax(dim=1),
-                 seed: Optional[int] = None):
+class DefaultCLF(nn.Module):
+    def __init__(
+        self,
+        n_in: int,
+        hidden: Iterable[int] = (20,),
+        n_out: int = 2,
+        bias=True,
+        activation=nn.ReLU(),
+        activation_last=nn.Softmax(dim=1),
+        seed: Optional[int] = None,
+    ):
         super(DefaultCLF, self).__init__()
 
         self.n_in = n_in
@@ -50,7 +55,6 @@ class DefaultCLF(nn.Module):
 
 
 class ClfLitModule(LitModule):
-
     def __init__(self, *args, **kwargs):
         super(ClfLitModule, self).__init__(*args, **kwargs)
 
@@ -69,23 +73,31 @@ class Classifier(Estimator):
         metrics: Metrics tracked during test time
     """
 
-    estimator = 'classifier'
+    estimator = "classifier"
 
-    def __init__(self, n_in: Optional[int] = None,
-                 model: Optional[nn.Module] = None,
-                 loss_fn: Optional = None,
-                 metrics: Optional = None,
-                 seed: Optional[int] = None):
-        super(Classifier, self).__init__(n_in=n_in, model=model, loss_fn=loss_fn, metrics=metrics, seed=seed)
+    def __init__(
+        self,
+        n_in: Optional[int] = None,
+        model: Optional[nn.Module] = None,
+        loss_fn: Optional = None,
+        metrics: Optional = None,
+        seed: Optional[int] = None,
+    ):
+        super(Classifier, self).__init__(
+            n_in=n_in, model=model, loss_fn=loss_fn, metrics=metrics, seed=seed
+        )
 
-    def fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
-            layer: Optional[str] = None,
-            datamodule: Optional[pl.LightningDataModule] = None,
-            max_epochs: int = 100,
-            callbacks: list = None,
-            seed: Optional[int] = None,
-            **kwargs
-            ) -> None:
+    def fit(
+        self,
+        ad: Optional[AnnData] = None,
+        target: Optional[str] = None,
+        layer: Optional[str] = None,
+        datamodule: Optional[pl.LightningDataModule] = None,
+        max_epochs: int = 100,
+        callbacks: list = None,
+        seed: Optional[int] = None,
+        **kwargs,
+    ) -> None:
         """Fit the estimator on annotated data. Expression profiles in ad.layers[layer] are used to predict the phenotype given
         in ad.obs[target]. By default the given data is randomly split 90/10 in training and test set. If you wish to
         customize training provide a datamodule with the given train/validation/test splits.
@@ -102,10 +114,20 @@ class Classifier(Estimator):
         Returns:
             None
         """
-        self._fit(ad=ad, target=target, layer=layer, datamodule=datamodule, max_epochs=max_epochs, callbacks=callbacks,
-                  seed=seed, **kwargs)
+        self._fit(
+            ad=ad,
+            target=target,
+            layer=layer,
+            datamodule=datamodule,
+            max_epochs=max_epochs,
+            callbacks=callbacks,
+            seed=seed,
+            **kwargs,
+        )
 
-    def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
+    def predict(
+        self, ad: AnnData, layer: Optional[str] = None, inplace=True
+    ) -> AnnData:
         """Predict phenotype class. Uses the trained classifier to predict the phenotype of a given cell expression profile.
         The result is stored in ad.obs['clf_{TARGET_NAME}].
 
@@ -121,7 +143,7 @@ class Classifier(Estimator):
 
     def _predict_step(self, X):
         yhat = self.model(X)
-        self.ad.obs[f'clf_{self.target}'] = yhat.numpy()
+        self.ad.obs[f"clf_{self.target}"] = yhat.numpy()
 
     def _default_model(self, *args, **kwargs) -> nn.Module:
         """Default model if not provided"""
@@ -134,10 +156,12 @@ class Classifier(Estimator):
 
     def _default_metric(self):
         """Default metrics if not provided"""
-        return (torchmetrics.Accuracy(multiclass=True),
-                torchmetrics.F1Score(multiclass=True),
-                torchmetrics.Precision(multiclass=True),
-                torchmetrics.Recall(multiclass=True))
+        return (
+            torchmetrics.Accuracy(multiclass=True),
+            torchmetrics.F1Score(multiclass=True),
+            torchmetrics.Precision(multiclass=True),
+            torchmetrics.Recall(multiclass=True),
+        )
 
     def _default_litModule(self):
         """Lightning module architecture for classifier"""
