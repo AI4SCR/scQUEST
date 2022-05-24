@@ -1,17 +1,14 @@
 # %%
+from typing import Iterable, Optional, Union, List, Callable
+
+import pytorch_lightning as pl
 import torch
 import torch.nn as nn
-
-from typing import Iterable, Optional, Union, List, Callable
-from anndata import AnnData
-import pytorch_lightning as pl
-from .preprocessing import Preprocessor
-from pytorch_lightning.callbacks.early_stopping import EarlyStopping
-
-from ._utils import pairwise, Estimator, LitModule
-from ._data import AnnDatasetAE
-
 import torchmetrics
+from anndata import AnnData
+
+from .data import AnnDatasetAE
+from .utils import pairwise, Estimator, LitModule
 
 
 # %%
@@ -50,16 +47,19 @@ class DefaultAE(nn.Module):
 
 
 class AbnormalityLitModule(LitModule):
+    """pytorch_lightning Abnormality module"""
+
     def __init__(self, *args, **kwargs):
         super(AbnormalityLitModule, self).__init__(*args, **kwargs)
 
-    def forward(self, X) -> int:
+    def forward(self, X, mode: Optional[str] = None) -> int:
+        """return the reconstruction error"""
         return X - self.model(X)
 
 
 class Abnormality(Estimator):
     """Estimator to quantify the abnormality of a cell's expression profile. Abnormality is defined as the average
-    reconstruction error of the trained autoencoder.
+    reconstruction error of the autoencoder trained on a reference (normal) cell population.
 
     Args:
         n_in: number of feature for estimator
@@ -80,13 +80,11 @@ class Abnormality(Estimator):
     def fit(self, ad: Optional[AnnData] = None,
             layer: Optional[str] = None,
             datamodule: Optional[pl.LightningDataModule] = None,
-            preprocessing: Optional[List[Preprocessor]] = None,
-            early_stopping: Union[bool, EarlyStopping] = False,
             max_epochs: int = 100,
             callbacks: list = None,
             seed: Optional[int] = None,
             **kwargs) -> None:
-        """Fit abnormality estimator (autoencoder). Given the cell-expression profile given in ad.X[layer], an
+        """Fit abnormality estimator (autoencoder). Given the cell-expression profile given in ad.X or ad.layer[layer], an
         autoencoder is fitted. By default the given data is randomly split 90/10 in training and test set. If you wish to
         customize training provide a datamodule with the given train/validation/test splits.
 
@@ -103,8 +101,8 @@ class Abnormality(Estimator):
         Returns:
             None
         """
-        self._fit(ad=ad, layer=layer, datamodule=datamodule, preprocessing=preprocessing,
-                  early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks, seed=seed, **kwargs)
+        self._fit(ad=ad, layer=layer, datamodule=datamodule, max_epochs=max_epochs, callbacks=callbacks, seed=seed,
+                  **kwargs)
 
     def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
         """Predict abnormality of each cell-feature as the difference between target and reconstruction (y-pred).

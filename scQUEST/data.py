@@ -79,7 +79,6 @@ class AnnDataModule(pl.LightningDataModule):
     def __init__(self, ad: AnnData, target: str,
                  ad_dataset_cls,
                  layer: Optional[str] = None,
-                 preprocessing: Optional[Iterable[Preprocessor]] = None,
                  test_size: float = 0.10, validation_size: float = 0.1,
                  batch_size: int = 256, seed: Optional[int] = None):
         super(AnnDataModule, self).__init__()
@@ -87,7 +86,6 @@ class AnnDataModule(pl.LightningDataModule):
         self.ad = ad
         self.target = target
         self.layer = layer
-        self.preprocessing = preprocessing
         self.ad_dataset_cls = ad_dataset_cls
         self.test_size = test_size
         self.validation_size = validation_size
@@ -124,21 +122,14 @@ class AnnDataModule(pl.LightningDataModule):
         self.test = None
 
     def setup(self, stage: Optional[str] = None) -> None:
-        self.train, self.test = Subset(self.dataset, self.train_idx), Subset(self.dataset, self.test_idx)
-        self._fit_preprocessors()  # TODO: Should we fit the preprocessors on the whole train or on fit,val individually?
+        self.train = Subset(self.dataset, self.train_idx)
 
         if stage in ('fit', None):
-            if self.preprocessing:
-                for pp in self.preprocessing:
-                    self.train.dataset.data = pp.transform(self.train)
-
             # here we subset the generated training indices with the generated fitting and validation indices
             self.fit, self.val = Subset(self.dataset, self.fit_idx), Subset(self.dataset, self.val_idx)
 
         if stage in ('test', None):
-            if self.preprocessing:
-                for pp in self.preprocessing:
-                    self.test.dataset.data = pp.transform(self.test)
+            self.test = Subset(self.dataset, self.test_idx)
 
     def train_dataloader(self) -> TRAIN_DATALOADERS:
         return DataLoader(self.fit, batch_size=self.batch_size)
@@ -148,11 +139,6 @@ class AnnDataModule(pl.LightningDataModule):
 
     def test_dataloader(self) -> EVAL_DATALOADERS:
         return DataLoader(self.test, batch_size=self.batch_size)
-
-    def _fit_preprocessors(self):
-        if self.preprocessing:
-            for pp in self.preprocessing:
-                pp.fit(self.train)
 
     def __getitem__(self, item):
         return self.dataset[item]

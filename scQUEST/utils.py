@@ -10,18 +10,16 @@ from torch.utils.data import DataLoader
 import torchmetrics
 
 import pytorch_lightning as pl
-from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 from pytorch_lightning.utilities.types import STEP_OUTPUT
 
-from typing import Iterable, Optional, List, Union
-from .preprocessing import Preprocessor
+from typing import Iterable, Optional
 
 TRAIN_DATALOADERS = EVAL_DATALOADERS = DataLoader
 
 from scipy.sparse import issparse
 from anndata import AnnData
 
-from ._data import AnnDataModule
+from .data import AnnDataModule
 
 # %%
 DEFAULT_MARKER_CLF = ['139La_H3K27me3',
@@ -107,6 +105,7 @@ def isCategorical(x):
 
 
 class LitModule(pl.LightningModule):
+    """pytorch_module that handles the training of the model"""
 
     def __init__(self, model: nn.Module,
                  loss_fn,
@@ -133,7 +132,8 @@ class LitModule(pl.LightningModule):
         x, y = batch
         yhat = self.model(x)
         loss = self.loss(yhat, y)
-        self.log('fit_loss', loss.detach())
+        if batch_idx % 5:
+            self.log('fit_loss', loss.detach())
         return loss
 
     def validation_step(self, batch, batch_idx) -> Optional[STEP_OUTPUT]:
@@ -148,8 +148,8 @@ class LitModule(pl.LightningModule):
         yhat = self.model(x)
         loss = self.loss(yhat, y)
         self.log('test_loss', loss.detach())
-        self.log_metrics('test', y, self(x))
-
+        yhat = yhat if y.shape == yhat.shape else yhat.argmax(axis=1)
+        self.log_metrics('test', y, yhat)
         return loss
 
     def configure_optimizers(self):
@@ -167,7 +167,7 @@ class LitModule(pl.LightningModule):
             self.log(f'{step}_{metric}', m)
 
 
-class Estimator():
+class Estimator:
 
     def __init__(self, n_in: Optional[int] = None,
                  model: Optional[nn.Module] = None,
@@ -214,8 +214,6 @@ class Estimator():
     def fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
             layer: Optional[str] = None,
             datamodule: Optional[pl.LightningDataModule] = None,
-            preprocessing: Optional[List[Preprocessor]] = None,
-            early_stopping: Union[bool, EarlyStopping] = True,
             max_epochs: int = 100,
             callbacks: list = None,
             seed: Optional[int] = None,
@@ -227,8 +225,6 @@ class Estimator():
             target: column in AnnData.obs that should be used as target variable
             layer: layer in `ad.layers` to use instead of ad.X
             datamodule: pytorch lightning data module
-            preprocessing: list of processors that should be applied to the dataset
-            early_stopping: configured :class:`~pytorch_lightning.callbacks.early_stopping.EarlyStopping` class
             max_epochs: maximum epochs for which the model is trained
             callbacks: additional `pytorch_lightning callbacks`
             seed: Seed for data split
@@ -255,9 +251,7 @@ class Estimator():
     def _fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
              layer: Optional[str] = None,
              datamodule: Optional[pl.LightningDataModule] = None,
-             preprocessing: Optional[List[Preprocessor]] = None,
-             early_stopping: Union[bool, EarlyStopping] = False,
-             max_epochs: int = 300,
+             max_epochs: int = 100,
              callbacks: list = None,
              seed: Optional[int] = None,
              **kwargs):
@@ -268,20 +262,9 @@ class Estimator():
         if datamodule is None:
             self.datamodule = AnnDataModule(ad=ad, target=target, layer=layer,
                                             ad_dataset_cls=self._configure_anndata_class(),
-                                            preprocessing=preprocessing,
                                             seed=seed)
         else:
             self.datamodule = datamodule
-
-        if early_stopping:
-            print('early stopping enabled')
-            if isinstance(early_stopping, EarlyStopping):
-                callbacks.append(early_stopping)
-            else:
-                callbacks.append(EarlyStopping(monitor='val_loss',
-                                               mode='min',
-                                               min_delta=1e-3,
-                                               patience=10))
 
         self.trainer = pl.Trainer(logger=self.logger,
                                   enable_checkpointing=False,

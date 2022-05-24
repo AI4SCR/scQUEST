@@ -2,8 +2,6 @@
 from typing import Iterable, Optional, Union, List
 from anndata import AnnData
 import pytorch_lightning as pl
-from .preprocessing import Preprocessor
-from pytorch_lightning.callbacks.early_stopping import EarlyStopping
 
 import torch
 from torch import nn
@@ -11,8 +9,8 @@ from torch.utils.data import DataLoader
 
 import torchmetrics
 
-from ._utils import pairwise, Estimator, LitModule
-from ._data import AnnDatasetClf
+from .utils import pairwise, Estimator, LitModule
+from .data import AnnDatasetClf
 
 TRAIN_DATALOADERS = EVAL_DATALOADERS = DataLoader
 
@@ -71,6 +69,8 @@ class Classifier(Estimator):
         metrics: Metrics tracked during test time
     """
 
+    estimator = 'classifier'
+
     def __init__(self, n_in: Optional[int] = None,
                  model: Optional[nn.Module] = None,
                  loss_fn: Optional = None,
@@ -81,8 +81,6 @@ class Classifier(Estimator):
     def fit(self, ad: Optional[AnnData] = None, target: Optional[str] = None,
             layer: Optional[str] = None,
             datamodule: Optional[pl.LightningDataModule] = None,
-            preprocessing: Optional[List[Preprocessor]] = None,
-            early_stopping: Union[bool, EarlyStopping] = False,
             max_epochs: int = 100,
             callbacks: list = None,
             seed: Optional[int] = None,
@@ -97,8 +95,6 @@ class Classifier(Estimator):
             target: column in AnnData.obs that should be used as target variable
             layer: layer in `ad.layers` to use instead of ad.X
             datamodule: pytorch lightning data module with custom configurations of train, val and test splits
-            preprocessing: list of processors (:class:`~scQUEST.preprocessing.Preprocessor`) that should be applied to the dataset
-            early_stopping: configured :class:`~pytorch_lightning.callbacks.early_stopping.EarlyStopping` class
             max_epochs: maximum epochs for which the model is trained
             callbacks: additional `pytorch_lightning callbacks`
             seed: Seed for data split
@@ -106,8 +102,8 @@ class Classifier(Estimator):
         Returns:
             None
         """
-        self._fit(ad=ad, target=target, layer=layer, datamodule=datamodule, preprocessing=preprocessing,
-                  early_stopping=early_stopping, max_epochs=max_epochs, callbacks=callbacks, seed=seed, **kwargs)
+        self._fit(ad=ad, target=target, layer=layer, datamodule=datamodule, max_epochs=max_epochs, callbacks=callbacks,
+                  seed=seed, **kwargs)
 
     def predict(self, ad: AnnData, layer: Optional[str] = None, inplace=True) -> AnnData:
         """Predict phenotype class. Uses the trained classifier to predict the phenotype of a given cell expression profile.
