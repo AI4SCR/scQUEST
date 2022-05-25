@@ -2,3 +2,4 @@ flowCore
 anndata
 tidyverse
 magrittr
+httr
