@@ -19,3 +19,23 @@ def breastCancerAtlasRaw(force_load=False):
         doc_header="Raw breast cancer atlas from https://doi.org/10.1016/j.cell.2019.03.005",
         force_load=force_load,
     )()
+
+
+def aml_and_healthy(force_load=False):
+    """Raw flow cytometry dataset. Locally stored at ~/.scQUEST"""
+    return DataSet(
+        name="aml_and_healthy",
+        url="https://figshare.com/ndownloader/files/35283664",
+        doc_header="Subset of Data from Data-driven phenotypic dissection of AML reveals progenitor-like cells that correlate with prognosis (10.1016/j.cell.2015.05.047). ",
+        force_load=force_load,
+    )()
+
+
+def aml_annotated_celltypes(force_load=False):
+    """Raw flow cytometry dataset. Locally stored at ~/.scQUEST"""
+    return DataSet(
+        name="aml_annotated_celltypes",
+        url="https://figshare.com/ndownloader/files/35284078",
+        doc_header="Subset of Data from Data-driven phenotypic dissection of AML reveals progenitor-like cells that correlate with prognosis (10.1016/j.cell.2015.05.047). ",
+        force_load=force_load,
+    )()
