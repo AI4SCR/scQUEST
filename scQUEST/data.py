@@ -1,3 +1,7 @@
+import numpy as np
+from sklearn.model_selection import StratifiedShuffleSplit, ShuffleSplit
+from anndata import AnnData
+from scipy.sparse import issparse
 import torch
 import torch.nn.functional as F
 from torch.utils.data import Dataset, Subset
@@ -11,11 +15,6 @@ import pytorch_lightning as pl
 from typing import Optional
 
 TRAIN_DATALOADERS = EVAL_DATALOADERS = DataLoader
-
-from scipy.sparse import issparse
-from anndata import AnnData
-from sklearn.model_selection import StratifiedShuffleSplit, ShuffleSplit
-import numpy as np
 
 
 class DS(Dataset):
@@ -54,11 +53,12 @@ class AnnDatasetClf(Dataset):
             not targets.max() == len(torch.unique(targets)) - 1
         ):
             raise ValueError(
-                "targets are not the range [0,C). Please provide class indices where C is the number of classes."
+                "targets need to be (numeric) in the range [0,C) where C is the number of classes. Please encode your target accordingly (for example with pandas `ngroup()`)"
             )
         # ATTENTION: pytorch crossentropy interprest one_hot encoded targets as class probabilities!
         self.targets = (
-            F.one_hot(targets).float() if encode_targets_one_hot else targets.long()
+            F.one_hot(targets).float(
+            ) if encode_targets_one_hot else targets.long()
         )
 
     def __getitem__(self, item) -> (torch.TensorType, torch.TensorType):
@@ -139,11 +139,13 @@ class AnnDataModule(pl.LightningDataModule):
             )
 
             self.train_idx, self.test_idx = next(
-                self.sss_train_test.split(np.zeros(len(self.dataset)), ad.obs[target])
+                self.sss_train_test.split(
+                    np.zeros(len(self.dataset)), ad.obs[target])
             )
             self.fit_idx, self.val_idx = next(
                 self.sss_fit_val.split(
-                    np.zeros(len(self.train_idx)), ad.obs[target][self.train_idx]
+                    np.zeros(len(self.train_idx)
+                             ), ad.obs[target][self.train_idx]
                 )
             )
 
