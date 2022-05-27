@@ -2,7 +2,7 @@
 
 ## Introduction
 
-In this short tutorial we show how one can process fcs files and create
+In this short tutorial we show how to process fcs files and create
 an [anndata object](https://anndata.readthedocs.io/en/latest/). The fcs
 files are from the publication _Data-driven phenotypic dissection of AML
 reveals progenitor-like cells that correlate with prognosis
