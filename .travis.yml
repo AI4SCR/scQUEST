@@ -1,14 +1,18 @@
 dist: trusty
 
 language: python
-python: 3.8
+
+python:
+  - 3.8
 
 before_install: skip
 
 install:
   # install the package
   - pip install -U pip
+  # - pip install --progress-bar off -r requirements.txt
   - pip install --progress-bar off -r dev_requirements.txt
+  # - pip install .
   - pip install "git+https://github.com/AI4SCR/scQUEST.git@master"
 
 script:
@@ -29,24 +33,25 @@ script:
 jobs:
   include:
     - stage: Documentation
-      language: python
       python: 3.8
       before_install: skip
       install:
         - pip install --progress-bar off -r dev_requirements.txt
         - pip install "git+https://github.com/AI4SCR/scQUEST.git@master"
+      #        - pip install umap-learn
       before_script:
         - jupyter-nbconvert --to markdown --output-dir docs/ ./tutorials/Custom_models.ipynb
         - jupyter-nbconvert --to markdown --output-dir docs/ ./tutorials/scQUEST_tutorial.ipynb
-	      - jupyter-nbconvert --to markdown --output-dir docs/ ./tutorials/scQUEST_AML_tutorial.ipynb
       script:
         # build documentation pages
         - cd docs && make html && cd ..
       deploy:
         - provider: pages
           skip_cleanup: true
+          #          github_url: github.ibm.com  # defaults to github.com
           repo: AI4SCR/scQUEST
           github_url: github.com
+          #          github_token: $GITHUB_TOKEN
           github_token: $travis_scQUEST
           local_dir: docs/_build/html
           on:
