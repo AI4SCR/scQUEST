@@ -22,7 +22,7 @@ def breastCancerAtlasRaw(force_load=False):
 
 
 def aml_and_healthy(force_load=False):
-    """Raw flow cytometry dataset. Locally stored at ~/.scQUEST"""
+    """AML dataset with cells from healthy and AML patients. Locally stored at ~/.scQUEST"""
     return DataSet(
         name="aml_and_healthy",
         url="https://figshare.com/ndownloader/files/35283664",
@@ -32,7 +32,7 @@ def aml_and_healthy(force_load=False):
 
 
 def aml_annotated_celltypes(force_load=False):
-    """Raw flow cytometry dataset. Locally stored at ~/.scQUEST"""
+    """AML dataset with cells from healthy donors to show case classification. Locally stored at ~/.scQUEST"""
     return DataSet(
         name="aml_annotated_celltypes",
         url="https://figshare.com/ndownloader/files/35284078",

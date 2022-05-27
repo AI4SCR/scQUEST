@@ -51,7 +51,8 @@ class DefaultCLF(nn.Module):
         for layer in self.layers[:-1]:
             x = self.activation(layer(x))
         # return self.activation_last(self.layers[-1](x))  # nn.CrossEntropy expects raw, unnormalised scores
-        return self.layers[-1](x)  # nn.CrossEntropy expects raw, unnormalised scores
+        # nn.CrossEntropy expects raw, unnormalised scores
+        return self.layers[-1](x)
 
 
 class ClfLitModule(LitModule):
@@ -104,7 +105,7 @@ class Classifier(Estimator):
 
         Args:
             ad: AnnData object with annotated cell types (given by the target parameter)
-            target: column in AnnData.obs that should be used as target variable
+            target: numerical column in AnnData.obs that should be used as target variable. The target needs to be numerically encoded :math:`[0,C)` where :math:`C` is the number of classes.
             layer: layer in `ad.layers` to use instead of ad.X
             datamodule: pytorch lightning data module with custom configurations of train, val and test splits
             max_epochs: maximum epochs for which the model is trained
