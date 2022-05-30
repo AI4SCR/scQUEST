@@ -85,6 +85,6 @@ setup(
         'seaborn>=0.11',
         'torchmetrics>=0.7',
         'ipywidgets>=7.7',
-        'protobuf=3.20.0'
+        'protobuf==3.20.0'
     ],
 )
