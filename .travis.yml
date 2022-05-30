@@ -43,6 +43,7 @@ jobs:
         - jupyter-nbconvert --to markdown --output-dir docs/ ./tutorials/Custom_models.ipynb
         - jupyter-nbconvert --to markdown --output-dir docs/ ./tutorials/scQUEST_tutorial.ipynb
         - jupyter-nbconvert --to markdown --output-dir docs/ ./tutorials/scQUEST_AML_tutorial.ipynb
+        - jupyter-nbconvert --to markdown --output-dir docs/ ./tutorials/tutorial_on_downsampling_and_clustering.ipynb
       script:
         # build documentation pages
         - cd docs && make html && cd ..
