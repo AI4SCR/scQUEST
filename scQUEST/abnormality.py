@@ -20,13 +20,13 @@ class DefaultAE(nn.Module):
     """
 
     def __init__(
-        self,
-        n_in: int,
-        hidden: Iterable[int] = (10, 2, 10),
-        bias=True,
-        activation=nn.ReLU(),
-        activation_last=nn.Sigmoid(),
-        seed: Optional[int] = None,
+            self,
+            n_in: int,
+            hidden: Iterable[int] = (10, 2, 10),
+            bias=True,
+            activation=nn.ReLU(),
+            activation_last=nn.Sigmoid(),
+            seed: Optional[int] = None,
     ):
         super(DefaultAE, self).__init__()
 
@@ -72,29 +72,34 @@ class Abnormality(Estimator):
         loss_fn: Loss function used for optimization
         metrics: Metrics tracked during test time
 
+    Note:
+        The abnormality model (`Abn.model`) predicts the abnormality a.k.a. reconstruction error, i.e. :math:`X-F(X)`
+        where :math:`F` is the autoencoder (saved to `ad.layers['abnormality']`). On the other hand, the base torch
+        model (`Abn.model.model`) predicts the reconstruction, i.e. :math:`F(X)`.
+
     """
 
     def __init__(
-        self,
-        n_in: Optional[int] = None,
-        model: Optional[nn.Module] = None,
-        loss_fn: Optional = None,
-        metrics: Optional = None,
-        seed: Optional[int] = None,
+            self,
+            n_in: Optional[int] = None,
+            model: Optional[nn.Module] = None,
+            loss_fn: Optional = None,
+            metrics: Optional = None,
+            seed: Optional[int] = None,
     ):
         super(Abnormality, self).__init__(
             n_in=n_in, model=model, loss_fn=loss_fn, metrics=metrics, seed=seed
         )
 
     def fit(
-        self,
-        ad: Optional[AnnData] = None,
-        layer: Optional[str] = None,
-        datamodule: Optional[pl.LightningDataModule] = None,
-        max_epochs: int = 100,
-        callbacks: list = None,
-        seed: Optional[int] = None,
-        **kwargs,
+            self,
+            ad: Optional[AnnData] = None,
+            layer: Optional[str] = None,
+            datamodule: Optional[pl.LightningDataModule] = None,
+            max_epochs: int = 100,
+            callbacks: list = None,
+            seed: Optional[int] = None,
+            **kwargs,
     ) -> None:
         """Fit abnormality estimator (autoencoder). Given the cell-expression profile given in ad.X or ad.layer[layer], an
         autoencoder is fitted. By default the given data is randomly split 90/10 in training and test set. If you wish to
@@ -124,7 +129,7 @@ class Abnormality(Estimator):
         )
 
     def predict(
-        self, ad: AnnData, layer: Optional[str] = None, inplace=True
+            self, ad: AnnData, layer: Optional[str] = None, inplace=True
     ) -> AnnData:
         """Predict abnormality of each cell-feature as the difference between target and reconstruction (y-pred).
 
@@ -143,10 +148,10 @@ class Abnormality(Estimator):
 
     @staticmethod
     def aggregate(
-        ad,
-        agg_fun: Union[str, Callable] = "mse",
-        key="abnormality",
-        layer="abnormality",
+            ad,
+            agg_fun: Union[str, Callable] = "mse",
+            key="abnormality",
+            layer="abnormality",
     ):
         """Aggregate the high-dimensional (number of features) reconstruction error of each cell.
 
