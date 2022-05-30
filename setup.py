@@ -84,6 +84,7 @@ setup(
         'matplotlib>=3.5',
         'seaborn>=0.11',
         'torchmetrics>=0.7',
-        'ipywidgets>=7.7'
+        'ipywidgets>=7.7',
+        'protobuf=3.20.0'
     ],
 )
