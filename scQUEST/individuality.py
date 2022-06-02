@@ -37,7 +37,7 @@ class Individuality:
         nn_params: additional kwargs passed to :class:`~.sklearn.NearestNeighbors`
 
     Notes:
-        The posterior class probabilities for each observation are computed as follows:
+        The posterior class probabilities for each observation are computed as follows [Bishop]_:
 
         .. math::
 
@@ -87,11 +87,11 @@ class Individuality:
         )
 
     def predict(
-        self,
-        ad: AnnData,
-        labels: Union[Iterable, pd.Categorical],
-        layer: Optional[str] = None,
-        inplace: bool = True,
+            self,
+            ad: AnnData,
+            labels: Union[Iterable, pd.Categorical],
+            layer: Optional[str] = None,
+            inplace: bool = True,
     ) -> pd.DataFrame:
         """Performs prediction of the individuality of each observation and aggregates (average) results for each label.
         If you wish to access the posterior probabilities for each observation (cell) use :func:`~compute_individuality`.
@@ -136,7 +136,7 @@ class Individuality:
 
     @staticmethod
     def compute_individuality(
-        g: Matrix, num_seq_labs: ArrayLike, prior: Union[str, ArrayLike]
+            g: Matrix, num_seq_labs: ArrayLike, prior: Union[str, ArrayLike]
     ) -> np.ndarray:
         """
         Computes the observation-level individuality based on a given graph structure and labels.
