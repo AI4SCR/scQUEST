@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scQUEST.classifier module &mdash; scQUEST  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="scQUEST.data module" href="scQUEST.data.html" />
+    <link rel="prev" title="scQUEST.abnormality module" href="scQUEST.abnormality.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> scQUEST
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="scQUEST.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.abnormality.html">scQUEST.abnormality module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">scQUEST.classifier module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.data.html">scQUEST.data module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.individuality.html">scQUEST.individuality module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.utils.html">scQUEST.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.dataset.html">scQUEST.dataset package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.tests.html">scQUEST.tests package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.html#summary">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">scQUEST</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="scQUEST.html">scQUEST package</a> &raquo;</li>
+      <li>scQUEST.classifier module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/scQUEST_api/scQUEST.classifier.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-scQUEST.classifier">
+<span id="scquest-classifier-module"></span><h1>scQUEST.classifier module<a class="headerlink" href="#module-scQUEST.classifier" title="Permalink to this headline"></a></h1>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline"></a></h2>
+<p>Classes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scQUEST.classifier.Classifier" title="scQUEST.classifier.Classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Classifier</span></code></a></p></td>
+<td><p>Classifier to classify a cell as epithelial or non-epithelial cell.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#scQUEST.classifier.ClfLitModule" title="scQUEST.classifier.ClfLitModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ClfLitModule</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scQUEST.classifier.DefaultCLF" title="scQUEST.classifier.DefaultCLF"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DefaultCLF</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scQUEST.classifier.DefaultCLF">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DefaultCLF</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(20,)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ReLU()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Softmax(dim=1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#DefaultCLF"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.DefaultCLF" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.classifier.DefaultCLF.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(20,)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_out</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ReLU()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Softmax(dim=1)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#DefaultCLF.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.DefaultCLF.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.classifier.DefaultCLF.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#DefaultCLF.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.DefaultCLF.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.classifier.DefaultCLF.__doc__">
+<span class="sig-name descname"><span class="pre">__doc__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scQUEST.classifier.DefaultCLF.__doc__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.classifier.DefaultCLF.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'scQUEST.classifier'</span></em><a class="headerlink" href="#scQUEST.classifier.DefaultCLF.__module__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.classifier.DefaultCLF.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#scQUEST.classifier.DefaultCLF.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.classifier.DefaultCLF._is_full_backward_hook">
+<span class="sig-name descname"><span class="pre">_is_full_backward_hook</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#scQUEST.classifier.DefaultCLF._is_full_backward_hook" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scQUEST.classifier.ClfLitModule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">ClfLitModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#ClfLitModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.ClfLitModule" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="scQUEST.utils.html#scQUEST.utils.LitModule" title="scQUEST.utils.LitModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">scQUEST.utils.LitModule</span></code></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.classifier.ClfLitModule.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#ClfLitModule.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.ClfLitModule.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.classifier.ClfLitModule.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#ClfLitModule.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.ClfLitModule.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Same as <a class="reference external" href="https://pytorch.org/docs/stable/generated/torch.nn.Module.html#torch.nn.Module.forward" title="(in PyTorch v1.11.0)"><code class="xref py py-meth docutils literal notranslate"><span class="pre">torch.nn.Module.forward()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>*args</strong> – Whatever you decide to pass into the forward method.</p></li>
+<li><p><strong>**kwargs</strong> – Keyword arguments are also possible.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Your model’s output</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.classifier.ClfLitModule.__doc__">
+<span class="sig-name descname"><span class="pre">__doc__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scQUEST.classifier.ClfLitModule.__doc__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.classifier.ClfLitModule.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'scQUEST.classifier'</span></em><a class="headerlink" href="#scQUEST.classifier.ClfLitModule.__module__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.classifier.ClfLitModule.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#scQUEST.classifier.ClfLitModule.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.classifier.ClfLitModule._is_full_backward_hook">
+<span class="sig-name descname"><span class="pre">_is_full_backward_hook</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#scQUEST.classifier.ClfLitModule._is_full_backward_hook" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scQUEST.classifier.Classifier">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Classifier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#Classifier"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.Classifier" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="scQUEST.utils.html#scQUEST.utils.Estimator" title="scQUEST.utils.Estimator"><code class="xref py py-class docutils literal notranslate"><span class="pre">scQUEST.utils.Estimator</span></code></a></p>
+<p>Classifier to classify a cell as epithelial or non-epithelial cell. Classifier uses a shallow neural network to discriminate
+between epithelial and non-epithelial cells. To fit the classifier a pre-annotated sample is needed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_in</strong> – number of features</p></li>
+<li><p><strong>model</strong> – Model used to train estimator <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Module</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">pytorch_lightning.Module</span></code></p></li>
+<li><p><strong>loss_fn</strong> – Loss function used for optimization</p></li>
+<li><p><strong>metrics</strong> – Metrics tracked during test time</p></li>
+</ul>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.classifier.Classifier.estimator">
+<span class="sig-name descname"><span class="pre">estimator</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'classifier'</span></em><a class="headerlink" href="#scQUEST.classifier.Classifier.estimator" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.classifier.Classifier.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#Classifier.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.Classifier.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Base estimator class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_in</strong> – number of feature for estimator</p></li>
+<li><p><strong>model</strong> – Model used to train estimator <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Module</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">pytorch_lightning.Module</span></code></p></li>
+<li><p><strong>loss_fn</strong> – Loss function used for optimization</p></li>
+<li><p><strong>metrics</strong> – Metrics tracked during test time</p></li>
+<li><p><strong>seed</strong> – Seed for model weight initialisation</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.classifier.Classifier.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datamodule</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callbacks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#Classifier.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.Classifier.fit" title="Permalink to this definition"></a></dt>
+<dd><p>Fit the estimator on annotated data. Expression profiles in ad.layers[layer] are used to predict the phenotype given
+in ad.obs[target]. By default the given data is randomly split 90/10 in training and test set. If you wish to
+customize training provide a datamodule with the given train/validation/test splits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ad</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code>]) – AnnData object with annotated cell types (given by the target parameter)</p></li>
+<li><p><strong>target</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – numerical column in AnnData.obs that should be used as target variable. The target needs to be numerically encoded <span class="math notranslate nohighlight">\([0,C)\)</span> where <span class="math notranslate nohighlight">\(C\)</span> is the number of classes.</p></li>
+<li><p><strong>layer</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – layer in <cite>ad.layers</cite> to use instead of ad.X</p></li>
+<li><p><strong>datamodule</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://pytorch-lightning.readthedocs.io/en/latest/api/pytorch_lightning.core.LightningDataModule.html#pytorch_lightning.core.LightningDataModule" title="(in PyTorch Lightning v1.7.0dev)"><code class="xref py py-class docutils literal notranslate"><span class="pre">LightningDataModule</span></code></a>]) – pytorch lightning data module with custom configurations of train, val and test splits</p></li>
+<li><p><strong>max_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – maximum epochs for which the model is trained</p></li>
+<li><p><strong>callbacks</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]) – additional <cite>pytorch_lightning callbacks</cite></p></li>
+<li><p><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – Seed for data split</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.classifier.Classifier.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#Classifier.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.Classifier.predict" title="Permalink to this definition"></a></dt>
+<dd><p>Predict phenotype class. Uses the trained classifier to predict the phenotype of a given cell expression profile.
+The result is stored in ad.obs[‘clf_{TARGET_NAME}].</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ad</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code>) – AnnData object to fit</p></li>
+<li><p><strong>layer</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – <cite>AnnData.X</cite> layer to use for prediction</p></li>
+<li><p><strong>inplace</strong> – whether to manipulate the AnnData object inplace or return a copy</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None or AnnData depending on <cite>inplace</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.classifier.Classifier._predict_step">
+<span class="sig-name descname"><span class="pre">_predict_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#Classifier._predict_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.Classifier._predict_step" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.classifier.Classifier._default_model">
+<span class="sig-name descname"><span class="pre">_default_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#Classifier._default_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.Classifier._default_model" title="Permalink to this definition"></a></dt>
+<dd><p>Default model if not provided</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.classifier.Classifier._default_loss">
+<span class="sig-name descname"><span class="pre">_default_loss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#Classifier._default_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.Classifier._default_loss" title="Permalink to this definition"></a></dt>
+<dd><p>Default loss if not provided</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.classifier.Classifier._default_metric">
+<span class="sig-name descname"><span class="pre">_default_metric</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#Classifier._default_metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.Classifier._default_metric" title="Permalink to this definition"></a></dt>
+<dd><p>Default metrics if not provided</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.classifier.Classifier._default_litModule">
+<span class="sig-name descname"><span class="pre">_default_litModule</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#Classifier._default_litModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.Classifier._default_litModule" title="Permalink to this definition"></a></dt>
+<dd><p>Lightning module architecture for classifier</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.classifier.Classifier._configure_anndata_class">
+<span class="sig-name descname"><span class="pre">_configure_anndata_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/classifier.html#Classifier._configure_anndata_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.classifier.Classifier._configure_anndata_class" title="Permalink to this definition"></a></dt>
+<dd><p>Dataset class for estimator</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.classifier.Classifier.__doc__">
+<span class="sig-name descname"><span class="pre">__doc__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Classifier</span> <span class="pre">to</span> <span class="pre">classify</span> <span class="pre">a</span> <span class="pre">cell</span> <span class="pre">as</span> <span class="pre">epithelial</span> <span class="pre">or</span> <span class="pre">non-epithelial</span> <span class="pre">cell.</span> <span class="pre">Classifier</span> <span class="pre">uses</span> <span class="pre">a</span> <span class="pre">shallow</span> <span class="pre">neural</span> <span class="pre">network</span> <span class="pre">to</span> <span class="pre">discriminate\n</span>&#160;&#160;&#160; <span class="pre">between</span> <span class="pre">epithelial</span> <span class="pre">and</span> <span class="pre">non-epithelial</span> <span class="pre">cells.</span> <span class="pre">To</span> <span class="pre">fit</span> <span class="pre">the</span> <span class="pre">classifier</span> <span class="pre">a</span> <span class="pre">pre-annotated</span> <span class="pre">sample</span> <span class="pre">is</span> <span class="pre">needed.\n\n</span>&#160;&#160;&#160; <span class="pre">Args:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">n_in:</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">features\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">model:</span> <span class="pre">Model</span> <span class="pre">used</span> <span class="pre">to</span> <span class="pre">train</span> <span class="pre">estimator</span> <span class="pre">:class:`.torch.Module`</span> <span class="pre">or</span> <span class="pre">:class:`.pytorch_lightning.Module`\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">loss_fn:</span> <span class="pre">Loss</span> <span class="pre">function</span> <span class="pre">used</span> <span class="pre">for</span> <span class="pre">optimization\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">metrics:</span> <span class="pre">Metrics</span> <span class="pre">tracked</span> <span class="pre">during</span> <span class="pre">test</span> <span class="pre">time\n</span>&#160;&#160;&#160; <span class="pre">'</span></em><a class="headerlink" href="#scQUEST.classifier.Classifier.__doc__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.classifier.Classifier.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'scQUEST.classifier'</span></em><a class="headerlink" href="#scQUEST.classifier.Classifier.__module__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scQUEST.abnormality.html" class="btn btn-neutral float-left" title="scQUEST.abnormality module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scQUEST.data.html" class="btn btn-neutral float-right" title="scQUEST.data module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright IBM Corp. 2022.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scQUEST.abnormality module &mdash; scQUEST  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="scQUEST.classifier module" href="scQUEST.classifier.html" />
+    <link rel="prev" title="scQUEST package" href="scQUEST.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> scQUEST
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="scQUEST.html">API</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">scQUEST.abnormality module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.classifier.html">scQUEST.classifier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.data.html">scQUEST.data module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.individuality.html">scQUEST.individuality module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.utils.html">scQUEST.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.dataset.html">scQUEST.dataset package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.tests.html">scQUEST.tests package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.html#summary">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">scQUEST</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="scQUEST.html">scQUEST package</a> &raquo;</li>
+      <li>scQUEST.abnormality module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/scQUEST_api/scQUEST.abnormality.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-scQUEST.abnormality">
+<span id="scquest-abnormality-module"></span><h1>scQUEST.abnormality module<a class="headerlink" href="#module-scQUEST.abnormality" title="Permalink to this headline"></a></h1>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline"></a></h2>
+<p>Classes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scQUEST.abnormality.Abnormality" title="scQUEST.abnormality.Abnormality"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Abnormality</span></code></a></p></td>
+<td><p>Estimator to quantify the abnormality of a cell's expression profile.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#scQUEST.abnormality.AbnormalityLitModule" title="scQUEST.abnormality.AbnormalityLitModule"><code class="xref py py-obj docutils literal notranslate"><span class="pre">AbnormalityLitModule</span></code></a></p></td>
+<td><p>pytorch_lightning Abnormality module</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scQUEST.abnormality.DefaultAE" title="scQUEST.abnormality.DefaultAE"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DefaultAE</span></code></a></p></td>
+<td><p>Default AE as implemented in <a class="reference internal" href="../references.html#wagner2019" id="id1"><span>[Wagner2019]</span></a></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scQUEST.abnormality.DefaultAE">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DefaultAE</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(10,</span> <span class="pre">2,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ReLU()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Sigmoid()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#DefaultAE"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.DefaultAE" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.nn.modules.module.Module</span></code></p>
+<p>Default AE as implemented in <a class="reference internal" href="../references.html#wagner2019" id="id2"><span>[Wagner2019]</span></a></p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.DefaultAE.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_in</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">hidden</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">(10,</span> <span class="pre">2,</span> <span class="pre">10)</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bias</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">ReLU()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">activation_last</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">Sigmoid()</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#DefaultAE.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.DefaultAE.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Initializes internal Module state, shared by both nn.Module and ScriptModule.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.DefaultAE.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#DefaultAE.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.DefaultAE.forward" title="Permalink to this definition"></a></dt>
+<dd><p>Defines the computation performed at every call.</p>
+<p>Should be overridden by all subclasses.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Although the recipe for forward pass needs to be defined within
+this function, one should call the <code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code> instance afterwards
+instead of this since the former takes care of running the
+registered hooks while the latter silently ignores them.</p>
+</div>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.abnormality.DefaultAE.__doc__">
+<span class="sig-name descname"><span class="pre">__doc__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'\n</span>&#160;&#160;&#160; <span class="pre">Default</span> <span class="pre">AE</span> <span class="pre">as</span> <span class="pre">implemented</span> <span class="pre">in</span> <span class="pre">[Wagner2019]_\n</span>&#160;&#160;&#160; <span class="pre">'</span></em><a class="headerlink" href="#scQUEST.abnormality.DefaultAE.__doc__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.abnormality.DefaultAE.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'scQUEST.abnormality'</span></em><a class="headerlink" href="#scQUEST.abnormality.DefaultAE.__module__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.abnormality.DefaultAE.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#scQUEST.abnormality.DefaultAE.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.abnormality.DefaultAE._is_full_backward_hook">
+<span class="sig-name descname"><span class="pre">_is_full_backward_hook</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#scQUEST.abnormality.DefaultAE._is_full_backward_hook" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scQUEST.abnormality.AbnormalityLitModule">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">AbnormalityLitModule</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#AbnormalityLitModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.AbnormalityLitModule" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="scQUEST.utils.html#scQUEST.utils.LitModule" title="scQUEST.utils.LitModule"><code class="xref py py-class docutils literal notranslate"><span class="pre">scQUEST.utils.LitModule</span></code></a></p>
+<p>pytorch_lightning Abnormality module</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.AbnormalityLitModule.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#AbnormalityLitModule.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.AbnormalityLitModule.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.AbnormalityLitModule.forward">
+<span class="sig-name descname"><span class="pre">forward</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#AbnormalityLitModule.forward"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.AbnormalityLitModule.forward" title="Permalink to this definition"></a></dt>
+<dd><p>return the reconstruction error</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.abnormality.AbnormalityLitModule.__doc__">
+<span class="sig-name descname"><span class="pre">__doc__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'pytorch_lightning</span> <span class="pre">Abnormality</span> <span class="pre">module'</span></em><a class="headerlink" href="#scQUEST.abnormality.AbnormalityLitModule.__doc__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.abnormality.AbnormalityLitModule.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'scQUEST.abnormality'</span></em><a class="headerlink" href="#scQUEST.abnormality.AbnormalityLitModule.__module__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.abnormality.AbnormalityLitModule.training">
+<span class="sig-name descname"><span class="pre">training</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></em><a class="headerlink" href="#scQUEST.abnormality.AbnormalityLitModule.training" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.abnormality.AbnormalityLitModule._is_full_backward_hook">
+<span class="sig-name descname"><span class="pre">_is_full_backward_hook</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span></em><a class="headerlink" href="#scQUEST.abnormality.AbnormalityLitModule._is_full_backward_hook" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="scQUEST.abnormality.Abnormality">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Abnormality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#Abnormality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.Abnormality" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference internal" href="scQUEST.utils.html#scQUEST.utils.Estimator" title="scQUEST.utils.Estimator"><code class="xref py py-class docutils literal notranslate"><span class="pre">scQUEST.utils.Estimator</span></code></a></p>
+<p>Estimator to quantify the abnormality of a cell’s expression profile. Abnormality is defined as the average
+reconstruction error of the autoencoder trained on a reference (normal) cell population.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_in</strong> – number of feature for estimator</p></li>
+<li><p><strong>model</strong> – Model used to train estimator <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Module</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">pytorch_lightning.Module</span></code></p></li>
+<li><p><strong>loss_fn</strong> – Loss function used for optimization</p></li>
+<li><p><strong>metrics</strong> – Metrics tracked during test time</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The abnormality model (<cite>Abn.model</cite>) predicts the abnormality a.k.a. reconstruction error, i.e. <span class="math notranslate nohighlight">\(X-F(X)\)</span>
+where <span class="math notranslate nohighlight">\(F\)</span> is the autoencoder (saved to <cite>ad.layers[‘abnormality’]</cite>). On the other hand, the base torch
+model (<cite>Abn.model.model</cite>) predicts the reconstruction, i.e. <span class="math notranslate nohighlight">\(F(X)\)</span>.</p>
+</div>
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.Abnormality.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_in</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loss_fn</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metrics</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#Abnormality.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.Abnormality.__init__" title="Permalink to this definition"></a></dt>
+<dd><p>Base estimator class</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_in</strong> – number of feature for estimator</p></li>
+<li><p><strong>model</strong> – Model used to train estimator <code class="xref py py-class docutils literal notranslate"><span class="pre">torch.Module</span></code> or <code class="xref py py-class docutils literal notranslate"><span class="pre">pytorch_lightning.Module</span></code></p></li>
+<li><p><strong>loss_fn</strong> – Loss function used for optimization</p></li>
+<li><p><strong>metrics</strong> – Metrics tracked during test time</p></li>
+<li><p><strong>seed</strong> – Seed for model weight initialisation</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.Abnormality.fit">
+<span class="sig-name descname"><span class="pre">fit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ad</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">datamodule</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_epochs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">callbacks</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">seed</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#Abnormality.fit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.Abnormality.fit" title="Permalink to this definition"></a></dt>
+<dd><p>Fit abnormality estimator (autoencoder). Given the cell-expression profile given in ad.X or ad.layer[layer], an
+autoencoder is fitted. By default the given data is randomly split 90/10 in training and test set. If you wish to
+customize training provide a datamodule with the given train/validation/test splits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ad</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code>]) – AnnData object to fit</p></li>
+<li><p><strong>layer</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – layer in <cite>ad.layers</cite> to use instead of ad.X</p></li>
+<li><p><strong>datamodule</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://pytorch-lightning.readthedocs.io/en/latest/api/pytorch_lightning.core.LightningDataModule.html#pytorch_lightning.core.LightningDataModule" title="(in PyTorch Lightning v1.7.0dev)"><code class="xref py py-class docutils literal notranslate"><span class="pre">LightningDataModule</span></code></a>]) – pytorch lightning data module with custom configurations of train, val and test splits</p></li>
+<li><p><strong>preprocessing</strong> – list of processors (<code class="xref py py-class docutils literal notranslate"><span class="pre">Preprocessor</span></code>) that should be applied to the dataset</p></li>
+<li><p><strong>early_stopping</strong> – configured <a class="reference external" href="https://pytorch-lightning.readthedocs.io/en/latest/api/pytorch_lightning.callbacks.EarlyStopping.html#pytorch_lightning.callbacks.EarlyStopping" title="(in PyTorch Lightning v1.7.0dev)"><code class="xref py py-class docutils literal notranslate"><span class="pre">EarlyStopping</span></code></a> class</p></li>
+<li><p><strong>max_epochs</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>) – maximum epochs for which the model is trained</p></li>
+<li><p><strong>callbacks</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">list</span></code></a>]) – additional <cite>pytorch_lightning callbacks</cite></p></li>
+<li><p><strong>seed</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">int</span></code></a>]) – Seed for data split</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.Abnormality.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#Abnormality.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.Abnormality.predict" title="Permalink to this definition"></a></dt>
+<dd><p>Predict abnormality of each cell-feature as the difference between target and reconstruction (y-pred).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ad</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code>) – AnnData object to fit</p></li>
+<li><p><strong>layer</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Optional</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>]) – <cite>AnnData.X</cite> layer to use for prediction</p></li>
+<li><p><strong>inplace</strong> – whether to manipulate the AnnData object inplace or return a copy</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">AnnData</span></code></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>None or AnnData depending on <cite>inplace</cite>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.Abnormality._predict_step">
+<span class="sig-name descname"><span class="pre">_predict_step</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">X</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#Abnormality._predict_step"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.Abnormality._predict_step" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.Abnormality.aggregate">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">aggregate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">agg_fun</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'mse'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">key</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'abnormality'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'abnormality'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#Abnormality.aggregate"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.Abnormality.aggregate" title="Permalink to this definition"></a></dt>
+<dd><p>Aggregate the high-dimensional (number of features) reconstruction error of each cell.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>ad</strong> – AnnData object</p></li>
+<li><p><strong>agg_fun</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Callable" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Callable</span></code></a>]) – <cite>mse</cite> or function used to aggregate the observed reconstruciton errors</p></li>
+<li><p><strong>key</strong> – key under which the results should be stored in ad.obs</p></li>
+<li><p><strong>layer</strong> – layer in X used to compute the aggregation</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.Abnormality._default_model">
+<span class="sig-name descname"><span class="pre">_default_model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#Abnormality._default_model"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.Abnormality._default_model" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">Module</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.Abnormality._default_loss">
+<span class="sig-name descname"><span class="pre">_default_loss</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#Abnormality._default_loss"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.Abnormality._default_loss" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.Abnormality._default_metric">
+<span class="sig-name descname"><span class="pre">_default_metric</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#Abnormality._default_metric"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.Abnormality._default_metric" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.Abnormality._default_litModule">
+<span class="sig-name descname"><span class="pre">_default_litModule</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#Abnormality._default_litModule"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.Abnormality._default_litModule" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.abnormality.Abnormality._configure_anndata_class">
+<span class="sig-name descname"><span class="pre">_configure_anndata_class</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/abnormality.html#Abnormality._configure_anndata_class"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.abnormality.Abnormality._configure_anndata_class" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.abnormality.Abnormality.__doc__">
+<span class="sig-name descname"><span class="pre">__doc__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">&quot;Estimator</span> <span class="pre">to</span> <span class="pre">quantify</span> <span class="pre">the</span> <span class="pre">abnormality</span> <span class="pre">of</span> <span class="pre">a</span> <span class="pre">cell's</span> <span class="pre">expression</span> <span class="pre">profile.</span> <span class="pre">Abnormality</span> <span class="pre">is</span> <span class="pre">defined</span> <span class="pre">as</span> <span class="pre">the</span> <span class="pre">average\n</span>&#160;&#160;&#160; <span class="pre">reconstruction</span> <span class="pre">error</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">autoencoder</span> <span class="pre">trained</span> <span class="pre">on</span> <span class="pre">a</span> <span class="pre">reference</span> <span class="pre">(normal)</span> <span class="pre">cell</span> <span class="pre">population.\n\n</span>&#160;&#160;&#160; <span class="pre">Args:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">n_in:</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">feature</span> <span class="pre">for</span> <span class="pre">estimator\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">model:</span> <span class="pre">Model</span> <span class="pre">used</span> <span class="pre">to</span> <span class="pre">train</span> <span class="pre">estimator</span> <span class="pre">:class:`.torch.Module`</span> <span class="pre">or</span> <span class="pre">:class:`.pytorch_lightning.Module`\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">loss_fn:</span> <span class="pre">Loss</span> <span class="pre">function</span> <span class="pre">used</span> <span class="pre">for</span> <span class="pre">optimization\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">metrics:</span> <span class="pre">Metrics</span> <span class="pre">tracked</span> <span class="pre">during</span> <span class="pre">test</span> <span class="pre">time\n\n</span>&#160;&#160;&#160; <span class="pre">Note:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">The</span> <span class="pre">abnormality</span> <span class="pre">model</span> <span class="pre">(`Abn.model`)</span> <span class="pre">predicts</span> <span class="pre">the</span> <span class="pre">abnormality</span> <span class="pre">a.k.a.</span> <span class="pre">reconstruction</span> <span class="pre">error,</span> <span class="pre">i.e.</span> <span class="pre">:math:`X-F(X)`\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">where</span> <span class="pre">:math:`F`</span> <span class="pre">is</span> <span class="pre">the</span> <span class="pre">autoencoder</span> <span class="pre">(saved</span> <span class="pre">to</span> <span class="pre">`ad.layers['abnormality']`).</span> <span class="pre">On</span> <span class="pre">the</span> <span class="pre">other</span> <span class="pre">hand,</span> <span class="pre">the</span> <span class="pre">base</span> <span class="pre">torch\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">model</span> <span class="pre">(`Abn.model.model`)</span> <span class="pre">predicts</span> <span class="pre">the</span> <span class="pre">reconstruction,</span> <span class="pre">i.e.</span> <span class="pre">:math:`F(X)`.\n\n</span>&#160;&#160;&#160; <span class="pre">&quot;</span></em><a class="headerlink" href="#scQUEST.abnormality.Abnormality.__doc__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.abnormality.Abnormality.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'scQUEST.abnormality'</span></em><a class="headerlink" href="#scQUEST.abnormality.Abnormality.__module__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scQUEST.html" class="btn btn-neutral float-left" title="scQUEST package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scQUEST.classifier.html" class="btn btn-neutral float-right" title="scQUEST.classifier module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright IBM Corp. 2022.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

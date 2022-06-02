@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scQUEST.individuality &mdash; scQUEST  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> scQUEST
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scQUEST_api/scQUEST.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">scQUEST</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>scQUEST.individuality</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scQUEST.individuality</h1><div class="highlight"><pre>
+<span></span><span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span><span class="p">,</span> <span class="n">fields</span><span class="p">,</span> <span class="n">field</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Union</span><span class="p">,</span> <span class="n">Callable</span><span class="p">,</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">get_args</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">anndata</span> <span class="kn">import</span> <span class="n">AnnData</span>
+
+<span class="n">ArrayLike</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span>
+
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+
+<span class="kn">from</span> <span class="nn">scipy</span> <span class="kn">import</span> <span class="n">sparse</span>
+
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="n">isCategorical</span>
+
+<span class="n">DistFunc</span> <span class="o">=</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">],</span> <span class="nb">float</span><span class="p">]</span>
+<span class="n">SparseMatrix</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">,</span> <span class="n">sparse</span><span class="o">.</span><span class="n">csr_matrix</span><span class="p">,</span> <span class="n">sparse</span><span class="o">.</span><span class="n">csc_matrix</span><span class="p">]</span>
+<span class="n">Matrix</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">SparseMatrix</span><span class="p">]</span>
+
+<span class="kn">from</span> <span class="nn">sklearn.neighbors</span> <span class="kn">import</span> <span class="n">NearestNeighbors</span>
+
+
+<div class="viewcode-block" id="Individuality"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.individuality.html#scQUEST.individuality.Individuality">[docs]</a><span class="nd">@dataclass</span>
+<span class="k">class</span> <span class="nc">Individuality</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;Computes the individuality of each observation in the data set according to [Wagner2019]_.</span>
+
+<span class="sd">    Attributes:</span>
+<span class="sd">        n_neighbors: number of neighbors in *k*\ NN graph</span>
+<span class="sd">        radius: radius in radius graph</span>
+<span class="sd">        graph_type: type of graph to build, either ``knn`` or ``radius``</span>
+<span class="sd">        graph: if provided, uses this graph instead of construction an own one</span>
+<span class="sd">        prior:</span>
+<span class="sd">            either ``frequency``, ``uniform`` or custom prior probabilities for each class/group/label.</span>
+<span class="sd">            If set to ``frequency`` the empirical class/group probabilities are used as prior.</span>
+<span class="sd">            If set to ``uniform`` all classes/groups have the same prior probability.</span>
+<span class="sd">        metric: distance metric to use when constructing the graph topology</span>
+<span class="sd">        metric_params: additional kwargs passed to :attr:`~Individuality.metric`</span>
+<span class="sd">        nn_params: additional kwargs passed to :class:`~.sklearn.NearestNeighbors`</span>
+
+<span class="sd">    Notes:</span>
+<span class="sd">        The posterior class probabilities for each observation are computed as follows [Bishop]_:</span>
+
+<span class="sd">        .. math::</span>
+
+<span class="sd">            p(c_i | x) &amp;= \\frac{p(x | c_i) * p(c_i)}{p(x)} \\\\</span>
+<span class="sd">            p(x | c_i) &amp;= \\frac{K_i}{N_i * V} \\\\</span>
+<span class="sd">            p(x) &amp;= \\sum_{i \\in C}p(x | c_i)*p(c_i) \\\\</span>
+<span class="sd">            p(c_i) &amp;= \\frac{N_i}{N} \\;\\; \\texttt{if prior=frequency} \\\\</span>
+<span class="sd">            p(c_i) &amp;= \\frac{1}{|C|} \\;\\; \\texttt{if prior=uniform} \\\\</span>
+
+<span class="sd">        Where</span>
+
+<span class="sd">            - :math:`C` is the set of classes and :math:`c_i \\in C` a particular class</span>
+<span class="sd">            - :math:`x` is the feature vector of an observation</span>
+<span class="sd">            - :math:`K_i` the number of neighbor of class :math:`c_i`</span>
+<span class="sd">            - :math:`V` the volume of the sphere that either</span>
+
+<span class="sd">                - contains :attr:`~Individuality.n_neighbors` or</span>
+<span class="sd">                - has radius :attr:`~Individuality.radius`.</span>
+
+<span class="sd">            - :math:`N` the total number of observations and :math:`N_i` the number of observations belonging to class :math:`c_i`</span>
+
+<span class="sd">     The resulting observation-level class probabilities estimates (:math:`N \\times |C|`) are aggregated (averaged) by each class</span>
+<span class="sd">     to result in class-level individuality estimates (:math:`|C| \\times |C|`).</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        Instance of :class:`Individuality`.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">n_neighbors</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="mi">100</span>
+    <span class="n">radius</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">graph_type</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;knn&quot;</span>
+    <span class="n">graph</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="n">Matrix</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">prior</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;frequency&quot;</span>
+    <span class="n">metric</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">DistFunc</span><span class="p">,</span> <span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;minkowski&quot;</span>
+    <span class="n">metric_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+    <span class="n">nn_params</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">field</span><span class="p">(</span><span class="n">default_factory</span><span class="o">=</span><span class="nb">dict</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Individuality.__post_init__"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.individuality.html#scQUEST.individuality.Individuality.__post_init__">[docs]</a>    <span class="k">def</span> <span class="nf">__post_init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">nn_params</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;n_jobs&quot;</span><span class="p">:</span> <span class="o">-</span><span class="mi">1</span><span class="p">}</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">NN</span> <span class="o">=</span> <span class="n">NearestNeighbors</span><span class="p">(</span>
+            <span class="n">n_neighbors</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">n_neighbors</span><span class="p">,</span>
+            <span class="n">radius</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">radius</span><span class="p">,</span>
+            <span class="n">metric</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metric</span><span class="p">,</span>
+            <span class="n">metric_params</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metric_params</span><span class="p">,</span>
+            <span class="o">**</span><span class="bp">self</span><span class="o">.</span><span class="n">nn_params</span><span class="p">,</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Individuality.predict"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.individuality.html#scQUEST.individuality.Individuality.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ad</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span>
+        <span class="n">labels</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Iterable</span><span class="p">,</span> <span class="n">pd</span><span class="o">.</span><span class="n">Categorical</span><span class="p">],</span>
+        <span class="n">layer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Performs prediction of the individuality of each observation and aggregates (average) results for each label.</span>
+<span class="sd">        If you wish to access the posterior probabilities for each observation (cell) use :func:`~compute_individuality`.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            X: matrix with observations as rows and columns as features.</span>
+<span class="sd">            labels: indicator for the group/sample an observation belongs to.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            DataFrame with rows as observations and columns with the estimated probability to belong in the given group/sample</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">X</span> <span class="k">if</span> <span class="n">layer</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ad</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span>
+        <span class="n">uniq_labs</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">labels</span><span class="o">.</span><span class="n">categories</span><span class="o">.</span><span class="n">values</span> <span class="k">if</span> <span class="n">isCategorical</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span> <span class="k">else</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="n">n_labs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">uniq_labs</span><span class="p">)</span>
+
+        <span class="c1"># convert to sequential, numerical labels starting at 0</span>
+        <span class="n">unique_numeric_sequential_labels</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">n_labs</span><span class="p">)</span>
+        <span class="n">lab2num</span> <span class="o">=</span> <span class="p">{</span><span class="n">j</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">unique_numeric_sequential_labels</span><span class="p">,</span> <span class="n">uniq_labs</span><span class="p">)}</span>
+        <span class="n">num2lab</span> <span class="o">=</span> <span class="p">{</span><span class="n">i</span><span class="p">:</span> <span class="n">j</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">unique_numeric_sequential_labels</span><span class="p">,</span> <span class="n">uniq_labs</span><span class="p">)}</span>
+        <span class="n">num_seq_labs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">lab2num</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">labels</span><span class="p">])</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="o">=</span> <span class="n">g</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_build_topology</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="n">posterior</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">compute_individuality</span><span class="p">(</span><span class="n">g</span><span class="p">,</span> <span class="n">num_seq_labs</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">prior</span><span class="p">)</span>
+
+        <span class="c1"># compute class-wise posterior mean</span>
+        <span class="c1"># TODO: should we exclude entries with no neighbors, i.e. posterior.sum(1) == 0?</span>
+        <span class="c1"># TODO: provide option for aggregation</span>
+        <span class="n">indices</span> <span class="o">=</span> <span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">flatnonzero</span><span class="p">(</span><span class="n">num_seq_labs</span> <span class="o">==</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_labs</span><span class="p">)]</span>
+        <span class="n">post_agg</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">posterior</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> <span class="k">for</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">indices</span><span class="p">])</span>
+        <span class="c1"># post_agg = np.vstack([np.median(posterior[idx], axis=0) for idx in indices])</span>
+
+        <span class="n">col_names</span> <span class="o">=</span> <span class="n">idx_names</span> <span class="o">=</span> <span class="p">[</span><span class="n">num2lab</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">unique_numeric_sequential_labels</span><span class="p">]</span>
+        <span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">post_agg</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">col_names</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">idx_names</span><span class="p">)</span>
+
+        <span class="n">ad</span> <span class="o">=</span> <span class="n">ad</span> <span class="k">if</span> <span class="n">inplace</span> <span class="k">else</span> <span class="n">ad</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="n">ad</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;individuality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">posterior</span>
+        <span class="n">ad</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;individuality_agg&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span></div>
+
+<div class="viewcode-block" id="Individuality.compute_individuality"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.individuality.html#scQUEST.individuality.Individuality.compute_individuality">[docs]</a>    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">compute_individuality</span><span class="p">(</span>
+        <span class="n">g</span><span class="p">:</span> <span class="n">Matrix</span><span class="p">,</span> <span class="n">num_seq_labs</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">,</span> <span class="n">prior</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Computes the observation-level individuality based on a given graph structure and labels.</span>
+<span class="sd">        See :class:`Individuality` for an in-depth description.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            g: graph encoding the observation-level interactions</span>
+<span class="sd">            num_seq_labs: labels of the observations. Must be sequential and numeric, i.e. [0,1,2,...,N]</span>
+<span class="sd">            prior:</span>
+<span class="sd">                either ``frequency``, ``uniform`` or custom prior probabilities for each class/group/label.</span>
+<span class="sd">                If set to ``frequency`` the empirical class/group probabilities are used as prior.</span>
+<span class="sd">                If set to ``uniform`` all classes/groups have the same prior probability.</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            :math:`N\\times |C|` :class:`~numpy.ndarray` with :math:`N` observations across :math:`|C|` classes.</span>
+
+<span class="sd">        .. _link: https://medium.com/mlearning-ai/k-nearest-neighbor-knn-explained-with-examples-c32825fc9c43</span>
+
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">n_labs</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">num_seq_labs</span><span class="p">))</span>
+
+        <span class="c1"># map edges to obs labels and count</span>
+        <span class="k">def</span> <span class="nf">map_and_count</span><span class="p">(</span><span class="n">row</span><span class="p">):</span>
+            <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">num_seq_labs</span><span class="p">[</span><span class="n">row</span> <span class="o">==</span> <span class="mi">1</span><span class="p">],</span> <span class="n">minlength</span><span class="o">=</span><span class="n">n_labs</span><span class="p">)</span>
+
+        <span class="c1"># NOTE: this could be optimised to work on the sparse matrix</span>
+        <span class="n">K_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">map_and_count</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">g</span><span class="o">.</span><span class="n">A</span> <span class="k">if</span> <span class="n">sparse</span><span class="o">.</span><span class="n">issparse</span><span class="p">(</span><span class="n">g</span><span class="p">)</span> <span class="k">else</span> <span class="n">g</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">prior</span> <span class="o">==</span> <span class="s2">&quot;frequency&quot;</span><span class="p">:</span>
+            <span class="n">posterior</span> <span class="o">=</span> <span class="n">K_i</span> <span class="o">/</span> <span class="n">g</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">elif</span> <span class="n">prior</span> <span class="o">==</span> <span class="s2">&quot;uniform&quot;</span><span class="p">:</span>
+            <span class="n">N_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">num_seq_labs</span><span class="p">)</span>
+            <span class="n">evidence</span> <span class="o">=</span> <span class="p">(</span><span class="n">K_i</span> <span class="o">/</span> <span class="n">N_i</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">posterior</span> <span class="o">=</span> <span class="n">K_i</span> <span class="o">/</span> <span class="n">N_i</span> <span class="o">/</span> <span class="n">evidence</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">prior</span><span class="p">,</span> <span class="n">ArrayLike</span><span class="p">):</span>
+            <span class="n">prior</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span>
+                <span class="n">prior</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="mi">1</span>
+            <span class="p">),</span> <span class="sa">f</span><span class="s2">&quot;prior probabilities do not sum to 1 but </span><span class="si">{</span><span class="n">prior</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span>
+
+            <span class="n">N_i</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">num_seq_labs</span><span class="p">)</span>
+            <span class="n">evidence</span> <span class="o">=</span> <span class="p">(</span><span class="n">K_i</span> <span class="o">/</span> <span class="n">N_i</span> <span class="o">*</span> <span class="n">prior</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+            <span class="n">posterior</span> <span class="o">=</span> <span class="n">K_i</span> <span class="o">*</span> <span class="n">prior</span> <span class="o">/</span> <span class="n">N_i</span> <span class="o">/</span> <span class="n">evidence</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;Prior value </span><span class="si">{</span><span class="n">prior</span><span class="si">}</span><span class="s2"> is not valid. Either choose `frequency` or `uniform` or provide a vector with the class priors&quot;</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">posterior</span></div>
+
+<div class="viewcode-block" id="Individuality._build_topology"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.individuality.html#scQUEST.individuality.Individuality._build_topology">[docs]</a>    <span class="k">def</span> <span class="nf">_build_topology</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Matrix</span><span class="p">:</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">NN</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">graph_builder</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">NN</span><span class="o">.</span><span class="n">kneighbors_graph</span>
+                <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_type</span> <span class="o">==</span> <span class="s2">&quot;knn&quot;</span>
+                <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">NN</span><span class="o">.</span><span class="n">radius_neighbors_graph</span>
+            <span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph_builder</span><span class="p">()</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">,</span> <span class="n">get_args</span><span class="p">(</span><span class="n">Matrix</span><span class="p">)):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">graph</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot;`graph` is of type </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">graph</span><span class="p">)</span><span class="si">}</span><span class="s2"> but should be (sparse) matrix.&quot;</span>
+            <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Individuality._check_args"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.individuality.html#scQUEST.individuality.Individuality._check_args">[docs]</a>    <span class="k">def</span> <span class="nf">_check_args</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">field</span> <span class="ow">in</span> <span class="n">fields</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+            <span class="n">value</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">field</span><span class="o">.</span><span class="n">name</span><span class="p">)</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright IBM Corp. 2022.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

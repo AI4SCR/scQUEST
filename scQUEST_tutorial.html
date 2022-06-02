@@ -1,0 +1,1311 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scQUEST Tutorial &mdash; scQUEST  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="scQUEST AML Tutorial" href="scQUEST_AML_tutorial.html" />
+    <link rel="prev" title="Tutorials" href="tutorials.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> scQUEST
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2 current"><a class="current reference internal" href="#">scQUEST Tutorial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#import-needed-packages">Import needed packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-load-and-explore-cytof-dataset">Step 1: Load and explore CyTOF dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-cell-type-identification">Step 2: Cell type identification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#load-and-explore-the-pre-annotated-dataset-ad-anno">Load and explore the pre-annotated dataset <code class="docutils literal notranslate"><span class="pre">ad_anno</span></code></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#prepare-dataset-for-classification">Prepare dataset for classification</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#train-the-neural-network-classifier">Train the neural network classifier</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#classify-whole-dataset">Classify whole dataset</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-phenotypic-abnormality">Step 3: Phenotypic abnormality</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#prepare-dataset">Prepare dataset</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#train-the-abnormality-autoencoder">Train the abnormality Autoencoder</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#reconstruct-all-cells">Reconstruct all cells</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tumor-individuality">Tumor individuality</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST_AML_tutorial.html">scQUEST AML Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Custom_models.html">Custom Models, Training &amp; Data Loaders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process-fcs-files-and-create-annData-object.html">Process FCS files and Create AnnData Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_on_downsampling_and_clustering.html">scQUEST: Downsampling and Clustering</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scQUEST_api/scQUEST.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">scQUEST</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="tutorials.html">Tutorials</a> &raquo;</li>
+      <li>scQUEST Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/scQUEST_tutorial.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scquest-tutorial">
+<h1>scQUEST Tutorial<a class="headerlink" href="#scquest-tutorial" title="Permalink to this headline"></a></h1>
+<p>In this tutorial we give detailed step-by-step instructions on how to use scQUEST to explore heterogeneity from large, heterogeneous mass or flow cytometry datasets. Often, these “atlas” datasets consist of single-cell profiles from multiple patients that collectively describe disease ecosystems. We showcase scQUEST using our previously generated single-cell atlas of breast cancer heterogeneity from (<a class="reference external" href="https://www.cell.com/cell/fulltext/S0092-8674(19)30267-3">Wagner et al.,2019</a>). The dataset contains 226 samples of mass cytometry (CyTOF) measurements of 163 breast cancer patients, with samples originating either from the tumor (T) or the juxta-tumoral non-tumor tissue (N). Additional measurements of mammoplasty are also available (H).</p>
+<section id="import-needed-packages">
+<h2>Import needed packages<a class="headerlink" href="#import-needed-packages" title="Permalink to this headline"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scQUEST</span> <span class="k">as</span> <span class="nn">scq</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">MinMaxScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">roc_curve</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-1-load-and-explore-cytof-dataset">
+<h2>Step 1: Load and explore CyTOF dataset<a class="headerlink" href="#step-1-load-and-explore-cytof-dataset" title="Permalink to this headline"></a></h2>
+<p>scQUEST is based on <a class="reference external" href="https://www.biorxiv.org/content/10.1101/2021.12.16.473007v1">annData</a>, a popular Python library for single-cell analysis. The CyTOF dataset that we will use for this tutorial is pre-uploaded in scQUEST and can be easily imported as an annData object. If you have never used annData before, we highly recommend checking this <a class="reference external" href="https://anndata-tutorials.readthedocs.io/en/latest/getting-started.html">simple tutorial</a> in the annData <a class="reference external" href="https://anndata.readthedocs.io/en/latest/">online documentation</a> to familiarize yourself with the structure of the annData object. A basic understanding of <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.arcsinh.html">numpy</a> and <a class="reference external" href="https://pandas.pydata.org/">pandas</a> will also help you explore the data stored in the annData object.</p>
+<p>Exploring the annData object we see that it contains 13,384,828 single-cell measurements of 68 channels (stored in <code class="docutils literal notranslate"><span class="pre">.X</span></code>), with channel annotation stored in <code class="docutils literal notranslate"><span class="pre">.var</span></code>. Cell-level annotation is stored in <code class="docutils literal notranslate"><span class="pre">.obs</span></code> and includes various patient metadata, such as tissue type of origin (<code class="docutils literal notranslate"><span class="pre">H,</span> <span class="pre">N,</span> <span class="pre">T</span></code>), histopathology, grade or patient ID (<code class="docutils literal notranslate"><span class="pre">patient_number</span></code>).</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ad</span> <span class="o">=</span> <span class="n">scq</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">breastCancerAtlasRaw</span><span class="p">()</span>
+<span class="n">ad</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 13384828 × 68
+    obs: &#39;tissue_type&#39;, &#39;patient_number&#39;, &#39;breast&#39;, &#39;tumor_region&#39;, &#39;plate&#39;, &#39;plate_location&#39;, &#39;gadolinium_status&#39;, &#39;fcs_file&#39;, &#39;Health Status&#39;, &#39;Gender&#39;, &#39;Age at Surgery&#39;, &#39;Menopause Status&#39;, &#39;Histopathology&#39;, &#39;T Staging&#39;, &#39;N Staging&#39;, &#39;M Staging&#39;, &#39;Grade&#39;, &#39;Grade comment&#39;, &#39;Lymph Node Status (L)&#39;, &#39;Resection&#39;, &#39;Estrogen Receptor Status by IHC&#39;, &#39;Estrogen Receptor IRS Score&#39;, &#39;Estrogen Receptor percent positive cells by IHC&#39;, &#39;Progesterone Receptor Status by IHC&#39;, &#39;Progesterone Receptor IRS Score&#39;, &#39;Progesterone Receptor percent positive cells by IHC&#39;, &#39;HER2 Status by IHC&#39;, &#39;HER2 IHC Score&#39;, &#39;HER2 Status by FISH or SISH&#39;, &#39;Ki-67 percent positive cells by IHC&#39;, &#39;Clinical subtype derived from the receptor status&#39;, &#39;Neoadjuvant Therapy Received&#39;, &#39;Previous Cancer Incidences&#39;
+    var: &#39;channel&#39;, &#39;desc&#39;
+    uns: &#39;fcs_header&#39;
+</pre></div>
+</div>
+<p>We can easily see that the data contain 226 files originating from 163 patients:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of unique files: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;fcs_file&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())))</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of unique patients: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;patient_number&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Number of unique files: 226
+Number of unique patients: 163
+</pre></div>
+</div>
+</section>
+<section id="step-2-cell-type-identification">
+<h2>Step 2: Cell type identification<a class="headerlink" href="#step-2-cell-type-identification" title="Permalink to this headline"></a></h2>
+<p>In this step we show how one can use scQUEST to identify cell populations of interest among millions of highly multiplexed single-cell profiles. We are specifically interested in identifying all cells with an epithelial phenotype among the ~13.5 million cells. To achieve this, we will first load a smaller, already annotated dataset (<code class="docutils literal notranslate"><span class="pre">ad_anno</span></code>) that contains 687,161 cells that have been previously clustered and annotated into distinct cell type. This dataset will serve as training data to train a neural network classifier that can then in turn be used to classify all ~13.5 million cells into epithelial/non-epithelial.</p>
+<section id="load-and-explore-the-pre-annotated-dataset-ad-anno">
+<h3>Load and explore the pre-annotated dataset <code class="docutils literal notranslate"><span class="pre">ad_anno</span></code><a class="headerlink" href="#load-and-explore-the-pre-annotated-dataset-ad-anno" title="Permalink to this headline"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ad_anno</span> <span class="o">=</span> <span class="n">scq</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">breastCancerAtlas</span><span class="p">()</span>
+<span class="n">ad_anno</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 687161 × 68
+    obs: &#39;tissue_type&#39;, &#39;patient_number&#39;, &#39;breast&#39;, &#39;tumor_region&#39;, &#39;plate&#39;, &#39;plate_location&#39;, &#39;fcs_file&#39;, &#39;cluster&#39;, &#39;celltype&#39;, &#39;celltype_class&#39;, &#39;Health Status&#39;, &#39;Gender&#39;, &#39;Age at Surgery&#39;, &#39;Menopause Status&#39;, &#39;Histopathology&#39;, &#39;T Staging&#39;, &#39;N Staging&#39;, &#39;M Staging&#39;, &#39;Grade&#39;, &#39;Grade comment&#39;, &#39;Lymph Node Status (L)&#39;, &#39;Resection&#39;, &#39;Estrogen Receptor Status by IHC&#39;, &#39;Estrogen Receptor IRS Score&#39;, &#39;Estrogen Receptor percent positive cells by IHC&#39;, &#39;Progesterone Receptor Status by IHC&#39;, &#39;Progesterone Receptor IRS Score&#39;, &#39;Progesterone Receptor percent positive cells by IHC&#39;, &#39;HER2 Status by IHC&#39;, &#39;HER2 IHC Score&#39;, &#39;HER2 Status by FISH or SISH&#39;, &#39;Ki-67 percent positive cells by IHC&#39;, &#39;Clinical subtype derived from the receptor status&#39;, &#39;Neoadjuvant Therapy Received&#39;, &#39;Previous Cancer Incidences&#39;
+    var: &#39;channel&#39;, &#39;desc&#39;
+    uns: &#39;fcs_header&#39;
+</pre></div>
+</div>
+<p>The single-cell data have been previously clustered in 42 clusters (cluster id found in <code class="docutils literal notranslate"><span class="pre">obs['cluster']</span></code>), and the clusters have been annotated by <code class="docutils literal notranslate"><span class="pre">celltype</span></code> and <code class="docutils literal notranslate"><span class="pre">celltype_class</span></code> included in <code class="docutils literal notranslate"><span class="pre">.obs</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of unique clusters: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;cluster&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Number of unique clusters: 42
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of cells per cell type:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;celltype&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Number of cells per cell type:
+Leukocyte      211762
+Epithelial     202882
+Apoptotic      100724
+Other           99435
+Fibroblast      50045
+Endothelial     22313
+Name: celltype, dtype: int64
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span>
+    <span class="s2">&quot;Epithelial/non-epithelial cells:</span><span class="se">\n</span><span class="s2">&quot;</span>
+    <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;celltype_class&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">())</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Epithelial/non-epithelial cells:
+nonepithelial    484279
+epithelial       202882
+Name: celltype_class, dtype: int64
+</pre></div>
+</div>
+</section>
+<section id="prepare-dataset-for-classification">
+<h3>Prepare dataset for classification<a class="headerlink" href="#prepare-dataset-for-classification" title="Permalink to this headline"></a></h3>
+<p>Let’s prepare the dataset for classification by first selecting a list of markers that we will use for training the classifier.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the markers used in the classifier</span>
+<span class="n">marker</span> <span class="o">=</span> <span class="n">scq</span><span class="o">.</span><span class="n">utils</span><span class="o">.</span><span class="n">DEFAULT_MARKER_CLF</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">marker</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>[&#39;139La_H3K27me3&#39;, &#39;141Pr_K5&#39;, &#39;142Nd_PTEN&#39;, &#39;143Nd_CD44&#39;, &#39;144Nd_K8K18&#39;, &#39;145Nd_CD31&#39;, &#39;146Nd_FAP&#39;, &#39;147Sm_cMYC&#39;, &#39;148Nd_SMA&#39;, &#39;149Sm_CD24&#39;, &#39;150Nd_CD68&#39;, &#39;151Eu_HER2&#39;, &#39;152Sm_AR&#39;, &#39;153Eu_BCL2&#39;, &#39;154Sm_p53&#39;, &#39;155Gd_EpCAM&#39;, &#39;156Gd_CyclinB1&#39;, &#39;158Gd_PRB&#39;, &#39;159Tb_CD49f&#39;, &#39;160Gd_Survivin&#39;, &#39;161Dy_EZH2&#39;, &#39;162Dy_Vimentin&#39;, &#39;163Dy_cMET&#39;, &#39;164Dy_AKT&#39;, &#39;165Ho_ERa&#39;, &#39;166Er_CA9&#39;, &#39;167Er_ECadherin&#39;, &#39;168Er_Ki67&#39;, &#39;169Tm_EGFR&#39;, &#39;170Er_K14&#39;, &#39;171Yb_HLADR&#39;, &#39;172Yb_clCASP3clPARP1&#39;, &#39;173Yb_CD3&#39;, &#39;174Yb_K7&#39;, &#39;175Lu_panK&#39;, &#39;176Yb_CD45&#39;]
+</pre></div>
+</div>
+<p>To train your model on a custom list of markers, replace <code class="docutils literal notranslate"><span class="pre">'marker1'</span></code>,<code class="docutils literal notranslate"><span class="pre">'marker2'</span></code> etc in the cell below with your desired markers names.</p>
+<p><strong>Attention</strong>: marker names should be as they appear in <code class="docutils literal notranslate"><span class="pre">ad_anno.var['desc']</span></code></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># marker = [&#39;marker1&#39;,&#39;marker2&#39;,&#39;marker3&#39;] &lt;------remove comment and replace with your marker names</span>
+</pre></div>
+</div>
+<p>In a next step we annotate the markers in <code class="docutils literal notranslate"><span class="pre">ad_anno.var</span></code> that are used for the classification and subset the annData object to only contain these markers. In this example dataset the marker name is given by the <code class="docutils literal notranslate"><span class="pre">desc</span></code> column.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get only the channels needed for classification</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">marker</span><span class="p">:</span>
+    <span class="n">mask</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">desc</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ad_anno</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;used_in_clf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ad_anno</span> <span class="o">=</span> <span class="n">ad_anno</span><span class="p">[:,</span> <span class="n">ad_anno</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">used_in_clf</span><span class="p">]</span>
+<span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;is_epithelial&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">celltype_class</span> <span class="o">==</span> <span class="s2">&quot;epithelial&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Apply the inverse hyperbolic sine (arcsinh) transformation and save the transformed data in a new layer of the AnnData object</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># get raw data and arcsinh-transform using a cofactor of 5</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">ad_anno</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">cofactor</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">cofactor</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+
+<span class="c1"># add transformed data to a separate layer in the annData object</span>
+<span class="n">ad_anno</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
+
+<span class="c1"># min-max normalization</span>
+<span class="n">minMax</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">minMax</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">ad_anno</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
+</pre></div>
+</div>
+<p>Before we train the classifier, let’s visualize the data distribution per class.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create a pandas dataframe with data for plotting with seaborn</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">desc</span><span class="p">)</span>
+<span class="n">df</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;epithelial&quot;</span><span class="p">,</span> <span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">is_epithelial</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="c1"># sample 100,000 cells per category</span>
+<span class="n">df_plot</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;epithelial&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">10000</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">df_plot</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df_plot</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">df_plot</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">m</span><span class="p">],</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;epithelial&quot;</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s2">&quot;percent&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">df_plot</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">m</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;marker_hist_annotated.pdf&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_tutorial_24_0.png" /></p>
+</section>
+<section id="train-the-neural-network-classifier">
+<h3>Train the neural network classifier<a class="headerlink" href="#train-the-neural-network-classifier" title="Permalink to this headline"></a></h3>
+<p>We will next train a simple neural network classifier using the annotated data. We first initialize the model by defining the dimensions of the input layer equal to the number of markers in the training data. By default, the model architecture consists of 1 hidden layer of 20 neurons, (with a ReLU activation function) and one output layer of one neuron. The dataset is split in a stratified fashion into training (50%), validation (25%), and test (25%) sets. The classifier is trained using the scaled conjugate gradient method, and its performance is evaluated using a standard cross-entropy loss function. We also use an early stopping criterion by terminating training when the model’s performance fails to improve for 10 consecutive  runs. For reproducibility, you can also optionally set a <code class="docutils literal notranslate"><span class="pre">seed</span></code>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># define early stopping criterion</span>
+<span class="kn">from</span> <span class="nn">pytorch_lightning.callbacks.early_stopping</span> <span class="kn">import</span> <span class="n">EarlyStopping</span>
+
+<span class="n">es</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s2">&quot;val_loss&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># initialize model and train classifier</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">scq</span><span class="o">.</span><span class="n">Classifier</span><span class="p">(</span><span class="n">n_in</span><span class="o">=</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">ad_anno</span><span class="p">,</span>
+    <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;is_epithelial&quot;</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">es</span><span class="p">],</span>
+    <span class="n">max_epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>GPU available: False, used: False
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+
+  | Name             | Type             | Params
+------------------------------------------------------
+0 | model            | DefaultCLF       | 782   
+1 | loss             | CrossEntropyLoss | 0     
+2 | metric_accuracy  | Accuracy         | 0     
+3 | metric_f1score   | F1Score          | 0     
+4 | metric_precision | Precision        | 0     
+5 | metric_recall    | Recall           | 0     
+------------------------------------------------------
+782       Trainable params
+0         Non-trainable params
+782       Total params
+0.003     Total estimated model params size (MB)
+
+
+
+Sanity Checking: 0it [00:00, ?it/s]
+
+
+
+Training: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Testing: 0it [00:00, ?it/s]
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       Test metric             DataLoader 0
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        test_loss          0.014771309681236744
+  test_metric_accuracy      0.9948338866233826
+   test_metric_f1score      0.9948338866233826
+  test_metric_precision     0.9948338866233826
+   test_metric_recall       0.9948338866233826
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+</pre></div>
+</div>
+<p>By observing the results, we see that the model achieves a 99.5% accuracy and 99.5% precision in the test set. Let’s explore the model’s performance in more detail by plotting the loss, the confusion matrix and the ROC curve:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># examine model performance</span>
+<span class="n">hist</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">history</span>
+<span class="n">fit_loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">hist</span><span class="p">[</span><span class="s2">&quot;fit_loss&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+    <span class="n">stage</span><span class="o">=</span><span class="s2">&quot;fit&quot;</span>
+<span class="p">)</span>
+<span class="n">val_loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">hist</span><span class="p">[</span><span class="s2">&quot;val_loss&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+    <span class="n">stage</span><span class="o">=</span><span class="s2">&quot;validation&quot;</span>
+<span class="p">)</span>
+<span class="n">test_loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span>
+    <span class="n">hist</span><span class="p">[</span><span class="s2">&quot;test_loss&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">stage</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">fit_loss</span><span class="p">,</span> <span class="n">val_loss</span><span class="p">,</span> <span class="n">test_loss</span><span class="p">))</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">stage</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="s2">&quot;validation&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]],</span>
+            <span class="p">[</span><span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">loss</span><span class="p">],</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">,</span>
+            <span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span>
+            <span class="s2">&quot;.-&quot;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">stage</span><span class="p">,</span>
+        <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Training steps&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Loss&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;loss.pdf&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fb5eae1c100&gt;
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_tutorial_29_1.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># %% confusion matrix</span>
+<span class="n">dl</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">datamodule</span><span class="o">.</span><span class="n">test_dataloader</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">targets</span>
+<span class="n">yhat</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">m</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="s2">&quot;pred&quot;</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">m</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;non-epithelial&quot;</span><span class="p">,</span> <span class="s2">&quot;epithelial&quot;</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;non-epithelial&quot;</span><span class="p">,</span> <span class="s2">&quot;epithelial&quot;</span><span class="p">]</span>
+<span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;True&quot;</span>
+<span class="n">m</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Predicted&quot;</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.3f&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;confusion.pdf&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_tutorial_30_0.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># %% plot ROC curve</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+
+<span class="n">yhat</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="n">yhat1</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span>  <span class="c1"># here we access the actual pytorch model</span>
+<span class="n">yhat1</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">yhat1</span><span class="p">,</span> <span class="n">dim</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>  <span class="c1"># compute propabilities</span>
+<span class="n">tmp</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">yhat1</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">yhat</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">yhat</span><span class="p">))])</span>
+<span class="n">score</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros_like</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span>
+<span class="n">score</span><span class="p">[</span><span class="n">yhat</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">tmp</span><span class="p">[</span><span class="n">yhat</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">score</span><span class="p">[</span><span class="n">yhat</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">-</span> <span class="n">tmp</span><span class="p">[</span><span class="n">yhat</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="n">thresholds</span> <span class="o">=</span> <span class="n">roc_curve</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">score</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">fpr</span><span class="p">,</span> <span class="n">tpr</span><span class="p">,</span> <span class="s2">&quot;.-&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;False Positive Rate&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;True Positive Rate&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;b:&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;ROC Curve&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;roc.pdf&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_tutorial_31_0.png" /></p>
+</section>
+<section id="classify-whole-dataset">
+<h3>Classify whole dataset<a class="headerlink" href="#classify-whole-dataset" title="Permalink to this headline"></a></h3>
+<p>Once we are confident about the model performance, we can feed the whole dataset to the classifier to predict the epithelial cells:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># prepare the whole dataset for celltype classification</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">marker</span><span class="p">:</span>
+    <span class="n">mask</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ad</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">desc</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ad</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;used_in_clf&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask</span>
+<span class="n">ad_pred</span> <span class="o">=</span> <span class="n">ad</span><span class="p">[:,</span> <span class="n">ad</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">used_in_clf</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">ad_pred</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># arcsinh transformation and minmax scaling</span>
+<span class="n">cofactor</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">cofactor</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+<span class="n">ad_pred</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">minMax</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">ad_pred</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
+
+<span class="c1"># feed the data to the classifier</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ad_pred</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">)</span>
+<span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;is_epithelial&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ad_pred</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">clf_is_epithelial</span><span class="o">.</span><span class="n">values</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;is_epithelial&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>0    9427458
+1    3957370
+Name: is_epithelial, dtype: int64
+</pre></div>
+</div>
+<p>Optionally, save all epithelial cells in a .csv file for downstream processing:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">mask</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;is_epithelial&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span>
+<span class="n">temp</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ad</span><span class="o">.</span><span class="n">X</span><span class="p">[</span><span class="n">mask</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">ad</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;desc&quot;</span><span class="p">])</span>
+<span class="n">temp</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;all_epithelial_cells.csv&quot;</span><span class="p">)</span>
+<span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="s2">&quot;epithelial_metadata.csv&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Since we do not have cell-level annotations for the large dataset, to evaluate the results we can simply plot all marker distributions and cross-compare them with the annotated dataset:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># create pandas dataframes for plotting with seaborn</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">30000</span>
+<span class="n">df1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">desc</span><span class="p">)</span>
+<span class="n">df1</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;annotated&quot;</span><span class="p">,</span> <span class="s2">&quot;true&quot;</span><span class="p">)</span>
+<span class="n">df1</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;epithelial&quot;</span><span class="p">,</span> <span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">is_epithelial</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">df_plot1</span> <span class="o">=</span> <span class="n">df1</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;epithelial&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+
+<span class="n">df2</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ad_pred</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">ad_pred</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">desc</span><span class="p">)</span>
+<span class="n">df2</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;annotated&quot;</span><span class="p">,</span> <span class="s2">&quot;predicted&quot;</span><span class="p">)</span>
+<span class="n">df2</span><span class="o">.</span><span class="n">insert</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;epithelial&quot;</span><span class="p">,</span> <span class="n">ad_pred</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">clf_is_epithelial</span><span class="o">.</span><span class="n">values</span><span class="p">)</span>
+<span class="n">df_plot2</span> <span class="o">=</span> <span class="n">df2</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;epithelial&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">n</span><span class="p">)</span>
+<span class="n">df_plot</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">df_plot1</span><span class="p">,</span> <span class="n">df_plot2</span><span class="p">])</span>
+<span class="n">df_plot</span> <span class="o">=</span> <span class="n">df_plot</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">ignore_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">multilabel</span> <span class="o">=</span> <span class="n">df_plot</span><span class="p">[</span><span class="s2">&quot;epithelial&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span> <span class="o">+</span> <span class="n">df_plot</span><span class="p">[</span><span class="s2">&quot;annotated&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot marker distributions across all epithelial cells (predicted vs. annotated)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">df_plot</span><span class="p">[</span><span class="n">df_plot</span><span class="p">[</span><span class="s2">&quot;epithelial&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">m</span><span class="p">],</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;annotated&quot;</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s2">&quot;percent&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">m</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># plot marker distributions across all non-epithelial cells (predicted vs. annotated)</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">df_plot</span><span class="p">[</span><span class="n">df_plot</span><span class="p">[</span><span class="s2">&quot;epithelial&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">6</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">m</span><span class="p">],</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;annotated&quot;</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s2">&quot;percent&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">m</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_tutorial_39_0.png" /></p>
+<p><img alt="png" src="_images/scQUEST_tutorial_39_1.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">umap</span> <span class="k">as</span> <span class="nn">umap</span>
+
+<span class="n">Y1</span> <span class="o">=</span> <span class="n">umap</span><span class="o">.</span><span class="n">UMAP</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;euclidean&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span>
+    <span class="n">df_plot</span><span class="o">.</span><span class="n">iloc</span><span class="p">[:,</span> <span class="mi">2</span><span class="p">:]</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">labels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+    <span class="nb">map</span><span class="p">(</span>
+        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;epithelial_&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="s2">&quot;non-epithelial_&quot;</span><span class="p">),</span>
+        <span class="n">multilabel</span><span class="p">,</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+<span class="n">labels_uniq</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="n">labels</span><span class="p">)</span>
+<span class="n">palette</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">labels_uniq</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;blue&quot;</span><span class="p">,</span> <span class="s2">&quot;lightblue&quot;</span><span class="p">,</span> <span class="s2">&quot;orange&quot;</span><span class="p">,</span> <span class="s2">&quot;peachpuff&quot;</span><span class="p">]))</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span>
+    <span class="n">Y1</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">],</span> <span class="n">Y1</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="n">palette</span><span class="p">,</span> <span class="n">hue_order</span><span class="o">=</span><span class="n">palette</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">([])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;UMAP_1&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;UMAP_2&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;umap.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_tutorial_42_0.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">ad_pred</span>
+<span class="k">del</span> <span class="n">ad_anno</span>
+</pre></div>
+</div>
+<p>Finally, we can plot the proportion of epithelial cells per sample, and categorize per tissue type as below:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># plot fraction of epithelial cells</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">frac_epith</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;tissue_type&quot;</span><span class="p">,</span> <span class="s2">&quot;breast&quot;</span><span class="p">,</span> <span class="s2">&quot;patient_number&quot;</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">is_epithelial</span><span class="o">.</span><span class="n">mean</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="s2">&quot;is_epithelial&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;tissue_type&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">frac_epith</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">whis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">])</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">stripplot</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="s2">&quot;is_epithelial&quot;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s2">&quot;tissue_type&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">frac_epith</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;.3&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:xlabel=&#39;tissue_type&#39;, ylabel=&#39;is_epithelial&#39;&gt;
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_tutorial_45_1.png" /></p>
+</section>
+</section>
+<section id="step-3-phenotypic-abnormality">
+<h2>Step 3: Phenotypic abnormality<a class="headerlink" href="#step-3-phenotypic-abnormality" title="Permalink to this headline"></a></h2>
+<section id="prepare-dataset">
+<h3>Prepare dataset<a class="headerlink" href="#prepare-dataset" title="Permalink to this headline"></a></h3>
+<p>Let’s start by first selecting a list of patients that will be used as a reference input dataset to train the Abnormality autoencoder. Here, we are using only patients for which we have both a juxta-tumoral and tumor sample. We then select a set of markers that will be the features of the input data.</p>
+<p>If using the protocol for other applications, samples used are reference could be normal vs. disease, non-treatment vs. treatment, etc.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">patients</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;N_BB013&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB028&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB034&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB035&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB037&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB046&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB051&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB055&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB058&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB064&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB065&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB072&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB073&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB075&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB076&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB090&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB091&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB093&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB094&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB096&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB099&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB101&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB102&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB110&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB120&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB131&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB144&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB147&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB153&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB154&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB155&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB167&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB192&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB194&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB197&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB201&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB204&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB209&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB210&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB214&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;N_BB221&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">patients</span> <span class="o">=</span> <span class="p">[</span><span class="n">i</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;N_&quot;</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">patients</span><span class="p">]</span>
+
+<span class="n">markers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
+    <span class="p">[</span>
+        <span class="s2">&quot;Vol7&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;H3K27me3&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;K5&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;PTEN&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CD44&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;K8K18&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cMYC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;SMA&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CD24&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;HER2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AR&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;BCL2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;p53&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;EpCAM&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CyclinB1&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;PRB&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CD49f&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Survivin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;EZH2&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Vimentin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;cMET&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;AKT&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ERa&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;CA9&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;ECadherin&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Ki67&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;EGFR&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;K14&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;HLADR&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;K7&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;panK&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">)</span>
+<span class="n">drop_markers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">([</span><span class="s2">&quot;Vol7&quot;</span><span class="p">,</span> <span class="s2">&quot;H3K27me3&quot;</span><span class="p">,</span> <span class="s2">&quot;CyclinB1&quot;</span><span class="p">,</span> <span class="s2">&quot;Ki67&quot;</span><span class="p">])</span>
+<span class="n">markers</span> <span class="o">=</span> <span class="n">markers</span> <span class="o">-</span> <span class="n">drop_markers</span>
+
+<span class="n">mask</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="n">markers</span><span class="p">:</span>
+    <span class="n">mask</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">ad</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">desc</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">m</span><span class="p">))</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">(</span><span class="n">mask</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">mask</span><span class="o">.</span><span class="n">any</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ad</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;used_in_abnormality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mask</span>
+</pre></div>
+</div>
+<p>Next, subset the whole dataset to only include epithelial cells from the selected patients and juxta-tumoral (N) tissue, and preprocess the data as before:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ad_train</span> <span class="o">=</span> <span class="n">ad</span><span class="p">[</span>
+    <span class="p">(</span><span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">patient_number</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">patients</span><span class="p">))</span>
+    <span class="o">&amp;</span> <span class="p">(</span><span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">tissue_type</span> <span class="o">==</span> <span class="s2">&quot;N&quot;</span><span class="p">)</span>
+    <span class="o">&amp;</span> <span class="p">(</span><span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">is_epithelial</span> <span class="o">==</span> <span class="mi">1</span><span class="p">),</span>
+    <span class="n">ad</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">used_in_abnormality</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">ad_train</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">cofactor</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">cofactor</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+<span class="n">minMax</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">minMax</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">ad_train</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
+</pre></div>
+</div>
+</section>
+<section id="train-the-abnormality-autoencoder">
+<h3>Train the abnormality Autoencoder<a class="headerlink" href="#train-the-abnormality-autoencoder" title="Permalink to this headline"></a></h3>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize and fit the model</span>
+<span class="n">Abn</span> <span class="o">=</span> <span class="n">scq</span><span class="o">.</span><span class="n">Abnormality</span><span class="p">(</span><span class="n">n_in</span><span class="o">=</span><span class="n">ad_train</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">Abn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">ad_train</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">,</span> <span class="n">max_epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>GPU available: False, used: False
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+
+  | Name                    | Type             | Params
+-------------------------------------------------------------
+0 | model                   | DefaultAE        | 650   
+1 | loss                    | MSELoss          | 0     
+2 | metric_meansquarederror | MeanSquaredError | 0     
+-------------------------------------------------------------
+650       Trainable params
+0         Non-trainable params
+650       Total params
+0.003     Total estimated model params size (MB)
+
+
+
+Sanity Checking: 0it [00:00, ?it/s]
+
+
+
+Training: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Testing: 0it [00:00, ?it/s]
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        Test metric                 DataLoader 0
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+         test_loss              0.007171750068664551
+test_metric_meansquarederror     0.0071717519313097
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+</pre></div>
+</div>
+<p><strong>Note</strong>: The abnormality model (<code class="docutils literal notranslate"><span class="pre">Abn.model</span></code>) predicts the abnormality a.k.a. reconstruction error, i.e. $X-F(X)$ where $F$ is the autoencoder (prediction results are saved to <code class="docutils literal notranslate"><span class="pre">ad.layers['abnormality']</span></code>). On the other hand, the base torch model (<code class="docutils literal notranslate"><span class="pre">Abn.model.model</span></code>) predicts the reconstruction, i.e. $F(X)$.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># estimate reconstruction error on the training data</span>
+<span class="n">Abn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ad_train</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">)</span>
+<span class="n">mse_train</span> <span class="o">=</span> <span class="p">(</span><span class="n">ad_train</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;abnormality&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ad_train</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;abnormality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mse_train</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">ad_train</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">]</span>
+<span class="n">yhat</span> <span class="o">=</span> <span class="n">Abn</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>  <span class="c1"># access base torch model</span>
+<span class="n">err</span> <span class="o">=</span> <span class="n">ad_train</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;abnormality&quot;</span><span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">dat</span><span class="p">,</span> <span class="n">title</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+    <span class="n">axs</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">err</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Input&quot;</span><span class="p">,</span> <span class="s2">&quot;Reconstruction&quot;</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">]</span>
+<span class="p">):</span>
+    <span class="n">ax</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;seismic&quot;</span> <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;Error&quot;</span> <span class="k">else</span> <span class="s2">&quot;magma&quot;</span>
+    <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;Error&quot;</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">28</span><span class="p">),</span> <span class="n">labels</span><span class="o">=</span><span class="n">ad_train</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;desc&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;features&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;cells&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_tutorial_54_0.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">hist</span> <span class="o">=</span> <span class="n">Abn</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">history</span>
+<span class="n">fit_loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">hist</span><span class="p">[</span><span class="s2">&quot;fit_loss&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+    <span class="n">stage</span><span class="o">=</span><span class="s2">&quot;fit&quot;</span>
+<span class="p">)</span>
+<span class="n">val_loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">hist</span><span class="p">[</span><span class="s2">&quot;val_loss&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+    <span class="n">stage</span><span class="o">=</span><span class="s2">&quot;validation&quot;</span>
+<span class="p">)</span>
+<span class="n">test_loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span>
+    <span class="n">hist</span><span class="p">[</span><span class="s2">&quot;test_loss&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">stage</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">fit_loss</span><span class="p">,</span> <span class="n">val_loss</span><span class="p">,</span> <span class="n">test_loss</span><span class="p">))</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">stage</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="s2">&quot;validation&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]],</span>
+            <span class="p">[</span><span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">loss</span><span class="p">],</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">,</span>
+            <span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span>
+            <span class="s2">&quot;.-&quot;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">stage</span><span class="p">,</span>
+        <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Training steps&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Loss&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7fb5eddcc1c0&gt;
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_tutorial_55_1.png" /></p>
+</section>
+<section id="reconstruct-all-cells">
+<h3>Reconstruct all cells<a class="headerlink" href="#reconstruct-all-cells" title="Permalink to this headline"></a></h3>
+<p>Now let’s use the model to reconstruct all epithelial data. The reconstruction errors for each cell are stored in the layer <code class="docutils literal notranslate"><span class="pre">abnormality</span></code>. We define the cell-level abnormality as the mean squared error of the reconstruction.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># %% pre-process for Abnormality prediction</span>
+<span class="n">ad_pred</span> <span class="o">=</span> <span class="n">ad</span><span class="p">[</span><span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">is_epithelial</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ad</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">used_in_abnormality</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">ad_pred</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">cofactor</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">cofactor</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">minMax</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+<span class="n">ad_pred</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
+
+<span class="c1"># estimate reconstruction error</span>
+<span class="n">Abn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ad_pred</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">)</span>
+<span class="n">mse</span> <span class="o">=</span> <span class="p">(</span><span class="n">ad_pred</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;abnormality&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ad_pred</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;abnormality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mse</span>
+</pre></div>
+</div>
+<p>To evaluate the results, let’s reconstruct all single-cells and visualize the prediction residuals:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">ad_pred</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">]</span>
+<span class="n">yhat</span> <span class="o">=</span> <span class="n">Abn</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>  <span class="c1"># access base torch model</span>
+<span class="n">err</span> <span class="o">=</span> <span class="n">ad_pred</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;abnormality&quot;</span><span class="p">]</span>
+<span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nonzero</span><span class="p">((</span><span class="n">ad_pred</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;tissue_type&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;N&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">values</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">y1</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">idx</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="n">idx</span><span class="o">.</span><span class="n">max</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">dat</span><span class="p">,</span> <span class="n">title</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+    <span class="n">axs</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">err</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Input&quot;</span><span class="p">,</span> <span class="s2">&quot;Reconstruction&quot;</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">]</span>
+<span class="p">):</span>
+    <span class="n">ax</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;seismic&quot;</span> <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;Error&quot;</span> <span class="k">else</span> <span class="s2">&quot;magma&quot;</span>
+    <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;Error&quot;</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">27.5</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">y2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">27.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">28</span><span class="p">),</span> <span class="n">labels</span><span class="o">=</span><span class="n">ad_pred</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;desc&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;features&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;cells&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;reconstruction.pdf&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_tutorial_60_0.png" /></p>
+<p>Now let’s visualize the abnormality for different clinical data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">clinical_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;tissue_type&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Grade&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Estrogen Receptor Status by IHC&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Clinical subtype derived from the receptor status&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">order</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;G1&quot;</span><span class="p">,</span> <span class="s2">&quot;G2&quot;</span><span class="p">,</span> <span class="s2">&quot;G3&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;LumA&quot;</span><span class="p">,</span> <span class="s2">&quot;LumB&quot;</span><span class="p">,</span> <span class="s2">&quot;LumB-HER2&quot;</span><span class="p">,</span> <span class="s2">&quot;HER2&quot;</span><span class="p">,</span> <span class="s2">&quot;TN&quot;</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+    <span class="n">dat</span> <span class="o">=</span> <span class="p">(</span>
+        <span class="n">ad_pred</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">clinical_data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="s2">&quot;breast&quot;</span><span class="p">,</span> <span class="s2">&quot;patient_number&quot;</span><span class="p">])</span>
+        <span class="o">.</span><span class="n">abnormality</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">)</span>
+        <span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+        <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+    <span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">dat</span><span class="p">,</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">clinical_data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">y</span><span class="o">=</span><span class="s2">&quot;abnormality&quot;</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">whis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">stripplot</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">dat</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">clinical_data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;abnormality&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;abnormality_boxplots.pdf&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_tutorial_62_0.png" /></p>
+</section>
+</section>
+<section id="tumor-individuality">
+<h2>Tumor individuality<a class="headerlink" href="#tumor-individuality" title="Permalink to this headline"></a></h2>
+<p>For computing the individuality let’s start by preparing the dataset. Here, because the k-nn graph construction is computationally intensive, we will randomly select a subset of cells from each sample.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># preprocessing</span>
+<span class="n">ad_indiv</span> <span class="o">=</span> <span class="n">ad</span><span class="p">[</span><span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">is_epithelial</span> <span class="o">==</span> <span class="mi">1</span><span class="p">,</span> <span class="n">ad</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">used_in_abnormality</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">ad_indiv</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">cofactor</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">cofactor</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+<span class="n">ad_indiv</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
+
+<span class="c1"># generate a sample identifier to enable subsampling</span>
+<span class="n">ad_indiv</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;sample_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ad_indiv</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span>
+    <span class="p">[</span><span class="s2">&quot;tissue_type&quot;</span><span class="p">,</span> <span class="s2">&quot;breast&quot;</span><span class="p">,</span> <span class="s2">&quot;patient_number&quot;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">ngroup</span><span class="p">()</span>
+
+<span class="c1"># sub-sampling</span>
+<span class="n">tmp</span> <span class="o">=</span> <span class="n">ad_indiv</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;sample_id&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">indices</span>
+<span class="n">n_cells</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">tmp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="n">n_cells</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)),</span> <span class="n">size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+<span class="n">ad_indiv</span> <span class="o">=</span> <span class="n">ad_indiv</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Let us initialize the individuality model and use it to predict the scores:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Indiv</span> <span class="o">=</span> <span class="n">scq</span><span class="o">.</span><span class="n">Individuality</span><span class="p">()</span>
+<span class="n">Indiv</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ad_indiv</span><span class="p">,</span> <span class="n">ad_indiv</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">sample_id</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The observation-level scores (one vector per single cell, indicating it’s similarity to all other samples) are saved in the <code class="docutils literal notranslate"><span class="pre">.obsm</span></code> attribute of the AnnData object, as a matrix of size <code class="docutils literal notranslate"><span class="pre">n_cells</span> <span class="pre">x</span> <span class="pre">n_samples</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ad_indiv</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;individuality&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>matrix([[0.  , 0.02, 0.04, ..., 0.  , 0.  , 0.  ],
+        [0.02, 0.01, 0.  , ..., 0.  , 0.  , 0.  ],
+        [0.05, 0.  , 0.03, ..., 0.  , 0.  , 0.  ],
+        ...,
+        [0.02, 0.  , 0.  , ..., 0.  , 0.  , 0.13],
+        [0.  , 0.  , 0.01, ..., 0.  , 0.  , 0.62],
+        [0.  , 0.  , 0.  , ..., 0.  , 0.  , 0.48]])
+</pre></div>
+</div>
+<p>The aggregated sample-level scores (one vector per sample, indicating a sample’s similarity to all other samples) are saved in the <code class="docutils literal notranslate"><span class="pre">.uns</span></code> attribute of the AnnData object, as a matrix of size <code class="docutils literal notranslate"><span class="pre">n_samples</span> <span class="pre">x</span> <span class="pre">n_samples</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># access sample-level aggregated individuality</span>
+<span class="n">ad_indiv</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;individuality_agg&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</pre></div>
+</div>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>...</th>
+      <th>201</th>
+      <th>202</th>
+      <th>203</th>
+      <th>204</th>
+      <th>205</th>
+      <th>206</th>
+      <th>207</th>
+      <th>208</th>
+      <th>209</th>
+      <th>210</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.03165</td>
+      <td>0.01095</td>
+      <td>0.00950</td>
+      <td>0.01265</td>
+      <td>0.01020</td>
+      <td>0.00385</td>
+      <td>0.00025</td>
+      <td>0.00070</td>
+      <td>0.00475</td>
+      <td>0.00250</td>
+      <td>...</td>
+      <td>0.00095</td>
+      <td>0.00180</td>
+      <td>0.00610</td>
+      <td>0.01615</td>
+      <td>0.00480</td>
+      <td>0.00885</td>
+      <td>0.00590</td>
+      <td>0.00055</td>
+      <td>0.00155</td>
+      <td>0.00170</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.00970</td>
+      <td>0.03995</td>
+      <td>0.00835</td>
+      <td>0.02820</td>
+      <td>0.00550</td>
+      <td>0.00755</td>
+      <td>0.00000</td>
+      <td>0.00120</td>
+      <td>0.00155</td>
+      <td>0.00100</td>
+      <td>...</td>
+      <td>0.00055</td>
+      <td>0.00280</td>
+      <td>0.01625</td>
+      <td>0.00700</td>
+      <td>0.00155</td>
+      <td>0.01080</td>
+      <td>0.00055</td>
+      <td>0.00145</td>
+      <td>0.00160</td>
+      <td>0.00055</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.00670</td>
+      <td>0.00860</td>
+      <td>0.04630</td>
+      <td>0.01245</td>
+      <td>0.03975</td>
+      <td>0.00330</td>
+      <td>0.00000</td>
+      <td>0.00180</td>
+      <td>0.01890</td>
+      <td>0.00075</td>
+      <td>...</td>
+      <td>0.00065</td>
+      <td>0.00045</td>
+      <td>0.00580</td>
+      <td>0.00675</td>
+      <td>0.00015</td>
+      <td>0.00555</td>
+      <td>0.01440</td>
+      <td>0.00120</td>
+      <td>0.00060</td>
+      <td>0.00345</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.01010</td>
+      <td>0.02590</td>
+      <td>0.00950</td>
+      <td>0.04170</td>
+      <td>0.00960</td>
+      <td>0.00920</td>
+      <td>0.00000</td>
+      <td>0.00085</td>
+      <td>0.00495</td>
+      <td>0.00085</td>
+      <td>...</td>
+      <td>0.00035</td>
+      <td>0.00135</td>
+      <td>0.01000</td>
+      <td>0.00570</td>
+      <td>0.00100</td>
+      <td>0.00995</td>
+      <td>0.00275</td>
+      <td>0.00100</td>
+      <td>0.00140</td>
+      <td>0.00095</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.00975</td>
+      <td>0.00835</td>
+      <td>0.04945</td>
+      <td>0.01310</td>
+      <td>0.05810</td>
+      <td>0.00385</td>
+      <td>0.00000</td>
+      <td>0.00210</td>
+      <td>0.03200</td>
+      <td>0.00125</td>
+      <td>...</td>
+      <td>0.00005</td>
+      <td>0.00020</td>
+      <td>0.00540</td>
+      <td>0.00570</td>
+      <td>0.00005</td>
+      <td>0.00805</td>
+      <td>0.01270</td>
+      <td>0.00075</td>
+      <td>0.00040</td>
+      <td>0.00090</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 211 columns</p>
+</div>
+<p>To assess a sample’s uniqueness within the cohort, we will use the diagonal of that matrix:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dat</span> <span class="o">=</span> <span class="n">ad_indiv</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;individuality_agg&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">dat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">dat</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">dat</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;individuality&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Now let’s assess how individuality scores are related to a patient’s clinical data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">ad_indiv</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span>
+    <span class="p">[</span>
+        <span class="s2">&quot;tissue_type&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;breast&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Grade&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Estrogen Receptor Status by IHC&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;Clinical subtype derived from the receptor status&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;patient_number&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;sample_id&quot;</span><span class="p">,</span>
+    <span class="p">]</span>
+<span class="p">]</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="o">~</span><span class="n">res</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;sample_id&quot;</span><span class="p">)</span>
+<span class="n">dat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">dat</span><span class="p">,</span> <span class="n">res</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">clinical_data</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;tissue_type&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Grade&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Estrogen Receptor Status by IHC&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Clinical subtype derived from the receptor status&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+<span class="n">order</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="p">[</span><span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;G1&quot;</span><span class="p">,</span> <span class="s2">&quot;G2&quot;</span><span class="p">,</span> <span class="s2">&quot;G3&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;P&quot;</span><span class="p">,</span> <span class="s2">&quot;N&quot;</span><span class="p">],</span>
+    <span class="p">[</span><span class="s2">&quot;LumA&quot;</span><span class="p">,</span> <span class="s2">&quot;LumB&quot;</span><span class="p">,</span> <span class="s2">&quot;LumB-HER2&quot;</span><span class="p">,</span> <span class="s2">&quot;HER2&quot;</span><span class="p">,</span> <span class="s2">&quot;TN&quot;</span><span class="p">],</span>
+<span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">8</span><span class="p">),</span> <span class="n">sharey</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">4</span><span class="p">):</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">dat</span><span class="p">,</span>
+        <span class="n">x</span><span class="o">=</span><span class="n">clinical_data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">y</span><span class="o">=</span><span class="s2">&quot;individuality&quot;</span><span class="p">,</span>
+        <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+        <span class="n">whis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span>
+        <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+    <span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">stripplot</span><span class="p">(</span>
+        <span class="n">data</span><span class="o">=</span><span class="n">dat</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">clinical_data</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;individuality&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">axs</span><span class="o">.</span><span class="n">flat</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+    <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;individuality_boxplots.pdf&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_tutorial_75_0.png" /></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tutorials.html" class="btn btn-neutral float-left" title="Tutorials" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scQUEST_AML_tutorial.html" class="btn btn-neutral float-right" title="scQUEST AML Tutorial" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright IBM Corp. 2022.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

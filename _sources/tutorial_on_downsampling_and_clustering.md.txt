@@ -1,0 +1,235 @@
+# scQUEST: Downsampling and Clustering
+
+In this tutorial we show how to subsample and cluster the full 13million cell breast cancer dataset used in the basic scQUEST tutorial.
+
+
+```python
+!pip install scanpy
+!pip3 install leidenalg
+```
+
+    Requirement already satisfied: scanpy in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (1.9.1)
+    Requirement already satisfied: anndata>=0.7.4 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (0.8.0)
+    Requirement already satisfied: numpy>=1.17.0 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (1.22.4)
+    Requirement already satisfied: pandas>=1.0 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (1.4.2)
+    Requirement already satisfied: networkx>=2.3 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (2.8.2)
+    Requirement already satisfied: scikit-learn>=0.22 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (1.1.1)
+    Requirement already satisfied: patsy in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (0.5.2)
+    Requirement already satisfied: natsort in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (8.1.0)
+    Requirement already satisfied: joblib in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (1.1.0)
+    Requirement already satisfied: statsmodels>=0.10.0rc2 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (0.13.2)
+    Requirement already satisfied: umap-learn>=0.3.10 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (0.5.3)
+    Requirement already satisfied: tqdm in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (4.64.0)
+    Requirement already satisfied: scipy>=1.4 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (1.8.1)
+    Requirement already satisfied: h5py>=3 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (3.7.0)
+    Requirement already satisfied: numba>=0.41.0 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (0.55.2)
+    Requirement already satisfied: matplotlib>=3.4 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (3.5.2)
+    Requirement already satisfied: packaging in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (21.3)
+    Requirement already satisfied: session-info in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (1.0.0)
+    Requirement already satisfied: seaborn in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scanpy) (0.11.2)
+    Requirement already satisfied: python-dateutil>=2.7 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from matplotlib>=3.4->scanpy) (2.8.2)
+    Requirement already satisfied: cycler>=0.10 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from matplotlib>=3.4->scanpy) (0.11.0)
+    Requirement already satisfied: pyparsing>=2.2.1 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from matplotlib>=3.4->scanpy) (3.0.9)
+    Requirement already satisfied: pillow>=6.2.0 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from matplotlib>=3.4->scanpy) (9.1.1)
+    Requirement already satisfied: fonttools>=4.22.0 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from matplotlib>=3.4->scanpy) (4.33.3)
+    Requirement already satisfied: kiwisolver>=1.0.1 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from matplotlib>=3.4->scanpy) (1.4.2)
+    Requirement already satisfied: llvmlite<0.39,>=0.38.0rc1 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from numba>=0.41.0->scanpy) (0.38.1)
+    Requirement already satisfied: setuptools in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from numba>=0.41.0->scanpy) (62.3.2)
+    Requirement already satisfied: pytz>=2020.1 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from pandas>=1.0->scanpy) (2022.1)
+    Requirement already satisfied: threadpoolctl>=2.0.0 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from scikit-learn>=0.22->scanpy) (3.1.0)
+    Requirement already satisfied: six in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from patsy->scanpy) (1.16.0)
+    Requirement already satisfied: pynndescent>=0.5 in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from umap-learn>=0.3.10->scanpy) (0.5.7)
+    Requirement already satisfied: stdlib-list in /usr/local/Caskroom/miniconda/base/envs/scquest/lib/python3.8/site-packages (from session-info->scanpy) (0.8.0)
+    Collecting leidenalg
+      Downloading leidenalg-0.8.10-cp38-cp38-macosx_10_9_x86_64.whl (229 kB)
+    [2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m229.9/229.9 kB[0m [31m758.4 kB/s[0m eta [36m0:00:00[0m1m577.9 kB/s[0m eta [36m0:00:01[0m
+    [?25hCollecting igraph<0.10,>=0.9.0
+      Downloading igraph-0.9.10-cp38-cp38-macosx_10_9_x86_64.whl (1.8 MB)
+    [2K     [38;2;114;156;31m━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━[0m [32m1.8/1.8 MB[0m [31m2.6 MB/s[0m eta [36m0:00:00[0m[31m2.7 MB/s[0m eta [36m0:00:01[0m
+    [?25hCollecting texttable>=1.6.2
+      Downloading texttable-1.6.4-py2.py3-none-any.whl (10 kB)
+    Installing collected packages: texttable, igraph, leidenalg
+    Successfully installed igraph-0.9.10 leidenalg-0.8.10 texttable-1.6.4
+
+
+
+```python
+import scQUEST as scq
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import numpy as np
+import warnings
+import anndata as ad
+from sklearn.preprocessing import MinMaxScaler
+import scanpy as sc
+
+warnings.filterwarnings("ignore")
+```
+
+Load the full annData object (13,384,828 single-cell measurements of 68 channels). The patient id information is stored in `.obs[patient_number]`. 
+
+
+```python
+ad_raw = scq.dataset.breastCancerAtlasRaw()
+
+plt.figure(figsize=(30, 8))
+ad_raw.obs["patient_number"].value_counts().plot(kind="bar")
+plt.xlabel("Patient ID")
+plt.ylabel("Number of cells")
+plt.show()
+```
+
+
+    
+![png](tutorial_on_downsampling_and_clustering_files/tutorial_on_downsampling_and_clustering_5_0.png)
+    
+
+
+As you can already see, the number of cells per patient vastly differs, with few patients having more than 200,000 cells and some others less than 5,000. To minimize this discrepancies, one can either sample a fixed number of cells per patient:
+
+
+```python
+ad_sub = ad_raw[
+    ad_raw.obs.groupby("patient_number").sample(n=1000, random_state=1).index
+]
+```
+
+Or perform a custom approach similar to the one described in (Wagner et al., 2019), which is a bit more involved. Here, we sample varying fractions of cells based on the total number of cells in that sample. As you see in the barplot, this results to a more balanced distribution of cells per sample.
+
+
+```python
+counts = ad_raw.obs["patient_number"].value_counts().to_dict()
+
+# perform a custom downsampling
+temp = []
+for i, c in counts.items():
+    if c < 2000:
+        temp.append(ad_raw.obs[ad_raw.obs["patient_number"] == i].index.values)
+    elif c < 5000:
+        temp.append(
+            ad_raw.obs[ad_raw.obs["patient_number"] == i].sample(frac=0.2).index.values
+        )
+    elif c < 50000:
+        temp.append(
+            ad_raw.obs[ad_raw.obs["patient_number"] == i].sample(frac=0.05).index.values
+        )
+    elif c > 50000:
+        temp.append(
+            ad_raw.obs[ad_raw.obs["patient_number"] == i].sample(frac=0.01).index.values
+        )
+    else:
+        print("Error")
+
+temp_array = np.concatenate(temp)
+ad_sub_custom = ad_raw[temp_array]
+
+plt.figure(figsize=(30, 8))
+ad_sub_custom.obs["patient_number"].value_counts().plot(kind="bar")
+plt.xlabel("Patient ID")
+plt.ylabel("Number of cells")
+plt.show()
+```
+
+
+    
+![png](tutorial_on_downsampling_and_clustering_files/tutorial_on_downsampling_and_clustering_9_0.png)
+    
+
+
+Once we have a smaller dataset, we can cluster it to identify cell populations present. Here, we use [scanpy's](https://scanpy.readthedocs.io/en/stable/index.html) implementation of [Leiden clustering](https://scanpy.readthedocs.io/en/stable/generated/scanpy.tl.leiden.html). First, we'll select a number of relevant markers and then we'll preprocess the data, as before:
+
+
+```python
+markers = [
+    "139La_H3K27me3",
+    "141Pr_K5",
+    "142Nd_PTEN",
+    "143Nd_CD44",
+    "144Nd_K8K18",
+    "145Nd_CD31",
+    "146Nd_FAP",
+    "147Sm_cMYC",
+    "148Nd_SMA",
+    "149Sm_CD24",
+    "150Nd_CD68",
+    "151Eu_HER2",
+    "152Sm_AR",
+    "153Eu_BCL2",
+    "154Sm_p53",
+    "155Gd_EpCAM",
+    "156Gd_CyclinB1",
+    "158Gd_PRB",
+    "159Tb_CD49f",
+    "160Gd_Survivin",
+    "161Dy_EZH2",
+    "162Dy_Vimentin",
+    "163Dy_cMET",
+    "164Dy_AKT",
+    "165Ho_ERa",
+    "166Er_CA9",
+    "167Er_ECadherin",
+    "168Er_Ki67",
+    "169Tm_EGFR",
+    "170Er_K14",
+    "171Yb_HLADR",
+    "172Yb_clCASP3clPARP1",
+    "173Yb_CD3",
+    "174Yb_K7",
+    "175Lu_panK",
+    "176Yb_CD45",
+]
+
+mask = []
+for m in markers:
+    mask.append(ad_sub_custom.var.desc.str.contains(m))
+mask = pd.concat(mask, axis=1)
+mask = mask.any(1)
+ad_sub_custom.var["used_in_clf"] = mask
+ad_sub_custom = ad_sub_custom[:, ad_sub_custom.var.used_in_clf]
+
+# get raw data and arcsinh-transform using a cofactor of 5
+X = ad_sub_custom.X.copy()
+cofactor = 5
+np.divide(X, cofactor, out=X)
+np.arcsinh(X, out=X)
+ad_sub_custom.layers["arcsinh"] = X
+
+# min-max normalization
+minMax = MinMaxScaler()
+X = minMax.fit_transform(X)
+ad_sub_custom.layers["arcsinh_norm"] = X
+```
+
+
+```python
+# compute neighbors and run leiden clustering algorithm
+sc.pp.neighbors(ad_sub_custom, n_neighbors=30)
+sc.tl.leiden(ad_sub_custom)
+labels_clust = ad_sub_custom.obs["leiden"].astype(int)
+```
+
+Given such information, one can follow the same process as in (Wagner et al., 2019) (see Methods details, Epithelial cell selection and immune cell type selection) to annotate the clusters as epithelial, immune etc based on their marker expression.
+
+
+```python
+df = pd.DataFrame(
+    data=ad_sub_custom.layers["arcsinh"], columns=markers, index=ad_sub_custom.obs.index
+)
+df.insert(0, "cluster_id", labels_clust)
+
+ax = sns.clustermap(
+    df.groupby("cluster_id").median(),
+    metric="euclidean",
+    standard_scale=1,
+    method="average",
+    cmap="Spectral_r",
+    figsize=(10, 10),
+)
+```
+
+
+    
+![png](tutorial_on_downsampling_and_clustering_files/tutorial_on_downsampling_and_clustering_14_0.png)
+    
+

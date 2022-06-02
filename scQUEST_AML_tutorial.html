@@ -1,0 +1,1304 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scQUEST AML Tutorial &mdash; scQUEST  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Custom Models, Training &amp; Data Loaders" href="Custom_models.html" />
+    <link rel="prev" title="scQUEST Tutorial" href="scQUEST_tutorial.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> scQUEST
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="tutorials.html">Tutorials</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="scQUEST_tutorial.html">scQUEST Tutorial</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">scQUEST AML Tutorial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#import-needed-packages">Import needed packages</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-1-load-and-explore-cytof-dataset">Step 1: Load and explore CyTOF dataset</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#step-2-cell-type-identification">Step 2: Cell type identification</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#train-the-neural-network-classifier">Train the neural network classifier</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#step-3-phenotypic-abnormality">Step 3: Phenotypic abnormality</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#train-the-abnormality-autoencoder">Train the abnormality Autoencoder</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#tumor-individuality">Tumor individuality</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="Custom_models.html">Custom Models, Training &amp; Data Loaders</a></li>
+<li class="toctree-l2"><a class="reference internal" href="process-fcs-files-and-create-annData-object.html">Process FCS files and Create AnnData Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial_on_downsampling_and_clustering.html">scQUEST: Downsampling and Clustering</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="scQUEST_api/scQUEST.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">scQUEST</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="tutorials.html">Tutorials</a> &raquo;</li>
+      <li>scQUEST AML Tutorial</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/scQUEST_AML_tutorial.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="scquest-aml-tutorial">
+<h1>scQUEST AML Tutorial<a class="headerlink" href="#scquest-aml-tutorial" title="Permalink to this headline"></a></h1>
+<p>In this tutorial we show how to use and adapt scQUEST by testing it on a publicly available acute myeloid leukemia (AML) mass cytometry (CyTOF) dataset from (<a class="reference external" href="https://doi.org/10.1016/j.cell.2015.05.047">Levine et al., 2015</a>). Specifically, we used the data illustrated in Figure 3 of (Levine et al., 2015) that are publicly available on Cytobank. In this dataset, bone marrow samples from healthy donors and pediatric AML patients were analyzed by CyTOF using a panel of 32 markers.</p>
+<p>Although this tutorial follows the same workflow as the <a class="reference external" href="https://github.com/AI4SCR/scQUEST/blob/master/tutorials/scQUEST_tutorial.ipynb">standard scQUEST tutorial</a>, the AML dataset analyzed here is different in terms of cell populations present, number of proteins analyzed etc, which makes it ideal to illustrate how to adapt the standard scQUEST models to fit these needs.</p>
+<section id="import-needed-packages">
+<h2>Import needed packages<a class="headerlink" href="#import-needed-packages" title="Permalink to this headline"></a></h2>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scQUEST</span> <span class="k">as</span> <span class="nn">scq</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">import</span> <span class="nn">seaborn</span> <span class="k">as</span> <span class="nn">sns</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sklearn.preprocessing</span> <span class="kn">import</span> <span class="n">MinMaxScaler</span><span class="p">,</span> <span class="n">LabelEncoder</span><span class="p">,</span> <span class="n">StandardScaler</span>
+<span class="kn">from</span> <span class="nn">sklearn.metrics</span> <span class="kn">import</span> <span class="n">confusion_matrix</span><span class="p">,</span> <span class="n">roc_curve</span>
+<span class="kn">from</span> <span class="nn">sklearn</span> <span class="kn">import</span> <span class="n">preprocessing</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">import</span> <span class="nn">anndata</span>
+<span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
+
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s2">&quot;ignore&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-1-load-and-explore-cytof-dataset">
+<h2>Step 1: Load and explore CyTOF dataset<a class="headerlink" href="#step-1-load-and-explore-cytof-dataset" title="Permalink to this headline"></a></h2>
+<p>As before, we provide the CyTOF data from Figure 3 of (<a class="reference external" href="https://doi.org/10.1016/j.cell.2015.05.047">Levine et al., 2015</a>) in an already processed reference AnnData object that can be simply loaded as follows:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ad</span> <span class="o">=</span> <span class="n">scq</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">aml_annotated_celltypes</span><span class="p">()</span>
+<span class="n">ad</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 96381 × 39
+    obs: &#39;fcs_file&#39;, &#39;celltype&#39;, &#39;complexcelltype&#39;, &#39;patient&#39;, &#39;ncells&#39;
+    var: &#39;channel&#39;, &#39;marker&#39;, &#39;usedformanualannotation&#39;, &#39;usedforPhenoGraphclustering&#39;
+    uns: &#39;fcs_header&#39;
+</pre></div>
+</div>
+<p>We see that there are a total of 96,381 cells present that have been analyzed by CyTOF. Using 19 out of the CyTOF markers, the single-cell profiles originating from bone marrow samples of 2 healthy donors have been manually annotated via gating in 6 different cell types to determine cell types of interest, and these cell types were downloaded in separate .fcs files from Cytobank (cell type id found in <code class="docutils literal notranslate"><span class="pre">obs['celltype']</span></code>). These cell types have  different proportions, with T cells and Monocytes been more abundant and NK cells and Pre-B cells more rare.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Number of cells per cell type:</span><span class="se">\n</span><span class="s2">&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;celltype&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()))</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>Number of cells per cell type:
+CD4Tcells    26366
+Monocytes    21099
+CD8Tcells    20108
+Bcells       16520
+NKcells       6153
+PreBcells     6135
+Name: celltype, dtype: int64
+</pre></div>
+</div>
+<p>First, we pre-process the whole dataset and censor outliers:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># censor data to the 99.5% percentile</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">quantiles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">0.995</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">thres</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">quantiles</span><span class="p">):</span>
+    <span class="n">X</span><span class="p">[</span><span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">thres</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">thres</span>
+
+<span class="c1"># arcsinh-transform using a cofactor of 5</span>
+<span class="n">cofactor</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">cofactor</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+<span class="n">ad</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
+<span class="n">ad</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>AnnData object with n_obs × n_vars = 96381 × 39
+    obs: &#39;fcs_file&#39;, &#39;celltype&#39;, &#39;complexcelltype&#39;, &#39;patient&#39;, &#39;ncells&#39;
+    var: &#39;channel&#39;, &#39;marker&#39;, &#39;usedformanualannotation&#39;, &#39;usedforPhenoGraphclustering&#39;
+    uns: &#39;fcs_header&#39;
+    layers: &#39;arcsinh&#39;
+</pre></div>
+</div>
+</section>
+<section id="step-2-cell-type-identification">
+<h2>Step 2: Cell type identification<a class="headerlink" href="#step-2-cell-type-identification" title="Permalink to this headline"></a></h2>
+<p>Here we show how to use scQUEST to perform automatic cell type identification of these 6 different cell types using the single-cell measurements.
+Let’s prepare the dataset for classification by first selecting a list of 32 markers (same as the ones Levine et al. use for clustering), to train the classifier, and then scaling the data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the markers used in the classifier</span>
+<span class="n">ad_anno</span> <span class="o">=</span> <span class="n">ad</span><span class="p">[:,</span> <span class="n">ad</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">usedforPhenoGraphclustering</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">]</span>
+
+<span class="c1"># scale the data</span>
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">StandardScaler</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">])</span>
+<span class="n">ad_anno</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
+</pre></div>
+</div>
+<p>Before we train the classifier, let’s visualize the data distribution per class. We can either select one marker and plot it across all cell types, or simply plot all marker distributions in a combination of cell types.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">marker</span><span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;celltype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">celltype</span><span class="o">.</span><span class="n">values</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;celltype&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">melt</span><span class="p">(</span><span class="n">id_vars</span><span class="o">=</span><span class="s2">&quot;celltype&quot;</span><span class="p">)</span>
+
+<span class="c1"># change the marker name to explore other markers</span>
+<span class="n">marker</span> <span class="o">=</span> <span class="s2">&quot;CD3&quot;</span>
+<span class="n">g</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">FacetGrid</span><span class="p">(</span>
+    <span class="n">df</span><span class="p">[</span><span class="n">df</span><span class="o">.</span><span class="n">marker</span> <span class="o">==</span> <span class="n">marker</span><span class="p">],</span> <span class="n">row</span><span class="o">=</span><span class="s2">&quot;celltype&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;celltype&quot;</span><span class="p">,</span> <span class="n">aspect</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mf">0.5</span>
+<span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">,</span>
+    <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+    <span class="n">bw_adjust</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">clip</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
+    <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">alpha</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">map</span><span class="p">(</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">kdeplot</span><span class="p">,</span>
+    <span class="s2">&quot;value&quot;</span><span class="p">,</span>
+    <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+    <span class="n">color</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span>
+    <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="n">bw_adjust</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span>
+    <span class="n">clip</span><span class="o">=</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">max</span><span class="p">()),</span>
+<span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">refline</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s2">&quot;-&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">clip_on</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="c1"># Define and use a simple function to label the plot in axes coordinates</span>
+<span class="k">def</span> <span class="nf">label</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">color</span><span class="p">,</span> <span class="n">label</span><span class="p">):</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span>
+        <span class="mi">0</span><span class="p">,</span>
+        <span class="mf">0.2</span><span class="p">,</span>
+        <span class="n">label</span><span class="p">,</span>
+        <span class="n">fontweight</span><span class="o">=</span><span class="s2">&quot;bold&quot;</span><span class="p">,</span>
+        <span class="n">color</span><span class="o">=</span><span class="n">color</span><span class="p">,</span>
+        <span class="n">ha</span><span class="o">=</span><span class="s2">&quot;right&quot;</span><span class="p">,</span>
+        <span class="n">va</span><span class="o">=</span><span class="s2">&quot;center&quot;</span><span class="p">,</span>
+        <span class="n">transform</span><span class="o">=</span><span class="n">ax</span><span class="o">.</span><span class="n">transAxes</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="n">g</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">label</span><span class="p">,</span> <span class="s2">&quot;celltype&quot;</span><span class="p">)</span>
+
+<span class="c1"># prevent the subplots from overlapping</span>
+<span class="n">g</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">subplots_adjust</span><span class="p">(</span><span class="n">hspace</span><span class="o">=+</span><span class="mf">0.25</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">set_titles</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">yticks</span><span class="o">=</span><span class="p">[],</span> <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">yticks</span><span class="o">=</span><span class="p">[],</span> <span class="n">xlabel</span><span class="o">=</span><span class="n">marker</span><span class="p">)</span>
+<span class="n">g</span><span class="o">.</span><span class="n">despine</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">left</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_AML_tutorial_14_0.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">celltypes</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Monocytes&quot;</span><span class="p">,</span> <span class="s2">&quot;NKcells&quot;</span><span class="p">,</span> <span class="s2">&quot;Bcells&quot;</span><span class="p">)</span>
+<span class="n">mask</span> <span class="o">=</span> <span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">celltype</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">celltypes</span><span class="p">)</span>
+<span class="n">df_plot</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">ad_anno</span><span class="p">[</span><span class="n">mask</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">marker</span>
+<span class="p">)</span>
+<span class="n">df_plot</span><span class="p">[</span><span class="s2">&quot;celltype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">celltype</span><span class="o">.</span><span class="n">values</span><span class="p">[</span><span class="n">mask</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">20</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">m</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">df_plot</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">-</span> <span class="mi">1</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">subplot</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">m</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df_plot</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">df_plot</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">m</span><span class="p">],</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;celltype&quot;</span><span class="p">,</span> <span class="n">stat</span><span class="o">=</span><span class="s2">&quot;percent&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">df_plot</span><span class="o">.</span><span class="n">columns</span><span class="p">[</span><span class="n">m</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">([</span><span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">8</span><span class="p">])</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+
+<span class="c1"># plt.savefig(&#39;marker_hist_annotated.pdf&#39;, dpi=300)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_AML_tutorial_15_0.png" /></p>
+<p>We can also plot a UMAP embedding of the data and color it by cell type of marker intensity:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">umap</span> <span class="k">as</span> <span class="nn">umap</span>
+
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">ad_anno</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">],</span> <span class="n">index</span><span class="o">=</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">celltype</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">marker</span>
+<span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;celltype&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="mi">5000</span><span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">frac</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">Y1</span> <span class="o">=</span> <span class="n">umap</span><span class="o">.</span><span class="n">UMAP</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">metric</span><span class="o">=</span><span class="s2">&quot;euclidean&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">df</span><span class="p">)</span>
+<span class="n">Y1</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="n">Y1</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="n">df</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;dim&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">Y1</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])]</span>
+<span class="p">)</span>
+
+<span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;dim0&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;dim1&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="s2">&quot;celltype&quot;</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">Y1</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">([])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">yticks</span><span class="p">([])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;UMAP_1&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;UMAP_2&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;umap_celltype.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_AML_tutorial_17_0.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">4</span> <span class="o">*</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">8</span> <span class="o">*</span> <span class="mi">3</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">ax</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">df</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">axs</span><span class="o">.</span><span class="n">flat</span><span class="p">):</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">scatterplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="s2">&quot;dim0&quot;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;dim1&quot;</span><span class="p">,</span> <span class="n">hue</span><span class="o">=</span><span class="n">df</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">data</span><span class="o">=</span><span class="n">Y1</span><span class="p">,</span> <span class="n">s</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">([])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;UMAP_1&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;UMAP_2&quot;</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="s2">&quot;umap_markers.png&quot;</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">300</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_AML_tutorial_18_0.png" /></p>
+<section id="train-the-neural-network-classifier">
+<h3>Train the neural network classifier<a class="headerlink" href="#train-the-neural-network-classifier" title="Permalink to this headline"></a></h3>
+<p>As in the standard scQUEST tutorial, we will train a neural network classifier using the annotated data. Here, we adapt the default architecture of <code class="docutils literal notranslate"><span class="pre">scQUEST.classifier</span></code> model so that the input dimensions are 32 (equal to the number of features), the two hidden layers consist of 16 and 8 neurons, respectively, and the output layer consists of 6 neurons, equal to the cell types - classes. All other parameters of the model and training (e.g., activation functions, loss function) are as previously defined in the <a class="reference external" href="https://github.com/AI4SCR/scQUEST/blob/master/tutorials/scQUEST_tutorial.ipynb">standard scQUEST tutorial</a>.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;celltype&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>CD4Tcells    26366
+Monocytes    21099
+CD8Tcells    20108
+Bcells       16520
+NKcells       6153
+PreBcells     6135
+Name: celltype, dtype: int64
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;celltype_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s2">&quot;celltype&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">ngroup</span><span class="p">()</span>
+<span class="n">n_classes</span> <span class="o">=</span> <span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">celltype</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+<span class="n">n_features</span> <span class="o">=</span> <span class="n">ad_anno</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;n_classes: </span><span class="si">{</span><span class="n">n_classes</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;n_features: </span><span class="si">{</span><span class="n">n_features</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="kn">from</span> <span class="nn">scQUEST.classifier</span> <span class="kn">import</span> <span class="n">DefaultCLF</span><span class="p">,</span> <span class="n">ClfLitModule</span>
+<span class="kn">import</span> <span class="nn">torchmetrics</span>
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+
+<span class="c1"># the line before shows how to customize the model architecture</span>
+<span class="n">model</span> <span class="o">=</span> <span class="n">DefaultCLF</span><span class="p">(</span><span class="n">n_in</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span> <span class="n">n_out</span><span class="o">=</span><span class="n">n_classes</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">))</span>
+<span class="n">model</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>n_classes: 6
+n_features: 32
+
+
+
+
+
+DefaultCLF(
+  (activation): ReLU()
+  (layers): ModuleList(
+    (0): Linear(in_features=32, out_features=16, bias=True)
+    (1): Linear(in_features=16, out_features=8, bias=True)
+    (2): Linear(in_features=8, out_features=6, bias=True)
+  )
+)
+</pre></div>
+</div>
+<p>Since, as we saw in Step 2, the celltype distribution of this dataset is very unbalanced, we split the dataset into training (50%), validation (25%), and test (25%) sets in a <strong>stratified</strong> fashion to preserve cell type proportions, and also use a cross-entropy loss function <strong>with class weights</strong>, defined as the inverse proportions of the classes:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">torch</span> <span class="kn">import</span> <span class="n">nn</span>
+
+<span class="n">counts</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">celltype_id</span><span class="p">)</span>
+<span class="n">weight</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="n">counts</span>
+<span class="n">weight</span> <span class="o">=</span> <span class="n">weight</span> <span class="o">/</span> <span class="n">weight</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">weight</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">weight</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+<span class="n">loss</span> <span class="o">=</span> <span class="n">nn</span><span class="o">.</span><span class="n">CrossEntropyLoss</span><span class="p">(</span><span class="n">weight</span><span class="o">=</span><span class="n">weight</span><span class="p">)</span>
+
+<span class="n">mapping</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;celltype&quot;</span><span class="p">,</span> <span class="s2">&quot;celltype_id&quot;</span><span class="p">]]</span>
+    <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;celltype_id&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span>
+    <span class="p">{</span><span class="s2">&quot;counts&quot;</span><span class="p">:</span> <span class="n">counts</span><span class="p">,</span> <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="n">weight</span><span class="p">,</span> <span class="s2">&quot;celltype_id&quot;</span><span class="p">:</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">counts</span><span class="p">))}</span>
+<span class="p">)</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;celltype&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">celltype_id</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span>
+<span class="n">df</span>
+</pre></div>
+</div>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</pre></div>
+</div>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>counts</th>
+      <th>weight</th>
+      <th>celltype_id</th>
+      <th>celltype</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>16520</td>
+      <td>0.116161</td>
+      <td>0</td>
+      <td>Bcells</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>26366</td>
+      <td>0.072783</td>
+      <td>1</td>
+      <td>CD4Tcells</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>20108</td>
+      <td>0.095434</td>
+      <td>2</td>
+      <td>CD8Tcells</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>21099</td>
+      <td>0.090951</td>
+      <td>3</td>
+      <td>Monocytes</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>6153</td>
+      <td>0.311878</td>
+      <td>4</td>
+      <td>NKcells</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>6135</td>
+      <td>0.312793</td>
+      <td>5</td>
+      <td>PreBcells</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<p>Let’s train the model using again an early stopping criterion:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytorch_lightning.callbacks.early_stopping</span> <span class="kn">import</span> <span class="n">EarlyStopping</span>
+
+<span class="n">es</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s2">&quot;val_loss&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="c1"># initialize model and train classifier</span>
+<span class="n">clf</span> <span class="o">=</span> <span class="n">scq</span><span class="o">.</span><span class="n">Classifier</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">loss_fn</span><span class="o">=</span><span class="n">loss</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">clf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span>
+    <span class="n">ad_anno</span><span class="p">,</span>
+    <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">,</span>
+    <span class="n">target</span><span class="o">=</span><span class="s2">&quot;celltype_id&quot;</span><span class="p">,</span>
+    <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">es</span><span class="p">],</span>
+    <span class="n">max_epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+    <span class="n">seed</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+<span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>GPU available: False, used: False
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+
+  | Name             | Type             | Params
+------------------------------------------------------
+0 | model            | DefaultCLF       | 718   
+1 | loss             | CrossEntropyLoss | 0     
+2 | metric_accuracy  | Accuracy         | 0     
+3 | metric_f1score   | F1Score          | 0     
+4 | metric_precision | Precision        | 0     
+5 | metric_recall    | Recall           | 0     
+------------------------------------------------------
+718       Trainable params
+0         Non-trainable params
+718       Total params
+0.003     Total estimated model params size (MB)
+
+
+
+Sanity Checking: 0it [00:00, ?it/s]
+
+
+
+Training: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Testing: 0it [00:00, ?it/s]
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+       Test metric             DataLoader 0
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        test_loss          0.004620830994099379
+  test_metric_accuracy      0.9989625215530396
+   test_metric_f1score      0.9989625215530396
+  test_metric_precision     0.9989625215530396
+   test_metric_recall       0.9989625215530396
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+</pre></div>
+</div>
+<p>Exploring the model’s performance as before (e.g., plotting the loss and the confusion matrix), we see that it achieves a 99.9% accuracy and 99.9% precision in the test set.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># examine model performance</span>
+<span class="n">hist</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">history</span>
+<span class="n">fit_loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">hist</span><span class="p">[</span><span class="s2">&quot;fit_loss&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+    <span class="n">stage</span><span class="o">=</span><span class="s2">&quot;fit&quot;</span>
+<span class="p">)</span>
+<span class="n">val_loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">hist</span><span class="p">[</span><span class="s2">&quot;val_loss&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+    <span class="n">stage</span><span class="o">=</span><span class="s2">&quot;validation&quot;</span>
+<span class="p">)</span>
+<span class="n">test_loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span>
+    <span class="n">hist</span><span class="p">[</span><span class="s2">&quot;test_loss&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">stage</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">fit_loss</span><span class="p">,</span> <span class="n">val_loss</span><span class="p">,</span> <span class="n">test_loss</span><span class="p">))</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">stage</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="s2">&quot;validation&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]],</span>
+            <span class="p">[</span><span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">loss</span><span class="p">],</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">,</span>
+            <span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span>
+            <span class="s2">&quot;.-&quot;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">stage</span><span class="p">,</span>
+        <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Training steps&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Loss&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="c1"># plt.savefig(&#39;loss.pdf&#39;, dpi=300)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f8ef3c0ed90&gt;
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_AML_tutorial_27_1.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># %% confusion matrix</span>
+<span class="n">dl</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">datamodule</span><span class="o">.</span><span class="n">test_dataloader</span><span class="p">()</span>
+<span class="n">data</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">data</span>
+<span class="n">y</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">targets</span>
+<span class="n">yhat</span> <span class="o">=</span> <span class="n">clf</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+
+<span class="n">mapping</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">ad_anno</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;celltype&quot;</span><span class="p">,</span> <span class="s2">&quot;celltype_id&quot;</span><span class="p">]]</span>
+    <span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;celltype_id&quot;</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">squeeze</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">confusion_matrix</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="s2">&quot;pred&quot;</span><span class="p">)</span>
+<span class="n">m</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">m</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">index</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">columns</span> <span class="o">=</span> <span class="n">m</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">mapping</span><span class="p">)</span>
+<span class="n">m</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;True&quot;</span>
+<span class="n">m</span><span class="o">.</span><span class="n">columns</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Predicted&quot;</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">m</span><span class="o">.</span><span class="n">T</span> <span class="o">*</span> <span class="mi">100</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;.3f&quot;</span><span class="p">)</span>
+<span class="c1"># plt.savefig(&#39;confusion.pdf&#39;, dpi=300)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_AML_tutorial_28_0.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">ad_anno</span>
+<span class="k">del</span> <span class="n">ad</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="step-3-phenotypic-abnormality">
+<h2>Step 3: Phenotypic abnormality<a class="headerlink" href="#step-3-phenotypic-abnormality" title="Permalink to this headline"></a></h2>
+<p>We will again follow the same steps as in the <a class="reference external" href="https://github.com/AI4SCR/scQUEST/blob/master/tutorials/scQUEST_tutorial.ipynb">standard scQUEST tutorial</a> to illustrate how to compute phenotypic abnormlaity. This time, our reference dataset, used to train the Abnormality autoencoder, is the bone marrow data originating from healthy donors, and the query dataset is the bone marrow data originating from AML patients. We first load the AnnData object that contains all measurements, and then preprocess as before.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ad</span> <span class="o">=</span> <span class="n">scq</span><span class="o">.</span><span class="n">dataset</span><span class="o">.</span><span class="n">aml_and_healthy</span><span class="p">()</span>
+<span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>100%|███████████████████████████████████████████████████████████████████████████████████████████| 186M/186M [00:41&lt;00:00, 4.72MB/s]
+</pre></div>
+</div>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</pre></div>
+</div>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>fcs_file</th>
+      <th>patient</th>
+      <th>tissue</th>
+      <th>ncells</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>H1_NoDrug_Basal1_PhenoGraph.fcs</td>
+      <td>H1</td>
+      <td>healthy</td>
+      <td>15394.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>H1_NoDrug_Basal1_PhenoGraph.fcs</td>
+      <td>H1</td>
+      <td>healthy</td>
+      <td>15394.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>H1_NoDrug_Basal1_PhenoGraph.fcs</td>
+      <td>H1</td>
+      <td>healthy</td>
+      <td>15394.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>H1_NoDrug_Basal1_PhenoGraph.fcs</td>
+      <td>H1</td>
+      <td>healthy</td>
+      <td>15394.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>H1_NoDrug_Basal1_PhenoGraph.fcs</td>
+      <td>H1</td>
+      <td>healthy</td>
+      <td>15394.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">quantiles</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">quantile</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">q</span><span class="o">=</span><span class="mf">0.995</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">thres</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">quantiles</span><span class="p">):</span>
+    <span class="n">X</span><span class="p">[</span><span class="n">X</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">&gt;</span> <span class="n">thres</span><span class="p">,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">thres</span>
+<span class="n">cofactor</span> <span class="o">=</span> <span class="mi">5</span>
+<span class="n">np</span><span class="o">.</span><span class="n">divide</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">cofactor</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">arcsinh</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">out</span><span class="o">=</span><span class="n">X</span><span class="p">)</span>
+<span class="n">ad</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
+</pre></div>
+</div>
+<p>Next, subset the whole dataset to only include cells from the selected healty patients, and scale the data as before:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ad_train</span> <span class="o">=</span> <span class="n">ad</span><span class="p">[</span><span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">tissue</span> <span class="o">==</span> <span class="s2">&quot;healthy&quot;</span><span class="p">,</span> <span class="n">ad</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">usedforPhenoGraphclustering</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">]</span>
+
+<span class="n">n_features</span> <span class="o">=</span> <span class="n">ad_train</span><span class="o">.</span><span class="n">X</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;n_cells: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">ad_train</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;n_features: </span><span class="si">{</span><span class="n">n_features</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+<span class="n">scaler</span> <span class="o">=</span> <span class="n">MinMaxScaler</span><span class="p">()</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">ad_train</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">])</span>
+<span class="n">ad_train</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
+
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">ad_train</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">max</span><span class="p">(),</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">assert</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">ad_train</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">min</span><span class="p">(),</span> <span class="mi">0</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>n_cells: 183414
+n_features: 30
+</pre></div>
+</div>
+<section id="train-the-abnormality-autoencoder">
+<h3>Train the abnormality Autoencoder<a class="headerlink" href="#train-the-abnormality-autoencoder" title="Permalink to this headline"></a></h3>
+<p>We follow the same process as before, but note how we customize the dimensions of the autoencoder:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytorch_lightning.callbacks.early_stopping</span> <span class="kn">import</span> <span class="n">EarlyStopping</span>
+<span class="kn">from</span> <span class="nn">scQUEST.abnormality</span> <span class="kn">import</span> <span class="n">DefaultAE</span>
+
+<span class="n">es</span> <span class="o">=</span> <span class="n">EarlyStopping</span><span class="p">(</span><span class="n">monitor</span><span class="o">=</span><span class="s2">&quot;val_loss&quot;</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;min&quot;</span><span class="p">,</span> <span class="n">min_delta</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span> <span class="n">patience</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">DefaultAE</span><span class="p">(</span><span class="n">n_in</span><span class="o">=</span><span class="n">n_features</span><span class="p">,</span> <span class="n">hidden</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">16</span><span class="p">))</span>
+<span class="n">model</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>DefaultAE(
+  (activation): ReLU()
+  (activation_last): Sigmoid()
+  (layers): ModuleList(
+    (0): Linear(in_features=30, out_features=16, bias=True)
+    (1): Linear(in_features=16, out_features=8, bias=True)
+    (2): Linear(in_features=8, out_features=4, bias=True)
+    (3): Linear(in_features=4, out_features=8, bias=True)
+    (4): Linear(in_features=8, out_features=16, bias=True)
+    (5): Linear(in_features=16, out_features=30, bias=True)
+  )
+)
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize and fit the model</span>
+<span class="n">Abn</span> <span class="o">=</span> <span class="n">scq</span><span class="o">.</span><span class="n">Abnormality</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">)</span>
+<span class="n">Abn</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">ad_train</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">,</span> <span class="n">callbacks</span><span class="o">=</span><span class="p">[</span><span class="n">es</span><span class="p">],</span> <span class="n">max_epochs</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>GPU available: False, used: False
+TPU available: False, using: 0 TPU cores
+IPU available: False, using: 0 IPUs
+HPU available: False, using: 0 HPUs
+
+  | Name                    | Type             | Params
+-------------------------------------------------------------
+0 | model                   | DefaultAE        | 1.4 K 
+1 | loss                    | MSELoss          | 0     
+2 | metric_meansquarederror | MeanSquaredError | 0     
+-------------------------------------------------------------
+1.4 K     Trainable params
+0         Non-trainable params
+1.4 K     Total params
+0.005     Total estimated model params size (MB)
+
+
+
+Sanity Checking: 0it [00:00, ?it/s]
+
+
+
+Training: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Validation: 0it [00:00, ?it/s]
+
+
+
+Testing: 0it [00:00, ?it/s]
+
+
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+        Test metric                 DataLoader 0
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+         test_loss              0.013673492707312107
+test_metric_meansquarederror    0.013673494569957256
+────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+</pre></div>
+</div>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># examine model performance</span>
+<span class="n">hist</span> <span class="o">=</span> <span class="n">Abn</span><span class="o">.</span><span class="n">logger</span><span class="o">.</span><span class="n">history</span>
+<span class="n">fit_loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">hist</span><span class="p">[</span><span class="s2">&quot;fit_loss&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+    <span class="n">stage</span><span class="o">=</span><span class="s2">&quot;fit&quot;</span>
+<span class="p">)</span>
+<span class="n">val_loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span><span class="n">hist</span><span class="p">[</span><span class="s2">&quot;val_loss&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span>
+    <span class="n">stage</span><span class="o">=</span><span class="s2">&quot;validation&quot;</span>
+<span class="p">)</span>
+<span class="n">test_loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="o">.</span><span class="n">from_records</span><span class="p">(</span>
+    <span class="n">hist</span><span class="p">[</span><span class="s2">&quot;test_loss&quot;</span><span class="p">],</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;step&quot;</span><span class="p">,</span> <span class="s2">&quot;loss&quot;</span><span class="p">]</span>
+<span class="p">)</span><span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="n">stage</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">)</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">fit_loss</span><span class="p">,</span> <span class="n">val_loss</span><span class="p">,</span> <span class="n">test_loss</span><span class="p">))</span>
+<span class="n">loss</span> <span class="o">=</span> <span class="n">loss</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">stage</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;fit&quot;</span><span class="p">,</span> <span class="s2">&quot;validation&quot;</span><span class="p">,</span> <span class="s2">&quot;test&quot;</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="n">stage</span> <span class="o">==</span> <span class="s2">&quot;test&quot;</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">ax</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()[</span><span class="mi">1</span><span class="p">]],</span>
+            <span class="p">[</span><span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span> <span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">loss</span><span class="p">],</span>
+            <span class="n">label</span><span class="o">=</span><span class="s2">&quot;test&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span>
+            <span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">step</span><span class="p">,</span>
+            <span class="n">loss</span><span class="p">[</span><span class="n">loss</span><span class="o">.</span><span class="n">stage</span> <span class="o">==</span> <span class="n">stage</span><span class="p">]</span><span class="o">.</span><span class="n">loss</span><span class="p">,</span>
+            <span class="s2">&quot;.-&quot;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="n">stage</span><span class="p">,</span>
+        <span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Training steps&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Loss&quot;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="c1"># plt.savefig(&#39;loss.pdf&#39;, dpi=300)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;matplotlib.legend.Legend at 0x7f8f10505790&gt;
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_AML_tutorial_39_1.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># estimate reconstruction error on the training data</span>
+<span class="n">Abn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ad_train</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">)</span>
+<span class="n">mse_train</span> <span class="o">=</span> <span class="p">(</span><span class="n">ad_train</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;abnormality&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ad_train</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;abnormality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mse_train</span>
+
+<span class="n">y</span> <span class="o">=</span> <span class="n">ad_train</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">]</span>
+<span class="n">yhat</span> <span class="o">=</span> <span class="n">Abn</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>  <span class="c1"># access base torch model</span>
+<span class="n">err</span> <span class="o">=</span> <span class="n">ad_train</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;abnormality&quot;</span><span class="p">]</span>
+
+<span class="n">markers</span> <span class="o">=</span> <span class="n">ad_train</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;marker&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">16</span> <span class="o">*</span> <span class="mf">1.2</span><span class="p">,</span> <span class="mi">8</span> <span class="o">*</span> <span class="mf">1.2</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">dat</span><span class="p">,</span> <span class="n">title</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+    <span class="n">axs</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">err</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Input&quot;</span><span class="p">,</span> <span class="s2">&quot;Reconstruction&quot;</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">]</span>
+<span class="p">):</span>
+    <span class="n">ax</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;seismic&quot;</span> <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;Error&quot;</span> <span class="k">else</span> <span class="s2">&quot;magma&quot;</span>
+    <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;Error&quot;</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">)),</span> <span class="n">labels</span><span class="o">=</span><span class="n">markers</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;features&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;cells&quot;</span><span class="p">)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_AML_tutorial_40_0.png" /></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="k">del</span> <span class="n">ad_train</span>
+</pre></div>
+</div>
+<p>Now let’s use the model to reconstruct all cells and compute the mean squared error of the reconstruction:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># pre-process for Abnormality prediction</span>
+<span class="n">ad_pred</span> <span class="o">=</span> <span class="n">ad</span><span class="p">[:,</span> <span class="n">ad</span><span class="o">.</span><span class="n">var</span><span class="o">.</span><span class="n">usedforPhenoGraphclustering</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">]</span>
+<span class="n">X</span> <span class="o">=</span> <span class="n">scaler</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">ad_pred</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">])</span>
+<span class="n">ad_pred</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">X</span>
+
+<span class="c1"># estimate reconstruction error</span>
+<span class="n">Abn</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ad_pred</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">)</span>
+<span class="n">mse</span> <span class="o">=</span> <span class="p">(</span><span class="n">ad_pred</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;abnormality&quot;</span><span class="p">]</span> <span class="o">**</span> <span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">ad_pred</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;abnormality&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mse</span>
+</pre></div>
+</div>
+<p>To evaluate the results, let’s reconstruct all single-cells and visualize the prediction residuals:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">y</span> <span class="o">=</span> <span class="n">ad_pred</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;arcsinh_norm&quot;</span><span class="p">]</span>
+<span class="n">yhat</span> <span class="o">=</span> <span class="n">Abn</span><span class="o">.</span><span class="n">model</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">y</span><span class="p">))</span><span class="o">.</span><span class="n">detach</span><span class="p">()</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>  <span class="c1"># access base torch model</span>
+<span class="n">err</span> <span class="o">=</span> <span class="n">ad_pred</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="s2">&quot;abnormality&quot;</span><span class="p">]</span>
+<span class="n">y1</span> <span class="o">=</span> <span class="n">ad_pred</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">ad_pred</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;tissue&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;healthy&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">y2</span> <span class="o">=</span> <span class="n">ad_pred</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="n">ad_pred</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;tissue&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;AML&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+<span class="n">markers</span> <span class="o">=</span> <span class="n">ad_pred</span><span class="o">.</span><span class="n">var</span><span class="p">[</span><span class="s2">&quot;marker&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axs</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">10</span><span class="p">))</span>
+<span class="k">for</span> <span class="n">ax</span><span class="p">,</span> <span class="n">dat</span><span class="p">,</span> <span class="n">title</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span>
+    <span class="n">axs</span><span class="o">.</span><span class="n">flat</span><span class="p">,</span> <span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">,</span> <span class="n">err</span><span class="p">],</span> <span class="p">[</span><span class="s2">&quot;Input&quot;</span><span class="p">,</span> <span class="s2">&quot;Reconstruction&quot;</span><span class="p">,</span> <span class="s2">&quot;Error&quot;</span><span class="p">]</span>
+<span class="p">):</span>
+    <span class="n">ax</span><span class="p">:</span> <span class="n">plt</span><span class="o">.</span><span class="n">Axes</span>
+    <span class="n">cmap</span> <span class="o">=</span> <span class="s2">&quot;seismic&quot;</span> <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;Error&quot;</span> <span class="k">else</span> <span class="s2">&quot;magma&quot;</span>
+    <span class="n">vmin</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span> <span class="k">if</span> <span class="n">title</span> <span class="o">==</span> <span class="s2">&quot;Error&quot;</span> <span class="k">else</span> <span class="mi">0</span>
+    <span class="n">im</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">dat</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="n">cmap</span><span class="p">,</span> <span class="n">vmin</span><span class="o">=</span><span class="n">vmin</span><span class="p">,</span> <span class="n">vmax</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">y1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">y1</span> <span class="o">+</span> <span class="n">y2</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">)</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_aspect</span><span class="p">(</span><span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">/</span> <span class="n">dat</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">markers</span><span class="p">)),</span> <span class="n">labels</span><span class="o">=</span><span class="n">markers</span><span class="p">,</span> <span class="n">rotation</span><span class="o">=</span><span class="s2">&quot;vertical&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s2">&quot;features&quot;</span><span class="p">)</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="n">title</span><span class="p">)</span>
+    <span class="n">fig</span><span class="o">.</span><span class="n">colorbar</span><span class="p">(</span><span class="n">im</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="n">axs</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;cells&quot;</span><span class="p">)</span>
+<span class="c1"># plt.savefig(&#39;reconstruction.pdf&#39;, dpi=300)</span>
+<span class="n">fig</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_AML_tutorial_45_0.png" /></p>
+<p>Now let’s visualize the abnormality for different clinical data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">clinical_data</span> <span class="o">=</span> <span class="s2">&quot;tissue&quot;</span>
+<span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;healthy&quot;</span><span class="p">,</span> <span class="s2">&quot;AML&quot;</span><span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">dat</span> <span class="o">=</span> <span class="p">(</span>
+    <span class="n">ad_pred</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="n">clinical_data</span><span class="p">,</span> <span class="s2">&quot;patient&quot;</span><span class="p">])</span>
+    <span class="o">.</span><span class="n">abnormality</span><span class="o">.</span><span class="n">agg</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">median</span><span class="p">)</span>
+    <span class="o">.</span><span class="n">dropna</span><span class="p">()</span>
+    <span class="o">.</span><span class="n">reset_index</span><span class="p">()</span>
+<span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">dat</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">clinical_data</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;abnormality&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">whis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
+<span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">stripplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">dat</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">clinical_data</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;abnormality&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="c1"># plt.savefig(&#39;abnormality_boxplots.pdf&#39;, dpi=300)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:xlabel=&#39;tissue&#39;, ylabel=&#39;abnormality&#39;&gt;
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_AML_tutorial_47_1.png" /></p>
+</section>
+</section>
+<section id="tumor-individuality">
+<h2>Tumor individuality<a class="headerlink" href="#tumor-individuality" title="Permalink to this headline"></a></h2>
+<p>The tumor individuality module for the AML dataset is largely unchanged from the default scQUEST tutorial. We first prepare the dataset and randomly select a subset of cells from each sample:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># preprocessing</span>
+<span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="p">[</span><span class="s2">&quot;sample_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;tissue&quot;</span><span class="p">,</span> <span class="s2">&quot;patient&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">ngroup</span><span class="p">()</span>
+
+<span class="c1"># sub-sampling</span>
+<span class="n">tmp</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">groupby</span><span class="p">([</span><span class="s2">&quot;sample_id&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">indices</span>
+<span class="n">n_cells</span> <span class="o">=</span> <span class="mi">200</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">item</span> <span class="ow">in</span> <span class="n">tmp</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+    <span class="n">size</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">),</span> <span class="n">n_cells</span><span class="p">)</span>
+    <span class="n">idx</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">item</span><span class="p">)),</span> <span class="n">size</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+    <span class="n">indices</span><span class="o">.</span><span class="n">extend</span><span class="p">(</span><span class="n">item</span><span class="p">[</span><span class="n">idx</span><span class="p">])</span>
+<span class="n">indices</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">indices</span><span class="p">)</span>
+<span class="n">ad</span> <span class="o">=</span> <span class="n">ad</span><span class="p">[</span><span class="n">indices</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>We initialize the individuality model and use it to predict the scores:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">Indiv</span> <span class="o">=</span> <span class="n">scq</span><span class="o">.</span><span class="n">Individuality</span><span class="p">()</span>
+<span class="n">Indiv</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span><span class="n">ad</span><span class="p">,</span> <span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="o">.</span><span class="n">sample_id</span><span class="p">,</span> <span class="n">layer</span><span class="o">=</span><span class="s2">&quot;arcsinh&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The observation-level scores (one vector per single cell, indicating it’s similarity to all other samples) are saved in the <code class="docutils literal notranslate"><span class="pre">.obsm</span></code> attribute of the AnnData object, as a matrix of size <code class="docutils literal notranslate"><span class="pre">n_cells</span> <span class="pre">x</span> <span class="pre">n_samples</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">ad</span><span class="o">.</span><span class="n">obsm</span><span class="p">[</span><span class="s2">&quot;individuality&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>matrix([[0.42, 0.19, 0.04, ..., 0.  , 0.  , 0.  ],
+        [0.5 , 0.35, 0.04, ..., 0.  , 0.  , 0.  ],
+        [0.49, 0.39, 0.01, ..., 0.  , 0.02, 0.  ],
+        ...,
+        [0.02, 0.  , 0.01, ..., 0.02, 0.23, 0.48],
+        [0.  , 0.  , 0.  , ..., 0.  , 0.26, 0.53],
+        [0.  , 0.  , 0.06, ..., 0.  , 0.2 , 0.66]])
+</pre></div>
+</div>
+<p>The aggregated sample-level scores (one vector per sample, indicating a sample’s similarity to all other samples) are saved in the .uns attribute of the AnnData object, as a matrix of size <code class="docutils literal notranslate"><span class="pre">n_samples</span> <span class="pre">x</span> <span class="pre">n_samples</span></code>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># access sample-level aggregated individuality</span>
+<span class="n">ad</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;individuality_agg&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
+</pre></div>
+</div>
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>.dataframe tbody tr th {
+    vertical-align: top;
+}
+
+.dataframe thead th {
+    text-align: right;
+}
+</pre></div>
+</div>
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>...</th>
+      <th>11</th>
+      <th>12</th>
+      <th>13</th>
+      <th>14</th>
+      <th>15</th>
+      <th>16</th>
+      <th>17</th>
+      <th>18</th>
+      <th>19</th>
+      <th>20</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.58515</td>
+      <td>0.24460</td>
+      <td>0.02475</td>
+      <td>0.00000</td>
+      <td>0.00000</td>
+      <td>0.00225</td>
+      <td>0.00055</td>
+      <td>0.00000</td>
+      <td>0.00335</td>
+      <td>0.00340</td>
+      <td>...</td>
+      <td>0.00025</td>
+      <td>0.00875</td>
+      <td>0.05995</td>
+      <td>0.00610</td>
+      <td>0.00875</td>
+      <td>0.00045</td>
+      <td>0.00405</td>
+      <td>0.00055</td>
+      <td>0.00625</td>
+      <td>0.01375</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.37295</td>
+      <td>0.42455</td>
+      <td>0.02985</td>
+      <td>0.00000</td>
+      <td>0.00000</td>
+      <td>0.00565</td>
+      <td>0.00100</td>
+      <td>0.00000</td>
+      <td>0.00770</td>
+      <td>0.00255</td>
+      <td>...</td>
+      <td>0.00025</td>
+      <td>0.01055</td>
+      <td>0.07285</td>
+      <td>0.00700</td>
+      <td>0.00325</td>
+      <td>0.00035</td>
+      <td>0.00265</td>
+      <td>0.00035</td>
+      <td>0.00795</td>
+      <td>0.02545</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.02380</td>
+      <td>0.01490</td>
+      <td>0.41500</td>
+      <td>0.00000</td>
+      <td>0.00000</td>
+      <td>0.07335</td>
+      <td>0.00055</td>
+      <td>0.00005</td>
+      <td>0.03490</td>
+      <td>0.03390</td>
+      <td>...</td>
+      <td>0.06180</td>
+      <td>0.08360</td>
+      <td>0.07435</td>
+      <td>0.00010</td>
+      <td>0.01055</td>
+      <td>0.00455</td>
+      <td>0.01205</td>
+      <td>0.00060</td>
+      <td>0.02295</td>
+      <td>0.05405</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.00000</td>
+      <td>0.00000</td>
+      <td>0.00040</td>
+      <td>0.64555</td>
+      <td>0.33720</td>
+      <td>0.00305</td>
+      <td>0.00000</td>
+      <td>0.00055</td>
+      <td>0.00000</td>
+      <td>0.00020</td>
+      <td>...</td>
+      <td>0.00090</td>
+      <td>0.00025</td>
+      <td>0.00000</td>
+      <td>0.00005</td>
+      <td>0.00010</td>
+      <td>0.00625</td>
+      <td>0.00105</td>
+      <td>0.00010</td>
+      <td>0.00320</td>
+      <td>0.00115</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.00000</td>
+      <td>0.00000</td>
+      <td>0.00050</td>
+      <td>0.25865</td>
+      <td>0.69115</td>
+      <td>0.00840</td>
+      <td>0.00000</td>
+      <td>0.00140</td>
+      <td>0.00000</td>
+      <td>0.00020</td>
+      <td>...</td>
+      <td>0.00115</td>
+      <td>0.00110</td>
+      <td>0.00000</td>
+      <td>0.00015</td>
+      <td>0.00005</td>
+      <td>0.01430</td>
+      <td>0.00215</td>
+      <td>0.00020</td>
+      <td>0.01405</td>
+      <td>0.00655</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 21 columns</p>
+</div>
+<p>To assess a sample’s uniqueness withn the cohort, we will use the diagonal of that matrix:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dat</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">uns</span><span class="p">[</span><span class="s2">&quot;individuality_agg&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">dat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">diag</span><span class="p">(</span><span class="n">dat</span><span class="p">),</span> <span class="n">index</span><span class="o">=</span><span class="n">dat</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;individuality&quot;</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Now let’s assess how individuality scores are related to a patient’s clinical data:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">res</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">obs</span><span class="p">[[</span><span class="s2">&quot;tissue&quot;</span><span class="p">,</span> <span class="s2">&quot;patient&quot;</span><span class="p">,</span> <span class="s2">&quot;sample_id&quot;</span><span class="p">]]</span>
+<span class="n">res</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="o">~</span><span class="n">res</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()]</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;sample_id&quot;</span><span class="p">)</span>
+<span class="n">dat</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">((</span><span class="n">dat</span><span class="p">,</span> <span class="n">res</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">clinical_data</span> <span class="o">=</span> <span class="s2">&quot;tissue&quot;</span>
+<span class="n">order</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;healthy&quot;</span><span class="p">,</span> <span class="s2">&quot;AML&quot;</span><span class="p">]</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span>
+    <span class="n">data</span><span class="o">=</span><span class="n">dat</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">clinical_data</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;individuality&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">whis</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">],</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span>
+<span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">stripplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">dat</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="n">clinical_data</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s2">&quot;individuality&quot;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">order</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">ax</span><span class="p">)</span>
+<span class="c1"># plt.savefig(&#39;individuality_boxplots.pdf&#39;, dpi=300)</span>
+</pre></div>
+</div>
+<div class="highlight-none notranslate"><div class="highlight"><pre><span></span>&lt;AxesSubplot:xlabel=&#39;tissue&#39;, ylabel=&#39;individuality&#39;&gt;
+</pre></div>
+</div>
+<p><img alt="png" src="_images/scQUEST_AML_tutorial_60_1.png" /></p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scQUEST_tutorial.html" class="btn btn-neutral float-left" title="scQUEST Tutorial" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Custom_models.html" class="btn btn-neutral float-right" title="Custom Models, Training &amp; Data Loaders" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright IBM Corp. 2022.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Overview &mdash; scQUEST  documentation</title>
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Tutorials" href="tutorials.html" />
+    <link rel="prev" title="Installation" href="installation.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> scQUEST
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#methods">Methods</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#datasets">Datasets</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="scQUEST_api/scQUEST.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">scQUEST</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+      <li>Overview</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="overview">
+<h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h1>
+<section id="methods">
+<h2>Methods<a class="headerlink" href="#methods" title="Permalink to this headline"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="scQUEST_api/scQUEST.abnormality.html#scQUEST.abnormality.Abnormality" title="scQUEST.abnormality.Abnormality"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Abnormality</span></code></a>([n_in, model, loss_fn, metrics, ...])</p></td>
+<td><p>Estimator to quantify the abnormality of a cell's expression profile.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="scQUEST_api/scQUEST.individuality.html#scQUEST.individuality.Individuality" title="scQUEST.individuality.Individuality"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Individuality</span></code></a>([n_neighbors, radius, ...])</p></td>
+<td><p>Computes the individuality of each observation in the data set according to <a class="reference internal" href="references.html#wagner2019" id="id1"><span>[Wagner2019]</span></a>.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="scQUEST_api/scQUEST.classifier.html#scQUEST.classifier.Classifier" title="scQUEST.classifier.Classifier"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Classifier</span></code></a>([n_in, model, loss_fn, metrics, seed])</p></td>
+<td><p>Classifier to classify a cell as epithelial or non-epithelial cell.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="datasets">
+<h2>Datasets<a class="headerlink" href="#datasets" title="Permalink to this headline"></a></h2>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="scQUEST_api/scQUEST.dataset.datasets.html#scQUEST.dataset.datasets.breastCancerAtlas" title="scQUEST.dataset.datasets.breastCancerAtlas"><code class="xref py py-obj docutils literal notranslate"><span class="pre">breastCancerAtlas</span></code></a>([force_load])</p></td>
+<td><p>Flow cytometry dataset with annotated epithelial cells in <cite>['celltype', 'celltype_class']</cite> of <cite>ad.obs</cite>.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="scQUEST_api/scQUEST.dataset.datasets.html#scQUEST.dataset.datasets.breastCancerAtlasRaw" title="scQUEST.dataset.datasets.breastCancerAtlasRaw"><code class="xref py py-obj docutils literal notranslate"><span class="pre">breastCancerAtlasRaw</span></code></a>([force_load])</p></td>
+<td><p>Raw flow cytometry dataset.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="scQUEST_api/scQUEST.dataset.datasets.html#scQUEST.dataset.datasets.aml_and_healthy" title="scQUEST.dataset.datasets.aml_and_healthy"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aml_and_healthy</span></code></a>([force_load])</p></td>
+<td><p>AML dataset with cells from healthy and AML patients.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="scQUEST_api/scQUEST.dataset.datasets.html#scQUEST.dataset.datasets.aml_annotated_celltypes" title="scQUEST.dataset.datasets.aml_annotated_celltypes"><code class="xref py py-obj docutils literal notranslate"><span class="pre">aml_annotated_celltypes</span></code></a>([force_load])</p></td>
+<td><p>AML dataset with cells from healthy donors to show case classification.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation.html" class="btn btn-neutral float-left" title="Installation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tutorials.html" class="btn btn-neutral float-right" title="Tutorials" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright IBM Corp. 2022.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

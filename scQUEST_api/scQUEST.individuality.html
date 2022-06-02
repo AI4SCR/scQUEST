@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scQUEST.individuality module &mdash; scQUEST  documentation</title>
+      <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../" id="documentation_options" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="scQUEST.utils module" href="scQUEST.utils.html" />
+    <link rel="prev" title="scQUEST.data module" href="scQUEST.data.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../index.html" class="icon icon-home"> scQUEST
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1 current"><a class="reference internal" href="scQUEST.html">API</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.abnormality.html">scQUEST.abnormality module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.classifier.html">scQUEST.classifier module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.data.html">scQUEST.data module</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">scQUEST.individuality module</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#summary">Summary</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.utils.html">scQUEST.utils module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.dataset.html">scQUEST.dataset package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.tests.html">scQUEST.tests package</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.html#summary">Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="scQUEST.html#reference">Reference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">scQUEST</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="scQUEST.html">scQUEST package</a> &raquo;</li>
+      <li>scQUEST.individuality module</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/scQUEST_api/scQUEST.individuality.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-scQUEST.individuality">
+<span id="scquest-individuality-module"></span><h1>scQUEST.individuality module<a class="headerlink" href="#module-scQUEST.individuality" title="Permalink to this headline"></a></h1>
+<section id="summary">
+<h2>Summary<a class="headerlink" href="#summary" title="Permalink to this headline"></a></h2>
+<p>Classes:</p>
+<table class="autosummary longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#scQUEST.individuality.Individuality" title="scQUEST.individuality.Individuality"><code class="xref py py-obj docutils literal notranslate"><span class="pre">Individuality</span></code></a></p></td>
+<td><p>Computes the individuality of each observation in the data set according to <a class="reference internal" href="../references.html#wagner2019" id="id1"><span>[Wagner2019]</span></a>.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="reference">
+<h2>Reference<a class="headerlink" href="#reference" title="Permalink to this headline"></a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">Individuality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_neighbors=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius=1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph_type='knn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior='frequency'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric='minkowski'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_params=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nn_params=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/individuality.html#Individuality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.individuality.Individuality" title="Permalink to this definition"></a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/functions.html#object" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Computes the individuality of each observation in the data set according to <a class="reference internal" href="../references.html#wagner2019" id="id2"><span>[Wagner2019]</span></a>.</p>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.n_neighbors">
+<span class="sig-name descname"><span class="pre">n_neighbors</span></span><a class="headerlink" href="#scQUEST.individuality.Individuality.n_neighbors" title="Permalink to this definition"></a></dt>
+<dd><p>number of neighbors in <em>k</em>NN graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Union[None, <a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)">int</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.radius">
+<span class="sig-name descname"><span class="pre">radius</span></span><a class="headerlink" href="#scQUEST.individuality.Individuality.radius" title="Permalink to this definition"></a></dt>
+<dd><p>radius in radius graph</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Union[None, <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.graph_type">
+<span class="sig-name descname"><span class="pre">graph_type</span></span><a class="headerlink" href="#scQUEST.individuality.Individuality.graph_type" title="Permalink to this definition"></a></dt>
+<dd><p>type of graph to build, either <code class="docutils literal notranslate"><span class="pre">knn</span></code> or <code class="docutils literal notranslate"><span class="pre">radius</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.graph">
+<span class="sig-name descname"><span class="pre">graph</span></span><a class="headerlink" href="#scQUEST.individuality.Individuality.graph" title="Permalink to this definition"></a></dt>
+<dd><p>if provided, uses this graph instead of construction an own one</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Union[None, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a>, scipy.sparse._csr.csr_matrix, scipy.sparse._csc.csc_matrix]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.prior">
+<span class="sig-name descname"><span class="pre">prior</span></span><a class="headerlink" href="#scQUEST.individuality.Individuality.prior" title="Permalink to this definition"></a></dt>
+<dd><p>either <code class="docutils literal notranslate"><span class="pre">frequency</span></code>, <code class="docutils literal notranslate"><span class="pre">uniform</span></code> or custom prior probabilities for each class/group/label.
+If set to <code class="docutils literal notranslate"><span class="pre">frequency</span></code> the empirical class/group probabilities are used as prior.
+If set to <code class="docutils literal notranslate"><span class="pre">uniform</span></code> all classes/groups have the same prior probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Union[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.metric">
+<span class="sig-name descname"><span class="pre">metric</span></span><a class="headerlink" href="#scQUEST.individuality.Individuality.metric" title="Permalink to this definition"></a></dt>
+<dd><p>distance metric to use when constructing the graph topology</p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p>Union[Callable[[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)">numpy.ndarray</a>], <a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)">float</a>], <a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)">str</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.metric_params">
+<span class="sig-name descname"><span class="pre">metric_params</span></span><a class="headerlink" href="#scQUEST.individuality.Individuality.metric_params" title="Permalink to this definition"></a></dt>
+<dd><p>additional kwargs passed to <a class="reference internal" href="#id8" title="scQUEST.individuality.Individuality.metric"><code class="xref py py-attr docutils literal notranslate"><span class="pre">metric</span></code></a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.nn_params">
+<span class="sig-name descname"><span class="pre">nn_params</span></span><a class="headerlink" href="#scQUEST.individuality.Individuality.nn_params" title="Permalink to this definition"></a></dt>
+<dd><p>additional kwargs passed to <code class="xref py py-class docutils literal notranslate"><span class="pre">NearestNeighbors</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)">dict</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<p class="rubric">Notes</p>
+<p>The posterior class probabilities for each observation are computed as follows <a class="reference internal" href="../references.html#bishop" id="id3"><span>[Bishop]</span></a>:</p>
+<div class="math notranslate nohighlight">
+\[\begin{split}p(c_i | x) &amp;= \frac{p(x | c_i) * p(c_i)}{p(x)} \\
+p(x | c_i) &amp;= \frac{K_i}{N_i * V} \\
+p(x) &amp;= \sum_{i \in C}p(x | c_i)*p(c_i) \\
+p(c_i) &amp;= \frac{N_i}{N} \;\; \texttt{if prior=frequency} \\
+p(c_i) &amp;= \frac{1}{|C|} \;\; \texttt{if prior=uniform} \\\end{split}\]</div>
+<p>Where</p>
+<blockquote>
+<div><blockquote>
+<div><ul>
+<li><p><span class="math notranslate nohighlight">\(C\)</span> is the set of classes and <span class="math notranslate nohighlight">\(c_i \in C\)</span> a particular class</p></li>
+<li><p><span class="math notranslate nohighlight">\(x\)</span> is the feature vector of an observation</p></li>
+<li><p><span class="math notranslate nohighlight">\(K_i\)</span> the number of neighbor of class <span class="math notranslate nohighlight">\(c_i\)</span></p></li>
+<li><p><span class="math notranslate nohighlight">\(V\)</span> the volume of the sphere that either</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>contains <a class="reference internal" href="#id0" title="scQUEST.individuality.Individuality.n_neighbors"><code class="xref py py-attr docutils literal notranslate"><span class="pre">n_neighbors</span></code></a> or</p></li>
+<li><p>has radius <a class="reference internal" href="#id4" title="scQUEST.individuality.Individuality.radius"><code class="xref py py-attr docutils literal notranslate"><span class="pre">radius</span></code></a>.</p></li>
+</ul>
+</div></blockquote>
+</li>
+<li><p><span class="math notranslate nohighlight">\(N\)</span> the total number of observations and <span class="math notranslate nohighlight">\(N_i\)</span> the number of observations belonging to class <span class="math notranslate nohighlight">\(c_i\)</span></p></li>
+</ul>
+</div></blockquote>
+<p>The resulting observation-level class probabilities estimates (<span class="math notranslate nohighlight">\(N \times |C|\)</span>) are aggregated (averaged) by each class
+to result in class-level individuality estimates (<span class="math notranslate nohighlight">\(|C| \times |C|\)</span>).</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Instance of <a class="reference internal" href="#scQUEST.individuality.Individuality" title="scQUEST.individuality.Individuality"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individuality</span></code></a>.</p>
+</dd>
+</dl>
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id0">
+<span class="sig-name descname"><span class="pre">n_neighbors</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">100</span></em><a class="headerlink" href="#id0" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id4">
+<span class="sig-name descname"><span class="pre">radius</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">1.0</span></em><a class="headerlink" href="#id4" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id5">
+<span class="sig-name descname"><span class="pre">graph_type</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'knn'</span></em><a class="headerlink" href="#id5" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id6">
+<span class="sig-name descname"><span class="pre">graph</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">scipy.sparse._csr.csr_matrix</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">scipy.sparse._csc.csc_matrix</span><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#id6" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id7">
+<span class="sig-name descname"><span class="pre">prior</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'frequency'</span></em><a class="headerlink" href="#id7" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id8">
+<span class="sig-name descname"><span class="pre">metric</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></em><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'minkowski'</span></em><a class="headerlink" href="#id8" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id9">
+<span class="sig-name descname"><span class="pre">metric_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></em><a class="headerlink" href="#id9" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="id10">
+<span class="sig-name descname"><span class="pre">nn_params</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></em><a class="headerlink" href="#id10" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.__post_init__">
+<span class="sig-name descname"><span class="pre">__post_init__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/individuality.html#Individuality.__post_init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.individuality.Individuality.__post_init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.predict">
+<span class="sig-name descname"><span class="pre">predict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ad</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">labels</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">layer</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inplace</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/individuality.html#Individuality.predict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.individuality.Individuality.predict" title="Permalink to this definition"></a></dt>
+<dd><p>Performs prediction of the individuality of each observation and aggregates (average) results for each label.
+If you wish to access the posterior probabilities for each observation (cell) use <a class="reference internal" href="#scQUEST.individuality.Individuality.compute_individuality" title="scQUEST.individuality.Individuality.compute_individuality"><code class="xref py py-func docutils literal notranslate"><span class="pre">compute_individuality()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>X</strong> – matrix with observations as rows and columns as features.</p></li>
+<li><p><strong>labels</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Iterable" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Iterable</span></code></a>, <a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.Categorical.html#pandas.Categorical" title="(in pandas v1.4.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Categorical</span></code></a>]) – indicator for the group/sample an observation belongs to.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://pandas.pydata.org/docs/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.4.2)"><code class="xref py py-class docutils literal notranslate"><span class="pre">DataFrame</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>DataFrame with rows as observations and columns with the estimated probability to belong in the given group/sample</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.compute_individuality">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">compute_individuality</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">g</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_seq_labs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/individuality.html#Individuality.compute_individuality"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.individuality.Individuality.compute_individuality" title="Permalink to this definition"></a></dt>
+<dd><p>Computes the observation-level individuality based on a given graph structure and labels.
+See <a class="reference internal" href="#scQUEST.individuality.Individuality" title="scQUEST.individuality.Individuality"><code class="xref py py-class docutils literal notranslate"><span class="pre">Individuality</span></code></a> for an in-depth description.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>g</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">csc_matrix</span></code>]) – graph encoding the observation-level interactions</p></li>
+<li><p><strong>num_seq_labs</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – labels of the observations. Must be sequential and numeric, i.e. [0,1,2,…,N]</p></li>
+<li><p><strong>prior</strong> (<a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.10)"><code class="xref py py-class docutils literal notranslate"><span class="pre">str</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>]) – either <code class="docutils literal notranslate"><span class="pre">frequency</span></code>, <code class="docutils literal notranslate"><span class="pre">uniform</span></code> or custom prior probabilities for each class/group/label.
+If set to <code class="docutils literal notranslate"><span class="pre">frequency</span></code> the empirical class/group probabilities are used as prior.
+If set to <code class="docutils literal notranslate"><span class="pre">uniform</span></code> all classes/groups have the same prior probability.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(N\times |C|\)</span> <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> with <span class="math notranslate nohighlight">\(N\)</span> observations across <span class="math notranslate nohighlight">\(|C|\)</span> classes.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality._build_topology">
+<span class="sig-name descname"><span class="pre">_build_topology</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/individuality.html#Individuality._build_topology"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.individuality.Individuality._build_topology" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.10)"><code class="xref py py-data docutils literal notranslate"><span class="pre">Union</span></code></a>[<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.22)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>, <code class="xref py py-class docutils literal notranslate"><span class="pre">csr_matrix</span></code>, <code class="xref py py-class docutils literal notranslate"><span class="pre">csc_matrix</span></code>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality._check_args">
+<span class="sig-name descname"><span class="pre">_check_args</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/scQUEST/individuality.html#Individuality._check_args"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#scQUEST.individuality.Individuality._check_args" title="Permalink to this definition"></a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.10)"><code class="xref py py-obj docutils literal notranslate"><span class="pre">None</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.__annotations__">
+<span class="sig-name descname"><span class="pre">__annotations__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'graph':</span> <span class="pre">typing.Union[NoneType,</span> <span class="pre">numpy.ndarray,</span> <span class="pre">scipy.sparse._csr.csr_matrix,</span> <span class="pre">scipy.sparse._csc.csc_matrix],</span> <span class="pre">'graph_type':</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">'metric':</span> <span class="pre">typing.Union[typing.Callable[[numpy.ndarray,</span> <span class="pre">numpy.ndarray],</span> <span class="pre">float],</span> <span class="pre">str],</span> <span class="pre">'metric_params':</span> <span class="pre">&lt;class</span> <span class="pre">'dict'&gt;,</span> <span class="pre">'n_neighbors':</span> <span class="pre">typing.Union[NoneType,</span> <span class="pre">int],</span> <span class="pre">'nn_params':</span> <span class="pre">&lt;class</span> <span class="pre">'dict'&gt;,</span> <span class="pre">'prior':</span> <span class="pre">typing.Union[str,</span> <span class="pre">numpy.ndarray],</span> <span class="pre">'radius':</span> <span class="pre">typing.Union[NoneType,</span> <span class="pre">float]}</span></em><a class="headerlink" href="#scQUEST.individuality.Individuality.__annotations__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.__dataclass_fields__">
+<span class="sig-name descname"><span class="pre">__dataclass_fields__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">{'graph':</span> <span class="pre">Field(name='graph',type=typing.Union[NoneType,</span> <span class="pre">numpy.ndarray,</span> <span class="pre">scipy.sparse._csr.csr_matrix,</span> <span class="pre">scipy.sparse._csc.csc_matrix],default=None,default_factory=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'graph_type':</span> <span class="pre">Field(name='graph_type',type=&lt;class</span> <span class="pre">'str'&gt;,default='knn',default_factory=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'metric':</span> <span class="pre">Field(name='metric',type=typing.Union[typing.Callable[[numpy.ndarray,</span> <span class="pre">numpy.ndarray],</span> <span class="pre">float],</span> <span class="pre">str],default='minkowski',default_factory=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'metric_params':</span> <span class="pre">Field(name='metric_params',type=&lt;class</span> <span class="pre">'dict'&gt;,default=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,default_factory=&lt;class</span> <span class="pre">'dict'&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'n_neighbors':</span> <span class="pre">Field(name='n_neighbors',type=typing.Union[NoneType,</span> <span class="pre">int],default=100,default_factory=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'nn_params':</span> <span class="pre">Field(name='nn_params',type=&lt;class</span> <span class="pre">'dict'&gt;,default=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,default_factory=&lt;class</span> <span class="pre">'dict'&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'prior':</span> <span class="pre">Field(name='prior',type=typing.Union[str,</span> <span class="pre">numpy.ndarray],default='frequency',default_factory=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'radius':</span> <span class="pre">Field(name='radius',type=typing.Union[NoneType,</span> <span class="pre">float],default=1.0,default_factory=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD)}</span></em><a class="headerlink" href="#scQUEST.individuality.Individuality.__dataclass_fields__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.__dataclass_params__">
+<span class="sig-name descname"><span class="pre">__dataclass_params__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">_DataclassParams(init=True,repr=True,eq=True,order=False,unsafe_hash=False,frozen=False)</span></em><a class="headerlink" href="#scQUEST.individuality.Individuality.__dataclass_params__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.__dict__">
+<span class="sig-name descname"><span class="pre">__dict__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">mappingproxy({'__module__':</span> <span class="pre">'scQUEST.individuality',</span> <span class="pre">'__annotations__':</span> <span class="pre">{'n_neighbors':</span> <span class="pre">typing.Union[NoneType,</span> <span class="pre">int],</span> <span class="pre">'radius':</span> <span class="pre">typing.Union[NoneType,</span> <span class="pre">float],</span> <span class="pre">'graph_type':</span> <span class="pre">&lt;class</span> <span class="pre">'str'&gt;,</span> <span class="pre">'graph':</span> <span class="pre">typing.Union[NoneType,</span> <span class="pre">numpy.ndarray,</span> <span class="pre">scipy.sparse._csr.csr_matrix,</span> <span class="pre">scipy.sparse._csc.csc_matrix],</span> <span class="pre">'prior':</span> <span class="pre">typing.Union[str,</span> <span class="pre">numpy.ndarray],</span> <span class="pre">'metric':</span> <span class="pre">typing.Union[typing.Callable[[numpy.ndarray,</span> <span class="pre">numpy.ndarray],</span> <span class="pre">float],</span> <span class="pre">str],</span> <span class="pre">'metric_params':</span> <span class="pre">&lt;class</span> <span class="pre">'dict'&gt;,</span> <span class="pre">'nn_params':</span> <span class="pre">&lt;class</span> <span class="pre">'dict'&gt;},</span> <span class="pre">'__doc__':</span> <span class="pre">'Computes</span> <span class="pre">the</span> <span class="pre">individuality</span> <span class="pre">of</span> <span class="pre">each</span> <span class="pre">observation</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">data</span> <span class="pre">set</span> <span class="pre">according</span> <span class="pre">to</span> <span class="pre">[Wagner2019]_.\n\n</span>&#160;&#160;&#160; <span class="pre">Attributes:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">n_neighbors:</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">neighbors</span> <span class="pre">in</span> <span class="pre">*k*\\</span> <span class="pre">NN</span> <span class="pre">graph\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">radius:</span> <span class="pre">radius</span> <span class="pre">in</span> <span class="pre">radius</span> <span class="pre">graph\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">graph_type:</span> <span class="pre">type</span> <span class="pre">of</span> <span class="pre">graph</span> <span class="pre">to</span> <span class="pre">build,</span> <span class="pre">either</span> <span class="pre">``knn``</span> <span class="pre">or</span> <span class="pre">``radius``\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">graph:</span> <span class="pre">if</span> <span class="pre">provided,</span> <span class="pre">uses</span> <span class="pre">this</span> <span class="pre">graph</span> <span class="pre">instead</span> <span class="pre">of</span> <span class="pre">construction</span> <span class="pre">an</span> <span class="pre">own</span> <span class="pre">one\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">prior:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">either</span> <span class="pre">``frequency``,</span> <span class="pre">``uniform``</span> <span class="pre">or</span> <span class="pre">custom</span> <span class="pre">prior</span> <span class="pre">probabilities</span> <span class="pre">for</span> <span class="pre">each</span> <span class="pre">class/group/label.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">If</span> <span class="pre">set</span> <span class="pre">to</span> <span class="pre">``frequency``</span> <span class="pre">the</span> <span class="pre">empirical</span> <span class="pre">class/group</span> <span class="pre">probabilities</span> <span class="pre">are</span> <span class="pre">used</span> <span class="pre">as</span> <span class="pre">prior.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">If</span> <span class="pre">set</span> <span class="pre">to</span> <span class="pre">``uniform``</span> <span class="pre">all</span> <span class="pre">classes/groups</span> <span class="pre">have</span> <span class="pre">the</span> <span class="pre">same</span> <span class="pre">prior</span> <span class="pre">probability.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">metric:</span> <span class="pre">distance</span> <span class="pre">metric</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">when</span> <span class="pre">constructing</span> <span class="pre">the</span> <span class="pre">graph</span> <span class="pre">topology\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">metric_params:</span> <span class="pre">additional</span> <span class="pre">kwargs</span> <span class="pre">passed</span> <span class="pre">to</span> <span class="pre">:attr:`~Individuality.metric`\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">nn_params:</span> <span class="pre">additional</span> <span class="pre">kwargs</span> <span class="pre">passed</span> <span class="pre">to</span> <span class="pre">:class:`~.sklearn.NearestNeighbors`\n\n</span>&#160;&#160;&#160; <span class="pre">Notes:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">The</span> <span class="pre">posterior</span> <span class="pre">class</span> <span class="pre">probabilities</span> <span class="pre">for</span> <span class="pre">each</span> <span class="pre">observation</span> <span class="pre">are</span> <span class="pre">computed</span> <span class="pre">as</span> <span class="pre">follows</span> <span class="pre">[Bishop]_:\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">..</span> <span class="pre">math::\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">p(c_i</span> <span class="pre">|</span> <span class="pre">x)</span> <span class="pre">&amp;=</span> <span class="pre">\\frac{p(x</span> <span class="pre">|</span> <span class="pre">c_i)</span> <span class="pre">*</span> <span class="pre">p(c_i)}{p(x)}</span> <span class="pre">\\\\\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">p(x</span> <span class="pre">|</span> <span class="pre">c_i)</span> <span class="pre">&amp;=</span> <span class="pre">\\frac{K_i}{N_i</span> <span class="pre">*</span> <span class="pre">V}</span> <span class="pre">\\\\\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">p(x)</span> <span class="pre">&amp;=</span> <span class="pre">\\sum_{i</span> <span class="pre">\\in</span> <span class="pre">C}p(x</span> <span class="pre">|</span> <span class="pre">c_i)*p(c_i)</span> <span class="pre">\\\\\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">p(c_i)</span> <span class="pre">&amp;=</span> <span class="pre">\\frac{N_i}{N}</span> <span class="pre">\\;\\;</span> <span class="pre">\\texttt{if</span> <span class="pre">prior=frequency}</span> <span class="pre">\\\\\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">p(c_i)</span> <span class="pre">&amp;=</span> <span class="pre">\\frac{1}{|C|}</span> <span class="pre">\\;\\;</span> <span class="pre">\\texttt{if</span> <span class="pre">prior=uniform}</span> <span class="pre">\\\\\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Where\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">:math:`C`</span> <span class="pre">is</span> <span class="pre">the</span> <span class="pre">set</span> <span class="pre">of</span> <span class="pre">classes</span> <span class="pre">and</span> <span class="pre">:math:`c_i</span> <span class="pre">\\in</span> <span class="pre">C`</span> <span class="pre">a</span> <span class="pre">particular</span> <span class="pre">class\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">:math:`x`</span> <span class="pre">is</span> <span class="pre">the</span> <span class="pre">feature</span> <span class="pre">vector</span> <span class="pre">of</span> <span class="pre">an</span> <span class="pre">observation\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">:math:`K_i`</span> <span class="pre">the</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">neighbor</span> <span class="pre">of</span> <span class="pre">class</span> <span class="pre">:math:`c_i`\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">:math:`V`</span> <span class="pre">the</span> <span class="pre">volume</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">sphere</span> <span class="pre">that</span> <span class="pre">either\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">contains</span> <span class="pre">:attr:`~Individuality.n_neighbors`</span> <span class="pre">or\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">has</span> <span class="pre">radius</span> <span class="pre">:attr:`~Individuality.radius`.\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">:math:`N`</span> <span class="pre">the</span> <span class="pre">total</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">observations</span> <span class="pre">and</span> <span class="pre">:math:`N_i`</span> <span class="pre">the</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">observations</span> <span class="pre">belonging</span> <span class="pre">to</span> <span class="pre">class</span> <span class="pre">:math:`c_i`\n\n</span>&#160;&#160;&#160;&#160; <span class="pre">The</span> <span class="pre">resulting</span> <span class="pre">observation-level</span> <span class="pre">class</span> <span class="pre">probabilities</span> <span class="pre">estimates</span> <span class="pre">(:math:`N</span> <span class="pre">\\times</span> <span class="pre">|C|`)</span> <span class="pre">are</span> <span class="pre">aggregated</span> <span class="pre">(averaged)</span> <span class="pre">by</span> <span class="pre">each</span> <span class="pre">class\n</span>&#160;&#160;&#160;&#160; <span class="pre">to</span> <span class="pre">result</span> <span class="pre">in</span> <span class="pre">class-level</span> <span class="pre">individuality</span> <span class="pre">estimates</span> <span class="pre">(:math:`|C|</span> <span class="pre">\\times</span> <span class="pre">|C|`).\n\n</span>&#160;&#160;&#160; <span class="pre">Returns:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Instance</span> <span class="pre">of</span> <span class="pre">:class:`Individuality`.\n\n</span>&#160;&#160;&#160; <span class="pre">',</span> <span class="pre">'n_neighbors':</span> <span class="pre">100,</span> <span class="pre">'radius':</span> <span class="pre">1.0,</span> <span class="pre">'graph_type':</span> <span class="pre">'knn',</span> <span class="pre">'graph':</span> <span class="pre">None,</span> <span class="pre">'prior':</span> <span class="pre">'frequency',</span> <span class="pre">'metric':</span> <span class="pre">'minkowski',</span> <span class="pre">'__post_init__':</span> <span class="pre">&lt;function</span> <span class="pre">Individuality.__post_init__&gt;,</span> <span class="pre">'predict':</span> <span class="pre">&lt;function</span> <span class="pre">Individuality.predict&gt;,</span> <span class="pre">'compute_individuality':</span> <span class="pre">&lt;staticmethod</span> <span class="pre">object&gt;,</span> <span class="pre">'_build_topology':</span> <span class="pre">&lt;function</span> <span class="pre">Individuality._build_topology&gt;,</span> <span class="pre">'_check_args':</span> <span class="pre">&lt;function</span> <span class="pre">Individuality._check_args&gt;,</span> <span class="pre">'__dict__':</span> <span class="pre">&lt;attribute</span> <span class="pre">'__dict__'</span> <span class="pre">of</span> <span class="pre">'Individuality'</span> <span class="pre">objects&gt;,</span> <span class="pre">'__weakref__':</span> <span class="pre">&lt;attribute</span> <span class="pre">'__weakref__'</span> <span class="pre">of</span> <span class="pre">'Individuality'</span> <span class="pre">objects&gt;,</span> <span class="pre">'__dataclass_params__':</span> <span class="pre">_DataclassParams(init=True,repr=True,eq=True,order=False,unsafe_hash=False,frozen=False),</span> <span class="pre">'__dataclass_fields__':</span> <span class="pre">{'n_neighbors':</span> <span class="pre">Field(name='n_neighbors',type=typing.Union[NoneType,</span> <span class="pre">int],default=100,default_factory=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'radius':</span> <span class="pre">Field(name='radius',type=typing.Union[NoneType,</span> <span class="pre">float],default=1.0,default_factory=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'graph_type':</span> <span class="pre">Field(name='graph_type',type=&lt;class</span> <span class="pre">'str'&gt;,default='knn',default_factory=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'graph':</span> <span class="pre">Field(name='graph',type=typing.Union[NoneType,</span> <span class="pre">numpy.ndarray,</span> <span class="pre">scipy.sparse._csr.csr_matrix,</span> <span class="pre">scipy.sparse._csc.csc_matrix],default=None,default_factory=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'prior':</span> <span class="pre">Field(name='prior',type=typing.Union[str,</span> <span class="pre">numpy.ndarray],default='frequency',default_factory=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'metric':</span> <span class="pre">Field(name='metric',type=typing.Union[typing.Callable[[numpy.ndarray,</span> <span class="pre">numpy.ndarray],</span> <span class="pre">float],</span> <span class="pre">str],default='minkowski',default_factory=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'metric_params':</span> <span class="pre">Field(name='metric_params',type=&lt;class</span> <span class="pre">'dict'&gt;,default=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,default_factory=&lt;class</span> <span class="pre">'dict'&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD),</span> <span class="pre">'nn_params':</span> <span class="pre">Field(name='nn_params',type=&lt;class</span> <span class="pre">'dict'&gt;,default=&lt;dataclasses._MISSING_TYPE</span> <span class="pre">object&gt;,default_factory=&lt;class</span> <span class="pre">'dict'&gt;,init=True,repr=True,hash=None,compare=True,metadata=mappingproxy({}),_field_type=_FIELD)},</span> <span class="pre">'__init__':</span> <span class="pre">&lt;function</span> <span class="pre">__create_fn__.&lt;locals&gt;.__init__&gt;,</span> <span class="pre">'__repr__':</span> <span class="pre">&lt;function</span> <span class="pre">__create_fn__.&lt;locals&gt;.__repr__&gt;,</span> <span class="pre">'__eq__':</span> <span class="pre">&lt;function</span> <span class="pre">__create_fn__.&lt;locals&gt;.__eq__&gt;,</span> <span class="pre">'__hash__':</span> <span class="pre">None})</span></em><a class="headerlink" href="#scQUEST.individuality.Individuality.__dict__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.__doc__">
+<span class="sig-name descname"><span class="pre">__doc__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'Computes</span> <span class="pre">the</span> <span class="pre">individuality</span> <span class="pre">of</span> <span class="pre">each</span> <span class="pre">observation</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">data</span> <span class="pre">set</span> <span class="pre">according</span> <span class="pre">to</span> <span class="pre">[Wagner2019]_.\n\n</span>&#160;&#160;&#160; <span class="pre">Attributes:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">n_neighbors:</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">neighbors</span> <span class="pre">in</span> <span class="pre">*k*\\</span> <span class="pre">NN</span> <span class="pre">graph\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">radius:</span> <span class="pre">radius</span> <span class="pre">in</span> <span class="pre">radius</span> <span class="pre">graph\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">graph_type:</span> <span class="pre">type</span> <span class="pre">of</span> <span class="pre">graph</span> <span class="pre">to</span> <span class="pre">build,</span> <span class="pre">either</span> <span class="pre">``knn``</span> <span class="pre">or</span> <span class="pre">``radius``\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">graph:</span> <span class="pre">if</span> <span class="pre">provided,</span> <span class="pre">uses</span> <span class="pre">this</span> <span class="pre">graph</span> <span class="pre">instead</span> <span class="pre">of</span> <span class="pre">construction</span> <span class="pre">an</span> <span class="pre">own</span> <span class="pre">one\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">prior:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">either</span> <span class="pre">``frequency``,</span> <span class="pre">``uniform``</span> <span class="pre">or</span> <span class="pre">custom</span> <span class="pre">prior</span> <span class="pre">probabilities</span> <span class="pre">for</span> <span class="pre">each</span> <span class="pre">class/group/label.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">If</span> <span class="pre">set</span> <span class="pre">to</span> <span class="pre">``frequency``</span> <span class="pre">the</span> <span class="pre">empirical</span> <span class="pre">class/group</span> <span class="pre">probabilities</span> <span class="pre">are</span> <span class="pre">used</span> <span class="pre">as</span> <span class="pre">prior.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">If</span> <span class="pre">set</span> <span class="pre">to</span> <span class="pre">``uniform``</span> <span class="pre">all</span> <span class="pre">classes/groups</span> <span class="pre">have</span> <span class="pre">the</span> <span class="pre">same</span> <span class="pre">prior</span> <span class="pre">probability.\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">metric:</span> <span class="pre">distance</span> <span class="pre">metric</span> <span class="pre">to</span> <span class="pre">use</span> <span class="pre">when</span> <span class="pre">constructing</span> <span class="pre">the</span> <span class="pre">graph</span> <span class="pre">topology\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">metric_params:</span> <span class="pre">additional</span> <span class="pre">kwargs</span> <span class="pre">passed</span> <span class="pre">to</span> <span class="pre">:attr:`~Individuality.metric`\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">nn_params:</span> <span class="pre">additional</span> <span class="pre">kwargs</span> <span class="pre">passed</span> <span class="pre">to</span> <span class="pre">:class:`~.sklearn.NearestNeighbors`\n\n</span>&#160;&#160;&#160; <span class="pre">Notes:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">The</span> <span class="pre">posterior</span> <span class="pre">class</span> <span class="pre">probabilities</span> <span class="pre">for</span> <span class="pre">each</span> <span class="pre">observation</span> <span class="pre">are</span> <span class="pre">computed</span> <span class="pre">as</span> <span class="pre">follows</span> <span class="pre">[Bishop]_:\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">..</span> <span class="pre">math::\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">p(c_i</span> <span class="pre">|</span> <span class="pre">x)</span> <span class="pre">&amp;=</span> <span class="pre">\\frac{p(x</span> <span class="pre">|</span> <span class="pre">c_i)</span> <span class="pre">*</span> <span class="pre">p(c_i)}{p(x)}</span> <span class="pre">\\\\\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">p(x</span> <span class="pre">|</span> <span class="pre">c_i)</span> <span class="pre">&amp;=</span> <span class="pre">\\frac{K_i}{N_i</span> <span class="pre">*</span> <span class="pre">V}</span> <span class="pre">\\\\\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">p(x)</span> <span class="pre">&amp;=</span> <span class="pre">\\sum_{i</span> <span class="pre">\\in</span> <span class="pre">C}p(x</span> <span class="pre">|</span> <span class="pre">c_i)*p(c_i)</span> <span class="pre">\\\\\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">p(c_i)</span> <span class="pre">&amp;=</span> <span class="pre">\\frac{N_i}{N}</span> <span class="pre">\\;\\;</span> <span class="pre">\\texttt{if</span> <span class="pre">prior=frequency}</span> <span class="pre">\\\\\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">p(c_i)</span> <span class="pre">&amp;=</span> <span class="pre">\\frac{1}{|C|}</span> <span class="pre">\\;\\;</span> <span class="pre">\\texttt{if</span> <span class="pre">prior=uniform}</span> <span class="pre">\\\\\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Where\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">:math:`C`</span> <span class="pre">is</span> <span class="pre">the</span> <span class="pre">set</span> <span class="pre">of</span> <span class="pre">classes</span> <span class="pre">and</span> <span class="pre">:math:`c_i</span> <span class="pre">\\in</span> <span class="pre">C`</span> <span class="pre">a</span> <span class="pre">particular</span> <span class="pre">class\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">:math:`x`</span> <span class="pre">is</span> <span class="pre">the</span> <span class="pre">feature</span> <span class="pre">vector</span> <span class="pre">of</span> <span class="pre">an</span> <span class="pre">observation\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">:math:`K_i`</span> <span class="pre">the</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">neighbor</span> <span class="pre">of</span> <span class="pre">class</span> <span class="pre">:math:`c_i`\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">:math:`V`</span> <span class="pre">the</span> <span class="pre">volume</span> <span class="pre">of</span> <span class="pre">the</span> <span class="pre">sphere</span> <span class="pre">that</span> <span class="pre">either\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">contains</span> <span class="pre">:attr:`~Individuality.n_neighbors`</span> <span class="pre">or\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">has</span> <span class="pre">radius</span> <span class="pre">:attr:`~Individuality.radius`.\n\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">-</span> <span class="pre">:math:`N`</span> <span class="pre">the</span> <span class="pre">total</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">observations</span> <span class="pre">and</span> <span class="pre">:math:`N_i`</span> <span class="pre">the</span> <span class="pre">number</span> <span class="pre">of</span> <span class="pre">observations</span> <span class="pre">belonging</span> <span class="pre">to</span> <span class="pre">class</span> <span class="pre">:math:`c_i`\n\n</span>&#160;&#160;&#160;&#160; <span class="pre">The</span> <span class="pre">resulting</span> <span class="pre">observation-level</span> <span class="pre">class</span> <span class="pre">probabilities</span> <span class="pre">estimates</span> <span class="pre">(:math:`N</span> <span class="pre">\\times</span> <span class="pre">|C|`)</span> <span class="pre">are</span> <span class="pre">aggregated</span> <span class="pre">(averaged)</span> <span class="pre">by</span> <span class="pre">each</span> <span class="pre">class\n</span>&#160;&#160;&#160;&#160; <span class="pre">to</span> <span class="pre">result</span> <span class="pre">in</span> <span class="pre">class-level</span> <span class="pre">individuality</span> <span class="pre">estimates</span> <span class="pre">(:math:`|C|</span> <span class="pre">\\times</span> <span class="pre">|C|`).\n\n</span>&#160;&#160;&#160; <span class="pre">Returns:\n</span>&#160;&#160;&#160;&#160;&#160;&#160;&#160; <span class="pre">Instance</span> <span class="pre">of</span> <span class="pre">:class:`Individuality`.\n\n</span>&#160;&#160;&#160; <span class="pre">'</span></em><a class="headerlink" href="#scQUEST.individuality.Individuality.__doc__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.__eq__">
+<span class="sig-name descname"><span class="pre">__eq__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">other</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#scQUEST.individuality.Individuality.__eq__" title="Permalink to this definition"></a></dt>
+<dd><p>Return self==value.</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.__hash__">
+<span class="sig-name descname"><span class="pre">__hash__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">None</span></em><a class="headerlink" href="#scQUEST.individuality.Individuality.__hash__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n_neighbors=100</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius=1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph_type='knn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">graph=None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior='frequency'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric='minkowski'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">metric_params=&lt;factory&gt;</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nn_params=&lt;factory&gt;</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#scQUEST.individuality.Individuality.__init__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.__module__">
+<span class="sig-name descname"><span class="pre">__module__</span></span><em class="property"><span class="w"> </span><span class="p"><span class="pre">=</span></span><span class="w"> </span><span class="pre">'scQUEST.individuality'</span></em><a class="headerlink" href="#scQUEST.individuality.Individuality.__module__" title="Permalink to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#scQUEST.individuality.Individuality.__repr__" title="Permalink to this definition"></a></dt>
+<dd><p>Return repr(self).</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt class="sig sig-object py" id="scQUEST.individuality.Individuality.__weakref__">
+<span class="sig-name descname"><span class="pre">__weakref__</span></span><a class="headerlink" href="#scQUEST.individuality.Individuality.__weakref__" title="Permalink to this definition"></a></dt>
+<dd><p>list of weak references to the object (if defined)</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="scQUEST.data.html" class="btn btn-neutral float-left" title="scQUEST.data module" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="scQUEST.utils.html" class="btn btn-neutral float-right" title="scQUEST.utils module" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright IBM Corp. 2022.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

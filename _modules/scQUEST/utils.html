@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>scQUEST.utils &mdash; scQUEST  documentation</title>
+      <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="../../index.html" class="icon icon-home"> scQUEST
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../tutorials.html">Tutorials</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../scQUEST_api/scQUEST.html">API</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../references.html">References</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">scQUEST</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+          <li><a href="../index.html">Module code</a> &raquo;</li>
+      <li>scQUEST.utils</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Source code for scQUEST.utils</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span> <span class="nn">abc</span>
+
+<span class="kn">from</span> <span class="nn">pandas.api.types</span> <span class="kn">import</span> <span class="n">CategoricalDtype</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">tee</span>
+
+<span class="kn">import</span> <span class="nn">torch</span>
+<span class="kn">import</span> <span class="nn">torch.nn</span> <span class="k">as</span> <span class="nn">nn</span>
+<span class="kn">from</span> <span class="nn">torch.utils.data</span> <span class="kn">import</span> <span class="n">DataLoader</span>
+
+<span class="kn">import</span> <span class="nn">torchmetrics</span>
+
+<span class="kn">import</span> <span class="nn">pytorch_lightning</span> <span class="k">as</span> <span class="nn">pl</span>
+<span class="kn">from</span> <span class="nn">pytorch_lightning.utilities.types</span> <span class="kn">import</span> <span class="n">STEP_OUTPUT</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Iterable</span><span class="p">,</span> <span class="n">Optional</span>
+
+<span class="n">TRAIN_DATALOADERS</span> <span class="o">=</span> <span class="n">EVAL_DATALOADERS</span> <span class="o">=</span> <span class="n">DataLoader</span>
+
+<span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">issparse</span>
+<span class="kn">from</span> <span class="nn">anndata</span> <span class="kn">import</span> <span class="n">AnnData</span>
+
+<span class="kn">from</span> <span class="nn">.data</span> <span class="kn">import</span> <span class="n">AnnDataModule</span>
+
+<span class="c1"># %%</span>
+<span class="n">DEFAULT_MARKER_CLF</span> <span class="o">=</span> <span class="p">[</span>
+    <span class="s2">&quot;139La_H3K27me3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;141Pr_K5&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;142Nd_PTEN&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;143Nd_CD44&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;144Nd_K8K18&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;145Nd_CD31&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;146Nd_FAP&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;147Sm_cMYC&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;148Nd_SMA&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;149Sm_CD24&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;150Nd_CD68&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;151Eu_HER2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;152Sm_AR&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;153Eu_BCL2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;154Sm_p53&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;155Gd_EpCAM&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;156Gd_CyclinB1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;158Gd_PRB&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;159Tb_CD49f&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;160Gd_Survivin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;161Dy_EZH2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;162Dy_Vimentin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;163Dy_cMET&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;164Dy_AKT&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;165Ho_ERa&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;166Er_CA9&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;167Er_ECadherin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;168Er_Ki67&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;169Tm_EGFR&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;170Er_K14&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;171Yb_HLADR&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;172Yb_clCASP3clPARP1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;173Yb_CD3&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;174Yb_K7&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;175Lu_panK&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;176Yb_CD45&quot;</span><span class="p">,</span>
+<span class="p">]</span>
+
+<span class="n">DEFAULT_MARKERS</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s2">&quot;AKT&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;AR&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;BCL2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CA9&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CD24&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CD44&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;CD49f&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ECadherin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EGFR&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;ERa&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EZH2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;EpCAM&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;HER2&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;HLADR&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;K14&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;K5&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;K7&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;K8K18&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PRB&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;PTEN&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;SMA&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Survivin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;Vimentin&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cMET&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;cMYC&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;p53&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;panK&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">DEFAULT_N_FEATURES</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">DEFAULT_MARKER_CLF</span><span class="p">)</span>
+
+
+<span class="c1"># %%</span>
+
+
+<span class="c1"># NOTE: pairwise is distributed with `itertool` in python&gt;=3.10</span>
+<div class="viewcode-block" id="pairwise"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.pairwise">[docs]</a><span class="k">def</span> <span class="nf">pairwise</span><span class="p">(</span><span class="n">iterable</span><span class="p">):</span>
+    <span class="c1"># pairwise(&#39;ABCDEFG&#39;) --&gt; AB BC CD DE EF FG</span>
+    <span class="n">a</span><span class="p">,</span> <span class="n">b</span> <span class="o">=</span> <span class="n">tee</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+    <span class="nb">next</span><span class="p">(</span><span class="n">b</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">return</span> <span class="nb">zip</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="isCategorical"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.isCategorical">[docs]</a><span class="k">def</span> <span class="nf">isCategorical</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">CategoricalDtype</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="LitModule"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.LitModule">[docs]</a><span class="k">class</span> <span class="nc">LitModule</span><span class="p">(</span><span class="n">pl</span><span class="o">.</span><span class="n">LightningModule</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;pytorch_module that handles the training of the model&quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="LitModule.__init__"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.LitModule.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">,</span>
+        <span class="n">loss_fn</span><span class="p">,</span>
+        <span class="n">metrics</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">torchmetrics</span><span class="o">.</span><span class="n">Metric</span><span class="p">],</span>
+        <span class="n">learning_rate</span><span class="o">=</span><span class="mf">1e-3</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="nb">super</span><span class="p">(</span><span class="n">LitModule</span><span class="p">,</span> <span class="bp">self</span><span class="p">)</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span>
+
+        <span class="c1"># we create for each metric a own attribute to be able to automatic logging with lightning</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metric_attrs</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="n">metrics</span><span class="p">:</span>
+            <span class="n">attr</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;metric_</span><span class="si">{</span><span class="n">metric</span><span class="o">.</span><span class="n">_get_name</span><span class="p">()</span><span class="si">}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+            <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">metric_attrs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">attr</span><span class="p">)</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span> <span class="o">=</span> <span class="n">learning_rate</span></div>
+
+<div class="viewcode-block" id="LitModule.forward"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.LitModule.forward">[docs]</a>    <span class="k">def</span> <span class="nf">forward</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="LitModule.training_step"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.LitModule.training_step">[docs]</a>    <span class="k">def</span> <span class="nf">training_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">batch_idx</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">STEP_OUTPUT</span><span class="p">:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">batch</span>
+        <span class="n">yhat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">batch_idx</span> <span class="o">%</span> <span class="mi">5</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;fit_loss&quot;</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">loss</span></div>
+
+<div class="viewcode-block" id="LitModule.validation_step"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.LitModule.validation_step">[docs]</a>    <span class="k">def</span> <span class="nf">validation_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">batch_idx</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">STEP_OUTPUT</span><span class="p">]:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">batch</span>
+        <span class="n">yhat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;val_loss&quot;</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">loss</span></div>
+
+<div class="viewcode-block" id="LitModule.test_step"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.LitModule.test_step">[docs]</a>    <span class="k">def</span> <span class="nf">test_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">batch</span><span class="p">,</span> <span class="n">batch_idx</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">STEP_OUTPUT</span><span class="p">]:</span>
+        <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">batch</span>
+        <span class="n">yhat</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">loss</span><span class="p">(</span><span class="n">yhat</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="s2">&quot;test_loss&quot;</span><span class="p">,</span> <span class="n">loss</span><span class="o">.</span><span class="n">detach</span><span class="p">())</span>
+        <span class="n">yhat</span> <span class="o">=</span> <span class="n">yhat</span> <span class="k">if</span> <span class="n">y</span><span class="o">.</span><span class="n">shape</span> <span class="o">==</span> <span class="n">yhat</span><span class="o">.</span><span class="n">shape</span> <span class="k">else</span> <span class="n">yhat</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">log_metrics</span><span class="p">(</span><span class="s2">&quot;test&quot;</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">loss</span></div>
+
+<div class="viewcode-block" id="LitModule.configure_optimizers"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.LitModule.configure_optimizers">[docs]</a>    <span class="k">def</span> <span class="nf">configure_optimizers</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># https://pytorch-lightning.readthedocs.io/en/latest/api/pytorch_lightning.core.lightning.html#pytorch_lightning.core.lightning.LightningModule.configure_optimizers</span>
+        <span class="n">optimizer</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">optim</span><span class="o">.</span><span class="n">Adam</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parameters</span><span class="p">(),</span> <span class="n">lr</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">learning_rate</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">optimizer</span></div>
+
+<div class="viewcode-block" id="LitModule.log_metrics"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.LitModule.log_metrics">[docs]</a>    <span class="k">def</span> <span class="nf">log_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">step</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">yhat</span><span class="p">):</span>
+        <span class="c1"># https://pytorch-lightning.readthedocs.io/en/stable/extensions/logging.html</span>
+        <span class="n">true_cls</span><span class="p">,</span> <span class="n">pred_cls</span> <span class="o">=</span> <span class="n">y</span><span class="p">,</span> <span class="n">yhat</span>
+
+        <span class="k">for</span> <span class="n">metric</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">metric_attrs</span><span class="p">:</span>
+            <span class="n">m</span> <span class="o">=</span> <span class="nb">getattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metric</span><span class="p">)</span>
+            <span class="n">m</span><span class="p">(</span><span class="n">pred_cls</span><span class="p">,</span> <span class="n">true_cls</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">step</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">metric</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">m</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="Estimator"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.Estimator">[docs]</a><span class="k">class</span> <span class="nc">Estimator</span><span class="p">:</span>
+<div class="viewcode-block" id="Estimator.__init__"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.Estimator.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">n_in</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">model</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">loss_fn</span><span class="p">:</span> <span class="n">Optional</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">metrics</span><span class="p">:</span> <span class="n">Optional</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Base estimator class</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            n_in: number of feature for estimator</span>
+<span class="sd">            model: Model used to train estimator :class:`.torch.Module` or :class:`.pytorch_lightning.Module`</span>
+<span class="sd">            loss_fn: Loss function used for optimization</span>
+<span class="sd">            metrics: Metrics tracked during test time</span>
+<span class="sd">            seed: Seed for model weight initialisation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ad</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">datamodule</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">logger</span> <span class="o">=</span> <span class="n">MyLogger</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">n_in</span> <span class="o">=</span> <span class="n">n_in</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">loss_fn</span> <span class="k">if</span> <span class="n">loss_fn</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_loss</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">metrics</span> <span class="o">=</span> <span class="n">metrics</span> <span class="k">if</span> <span class="n">metrics</span> <span class="k">else</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_metric</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">seed</span> <span class="o">=</span> <span class="n">seed</span> <span class="k">if</span> <span class="n">seed</span> <span class="k">else</span> <span class="mi">41</span>
+
+        <span class="n">LM</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_default_litModule</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="n">model</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">LM</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_default_model</span><span class="p">(</span><span class="n">n_in</span><span class="o">=</span><span class="n">n_in</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">seed</span><span class="p">),</span>
+                <span class="n">loss_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loss_fn</span><span class="p">,</span>
+                <span class="n">metrics</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">pl</span><span class="o">.</span><span class="n">LightningModule</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">model</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">):</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">model</span> <span class="o">=</span> <span class="n">LM</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="n">model</span><span class="p">,</span> <span class="n">loss_fn</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">loss_fn</span><span class="p">,</span> <span class="n">metrics</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">metrics</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                    <span class="sa">f</span><span class="s2">&quot;Model should be of type LightningModule or nn.Module not </span><span class="si">{</span><span class="nb">type</span><span class="p">(</span><span class="n">model</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+                <span class="p">)</span></div>
+
+<div class="viewcode-block" id="Estimator.fit"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.Estimator.fit">[docs]</a>    <span class="k">def</span> <span class="nf">fit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ad</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnnData</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">layer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">datamodule</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pl</span><span class="o">.</span><span class="n">LightningDataModule</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">callbacks</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Fit the estimator.</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ad: AnnData object to fit</span>
+<span class="sd">            target: column in AnnData.obs that should be used as target variable</span>
+<span class="sd">            layer: layer in `ad.layers` to use instead of ad.X</span>
+<span class="sd">            datamodule: pytorch lightning data module</span>
+<span class="sd">            max_epochs: maximum epochs for which the model is trained</span>
+<span class="sd">            callbacks: additional `pytorch_lightning callbacks`</span>
+<span class="sd">            seed: Seed for data split</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Estimator.predict"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.Estimator.predict">[docs]</a>    <span class="k">def</span> <span class="nf">predict</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">ad</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="o">=</span><span class="kc">True</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">AnnData</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+
+<span class="sd">        Args:</span>
+<span class="sd">            ad: AnnData object to fit</span>
+<span class="sd">            layer: AnnData.X layer to use for prediction</span>
+<span class="sd">            inplace: whether to manipulate the AnnData object inplace or return a copy</span>
+
+<span class="sd">        Returns:</span>
+<span class="sd">            None or AnnData depending on `inplace`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Estimator._fit"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.Estimator._fit">[docs]</a>    <span class="k">def</span> <span class="nf">_fit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">ad</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">AnnData</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">target</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">layer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">datamodule</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">pl</span><span class="o">.</span><span class="n">LightningDataModule</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">max_epochs</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">,</span>
+        <span class="n">callbacks</span><span class="p">:</span> <span class="nb">list</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">seed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+    <span class="p">):</span>
+
+        <span class="n">callbacks</span> <span class="o">=</span> <span class="p">[]</span> <span class="k">if</span> <span class="n">callbacks</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">callbacks</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">target</span> <span class="o">=</span> <span class="s2">&quot;target&quot;</span> <span class="k">if</span> <span class="n">target</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">target</span>
+
+        <span class="k">if</span> <span class="n">datamodule</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datamodule</span> <span class="o">=</span> <span class="n">AnnDataModule</span><span class="p">(</span>
+                <span class="n">ad</span><span class="o">=</span><span class="n">ad</span><span class="p">,</span>
+                <span class="n">target</span><span class="o">=</span><span class="n">target</span><span class="p">,</span>
+                <span class="n">layer</span><span class="o">=</span><span class="n">layer</span><span class="p">,</span>
+                <span class="n">ad_dataset_cls</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">_configure_anndata_class</span><span class="p">(),</span>
+                <span class="n">seed</span><span class="o">=</span><span class="n">seed</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">datamodule</span> <span class="o">=</span> <span class="n">datamodule</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Trainer</span><span class="p">(</span>
+            <span class="n">logger</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">logger</span><span class="p">,</span>
+            <span class="n">enable_checkpointing</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">max_epochs</span><span class="o">=</span><span class="n">max_epochs</span><span class="p">,</span>
+            <span class="n">callbacks</span><span class="o">=</span><span class="n">callbacks</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">kwargs</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">datamodule</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">datamodule</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">trainer</span><span class="o">.</span><span class="n">test</span><span class="p">(</span><span class="n">model</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">model</span><span class="p">,</span> <span class="n">datamodule</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">datamodule</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Estimator._default_model"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.Estimator._default_model">[docs]</a>    <span class="k">def</span> <span class="nf">_default_model</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Estimator._configure_anndata_class"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.Estimator._configure_anndata_class">[docs]</a>    <span class="k">def</span> <span class="nf">_configure_anndata_class</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nn</span><span class="o">.</span><span class="n">Module</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Estimator._default_loss"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.Estimator._default_loss">[docs]</a>    <span class="k">def</span> <span class="nf">_default_loss</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Estimator._default_metric"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.Estimator._default_metric">[docs]</a>    <span class="k">def</span> <span class="nf">_default_metric</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Estimator._default_litModule"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.Estimator._default_litModule">[docs]</a>    <span class="k">def</span> <span class="nf">_default_litModule</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="Estimator._predict"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.Estimator._predict">[docs]</a>    <span class="k">def</span> <span class="nf">_predict</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">ad</span><span class="p">:</span> <span class="n">AnnData</span><span class="p">,</span> <span class="n">layer</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">inplace</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ad</span> <span class="o">=</span> <span class="n">ad</span> <span class="k">if</span> <span class="n">inplace</span> <span class="k">else</span> <span class="n">ad</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+        <span class="n">X</span> <span class="o">=</span> <span class="n">ad</span><span class="o">.</span><span class="n">X</span> <span class="k">if</span> <span class="n">layer</span> <span class="ow">is</span> <span class="kc">None</span> <span class="k">else</span> <span class="n">ad</span><span class="o">.</span><span class="n">layers</span><span class="p">[</span><span class="n">layer</span><span class="p">]</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">X</span><span class="o">.</span><span class="n">A</span> <span class="k">if</span> <span class="n">issparse</span><span class="p">(</span><span class="n">X</span><span class="p">)</span> <span class="k">else</span> <span class="n">X</span>
+        <span class="n">X</span> <span class="o">=</span> <span class="n">torch</span><span class="o">.</span><span class="n">tensor</span><span class="p">(</span><span class="n">X</span><span class="p">)</span><span class="o">.</span><span class="n">float</span><span class="p">()</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_predict_step</span><span class="p">(</span><span class="n">X</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">inplace</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">ad</span></div>
+
+<div class="viewcode-block" id="Estimator._predict_step"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.Estimator._predict_step">[docs]</a>    <span class="k">def</span> <span class="nf">_predict_step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">X</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">()</span></div></div>
+
+
+<span class="kn">from</span> <span class="nn">pytorch_lightning.utilities</span> <span class="kn">import</span> <span class="n">rank_zero_only</span>
+<span class="kn">from</span> <span class="nn">pytorch_lightning.loggers</span> <span class="kn">import</span> <span class="n">LightningLoggerBase</span>
+<span class="kn">from</span> <span class="nn">pytorch_lightning.loggers.base</span> <span class="kn">import</span> <span class="n">rank_zero_experiment</span>
+<span class="kn">import</span> <span class="nn">collections</span>
+
+
+<div class="viewcode-block" id="MyLogger"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.MyLogger">[docs]</a><span class="k">class</span> <span class="nc">MyLogger</span><span class="p">(</span><span class="n">LightningLoggerBase</span><span class="p">):</span>
+<div class="viewcode-block" id="MyLogger.__init__"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.MyLogger.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">history</span> <span class="o">=</span> <span class="n">collections</span><span class="o">.</span><span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">name</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="k">return</span> <span class="s2">&quot;MyLogger&quot;</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@rank_zero_experiment</span>
+    <span class="k">def</span> <span class="nf">experiment</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Return the experiment object associated with this logger.</span>
+        <span class="k">pass</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">version</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Return the experiment version, int or str.</span>
+        <span class="k">return</span> <span class="s2">&quot;0.1&quot;</span>
+
+<div class="viewcode-block" id="MyLogger.log_hyperparams"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.MyLogger.log_hyperparams">[docs]</a>    <span class="nd">@rank_zero_only</span>
+    <span class="k">def</span> <span class="nf">log_hyperparams</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">params</span><span class="p">):</span>
+        <span class="c1"># params is an argparse.Namespace</span>
+        <span class="c1"># your code to record hyperparameters goes here</span>
+        <span class="k">pass</span></div>
+
+<div class="viewcode-block" id="MyLogger.log_metrics"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.MyLogger.log_metrics">[docs]</a>    <span class="nd">@rank_zero_only</span>
+    <span class="k">def</span> <span class="nf">log_metrics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">metrics</span><span class="p">,</span> <span class="n">step</span><span class="p">):</span>
+        <span class="c1"># metrics is a dictionary of metric names and values</span>
+        <span class="c1"># your code to record metrics goes here</span>
+        <span class="k">for</span> <span class="n">metric_name</span><span class="p">,</span> <span class="n">metric_value</span> <span class="ow">in</span> <span class="n">metrics</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">metric_name</span> <span class="o">!=</span> <span class="s2">&quot;epoch&quot;</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">history</span><span class="p">[</span><span class="n">metric_name</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">step</span><span class="p">,</span> <span class="n">metric_value</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="MyLogger.save"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.MyLogger.save">[docs]</a>    <span class="nd">@rank_zero_only</span>
+    <span class="k">def</span> <span class="nf">save</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="c1"># Optional. Any code necessary to save logger data goes here</span>
+        <span class="c1"># If you implement this, remember to call `super().save()`</span>
+        <span class="c1"># at the start of the method (important for aggregation of metrics)</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">save</span><span class="p">()</span></div>
+
+<div class="viewcode-block" id="MyLogger.finalize"><a class="viewcode-back" href="../../scQUEST_api/scQUEST.utils.html#scQUEST.utils.MyLogger.finalize">[docs]</a>    <span class="nd">@rank_zero_only</span>
+    <span class="k">def</span> <span class="nf">finalize</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">status</span><span class="p">):</span>
+        <span class="c1"># Optional. Any code that needs to be run after training</span>
+        <span class="c1"># finishes goes here</span>
+        <span class="k">pass</span></div></div>
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright IBM Corp. 2022.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

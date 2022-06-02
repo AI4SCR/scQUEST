@@ -1,0 +1,1376 @@
+# scQUEST Tutorial
+
+In this tutorial we give detailed step-by-step instructions on how to use scQUEST to explore heterogeneity from large, heterogeneous mass or flow cytometry datasets. Often, these "atlas" datasets consist of single-cell profiles from multiple patients that collectively describe disease ecosystems. We showcase scQUEST using our previously generated single-cell atlas of breast cancer heterogeneity from ([Wagner et al.,2019](https://www.cell.com/cell/fulltext/S0092-8674(19)30267-3)). The dataset contains 226 samples of mass cytometry (CyTOF) measurements of 163 breast cancer patients, with samples originating either from the tumor (T) or the juxta-tumoral non-tumor tissue (N). Additional measurements of mammoplasty are also available (H).
+
+## Import needed packages 
+
+
+```python
+import scQUEST as scq
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import numpy as np
+from sklearn.preprocessing import MinMaxScaler
+from sklearn.metrics import confusion_matrix, roc_curve
+import warnings
+
+warnings.filterwarnings("ignore")
+```
+
+## Step 1: Load and explore CyTOF dataset 
+scQUEST is based on [annData](https://www.biorxiv.org/content/10.1101/2021.12.16.473007v1), a popular Python library for single-cell analysis. The CyTOF dataset that we will use for this tutorial is pre-uploaded in scQUEST and can be easily imported as an annData object. If you have never used annData before, we highly recommend checking this [simple tutorial](https://anndata-tutorials.readthedocs.io/en/latest/getting-started.html) in the annData [online documentation](https://anndata.readthedocs.io/en/latest/) to familiarize yourself with the structure of the annData object. A basic understanding of [numpy](https://numpy.org/doc/stable/reference/generated/numpy.arcsinh.html) and [pandas](https://pandas.pydata.org/) will also help you explore the data stored in the annData object. 
+
+Exploring the annData object we see that it contains 13,384,828 single-cell measurements of 68 channels (stored in `.X`), with channel annotation stored in `.var`. Cell-level annotation is stored in `.obs` and includes various patient metadata, such as tissue type of origin (`H, N, T`), histopathology, grade or patient ID (`patient_number`). 
+
+
+```python
+ad = scq.dataset.breastCancerAtlasRaw()
+ad
+```
+
+
+
+
+    AnnData object with n_obs × n_vars = 13384828 × 68
+        obs: 'tissue_type', 'patient_number', 'breast', 'tumor_region', 'plate', 'plate_location', 'gadolinium_status', 'fcs_file', 'Health Status', 'Gender', 'Age at Surgery', 'Menopause Status', 'Histopathology', 'T Staging', 'N Staging', 'M Staging', 'Grade', 'Grade comment', 'Lymph Node Status (L)', 'Resection', 'Estrogen Receptor Status by IHC', 'Estrogen Receptor IRS Score', 'Estrogen Receptor percent positive cells by IHC', 'Progesterone Receptor Status by IHC', 'Progesterone Receptor IRS Score', 'Progesterone Receptor percent positive cells by IHC', 'HER2 Status by IHC', 'HER2 IHC Score', 'HER2 Status by FISH or SISH', 'Ki-67 percent positive cells by IHC', 'Clinical subtype derived from the receptor status', 'Neoadjuvant Therapy Received', 'Previous Cancer Incidences'
+        var: 'channel', 'desc'
+        uns: 'fcs_header'
+
+
+
+ We can easily see that the data contain 226 files originating from 163 patients:
+
+
+```python
+print("Number of unique files: " + str(len(ad.obs["fcs_file"].unique())))
+print("Number of unique patients: " + str(len(ad.obs["patient_number"].unique())))
+```
+
+    Number of unique files: 226
+    Number of unique patients: 163
+
+
+## Step 2: Cell type identification
+In this step we show how one can use scQUEST to identify cell populations of interest among millions of highly multiplexed single-cell profiles. We are specifically interested in identifying all cells with an epithelial phenotype among the ~13.5 million cells. To achieve this, we will first load a smaller, already annotated dataset (`ad_anno`) that contains 687,161 cells that have been previously clustered and annotated into distinct cell type. This dataset will serve as training data to train a neural network classifier that can then in turn be used to classify all ~13.5 million cells into epithelial/non-epithelial. 
+
+
+### Load and explore the pre-annotated dataset `ad_anno`
+
+
+```python
+ad_anno = scq.dataset.breastCancerAtlas()
+ad_anno
+```
+
+
+
+
+    AnnData object with n_obs × n_vars = 687161 × 68
+        obs: 'tissue_type', 'patient_number', 'breast', 'tumor_region', 'plate', 'plate_location', 'fcs_file', 'cluster', 'celltype', 'celltype_class', 'Health Status', 'Gender', 'Age at Surgery', 'Menopause Status', 'Histopathology', 'T Staging', 'N Staging', 'M Staging', 'Grade', 'Grade comment', 'Lymph Node Status (L)', 'Resection', 'Estrogen Receptor Status by IHC', 'Estrogen Receptor IRS Score', 'Estrogen Receptor percent positive cells by IHC', 'Progesterone Receptor Status by IHC', 'Progesterone Receptor IRS Score', 'Progesterone Receptor percent positive cells by IHC', 'HER2 Status by IHC', 'HER2 IHC Score', 'HER2 Status by FISH or SISH', 'Ki-67 percent positive cells by IHC', 'Clinical subtype derived from the receptor status', 'Neoadjuvant Therapy Received', 'Previous Cancer Incidences'
+        var: 'channel', 'desc'
+        uns: 'fcs_header'
+
+
+
+The single-cell data have been previously clustered in 42 clusters (cluster id found in `obs['cluster']`), and the clusters have been annotated by `celltype` and `celltype_class` included in `.obs`:
+
+
+```python
+print("Number of unique clusters: " + str(len(ad_anno.obs["cluster"].unique())))
+```
+
+    Number of unique clusters: 42
+
+
+
+```python
+print("Number of cells per cell type:\n" + str(ad_anno.obs["celltype"].value_counts()))
+```
+
+    Number of cells per cell type:
+    Leukocyte      211762
+    Epithelial     202882
+    Apoptotic      100724
+    Other           99435
+    Fibroblast      50045
+    Endothelial     22313
+    Name: celltype, dtype: int64
+
+
+
+```python
+print(
+    "Epithelial/non-epithelial cells:\n"
+    + str(ad_anno.obs["celltype_class"].value_counts())
+)
+```
+
+    Epithelial/non-epithelial cells:
+    nonepithelial    484279
+    epithelial       202882
+    Name: celltype_class, dtype: int64
+
+
+### Prepare dataset for classification
+Let's prepare the dataset for classification by first selecting a list of markers that we will use for training the classifier. 
+
+
+```python
+# define the markers used in the classifier
+marker = scq.utils.DEFAULT_MARKER_CLF
+print(marker)
+```
+
+    ['139La_H3K27me3', '141Pr_K5', '142Nd_PTEN', '143Nd_CD44', '144Nd_K8K18', '145Nd_CD31', '146Nd_FAP', '147Sm_cMYC', '148Nd_SMA', '149Sm_CD24', '150Nd_CD68', '151Eu_HER2', '152Sm_AR', '153Eu_BCL2', '154Sm_p53', '155Gd_EpCAM', '156Gd_CyclinB1', '158Gd_PRB', '159Tb_CD49f', '160Gd_Survivin', '161Dy_EZH2', '162Dy_Vimentin', '163Dy_cMET', '164Dy_AKT', '165Ho_ERa', '166Er_CA9', '167Er_ECadherin', '168Er_Ki67', '169Tm_EGFR', '170Er_K14', '171Yb_HLADR', '172Yb_clCASP3clPARP1', '173Yb_CD3', '174Yb_K7', '175Lu_panK', '176Yb_CD45']
+
+
+To train your model on a custom list of markers, replace `'marker1'`,`'marker2'` etc in the cell below with your desired markers names. 
+
+**Attention**: marker names should be as they appear in `ad_anno.var['desc']`
+
+
+```python
+# marker = ['marker1','marker2','marker3'] <------remove comment and replace with your marker names
+```
+
+In a next step we annotate the markers in `ad_anno.var` that are used for the classification and subset the annData object to only contain these markers. In this example dataset the marker name is given by the `desc` column.
+
+
+```python
+# get only the channels needed for classification
+mask = []
+for m in marker:
+    mask.append(ad_anno.var.desc.str.contains(m))
+mask = pd.concat(mask, axis=1)
+mask = mask.any(1)
+ad_anno.var["used_in_clf"] = mask
+```
+
+
+```python
+ad_anno = ad_anno[:, ad_anno.var.used_in_clf]
+ad_anno.obs["is_epithelial"] = (ad_anno.obs.celltype_class == "epithelial").astype(int)
+```
+
+Apply the inverse hyperbolic sine (arcsinh) transformation and save the transformed data in a new layer of the AnnData object
+
+
+```python
+# get raw data and arcsinh-transform using a cofactor of 5
+X = ad_anno.X.copy()
+cofactor = 5
+np.divide(X, cofactor, out=X)
+np.arcsinh(X, out=X)
+
+# add transformed data to a separate layer in the annData object
+ad_anno.layers["arcsinh"] = X
+
+# min-max normalization
+minMax = MinMaxScaler()
+X = minMax.fit_transform(X)
+ad_anno.layers["arcsinh_norm"] = X
+```
+
+Before we train the classifier, let's visualize the data distribution per class. 
+
+
+```python
+# create a pandas dataframe with data for plotting with seaborn
+df = pd.DataFrame(data=ad_anno.layers["arcsinh"], columns=ad_anno.var.desc)
+df.insert(0, "epithelial", ad_anno.obs.is_epithelial.values)
+# sample 100,000 cells per category
+df_plot = df.groupby("epithelial").sample(n=10000)
+
+fig = plt.figure(figsize=(20, 20))
+for m in range(1, df_plot.shape[1]):
+    plt.subplot(6, 6, m)
+    sns.histplot(data=df_plot, x=df_plot.columns[m], hue="epithelial", stat="percent")
+    plt.title(df_plot.columns[m])
+    plt.xlim([-0.5, 8])
+    plt.xlabel("")
+
+plt.savefig("marker_hist_annotated.pdf", dpi=300)
+plt.show()
+```
+
+
+    
+![png](scQUEST_tutorial_files/scQUEST_tutorial_24_0.png)
+    
+
+
+### Train the neural network classifier
+We will next train a simple neural network classifier using the annotated data. We first initialize the model by defining the dimensions of the input layer equal to the number of markers in the training data. By default, the model architecture consists of 1 hidden layer of 20 neurons, (with a ReLU activation function) and one output layer of one neuron. The dataset is split in a stratified fashion into training (50%), validation (25%), and test (25%) sets. The classifier is trained using the scaled conjugate gradient method, and its performance is evaluated using a standard cross-entropy loss function. We also use an early stopping criterion by terminating training when the model's performance fails to improve for 10 consecutive  runs. For reproducibility, you can also optionally set a `seed`. 
+
+
+```python
+# define early stopping criterion
+from pytorch_lightning.callbacks.early_stopping import EarlyStopping
+
+es = EarlyStopping(monitor="val_loss", mode="min", min_delta=1e-3, patience=10)
+```
+
+
+```python
+# initialize model and train classifier
+clf = scq.Classifier(n_in=ad_anno.shape[1], seed=1)
+clf.fit(
+    ad_anno,
+    layer="arcsinh_norm",
+    target="is_epithelial",
+    callbacks=[es],
+    max_epochs=20,
+    seed=1,
+)
+```
+
+    GPU available: False, used: False
+    TPU available: False, using: 0 TPU cores
+    IPU available: False, using: 0 IPUs
+    HPU available: False, using: 0 HPUs
+    
+      | Name             | Type             | Params
+    ------------------------------------------------------
+    0 | model            | DefaultCLF       | 782   
+    1 | loss             | CrossEntropyLoss | 0     
+    2 | metric_accuracy  | Accuracy         | 0     
+    3 | metric_f1score   | F1Score          | 0     
+    4 | metric_precision | Precision        | 0     
+    5 | metric_recall    | Recall           | 0     
+    ------------------------------------------------------
+    782       Trainable params
+    0         Non-trainable params
+    782       Total params
+    0.003     Total estimated model params size (MB)
+
+
+
+    Sanity Checking: 0it [00:00, ?it/s]
+
+
+
+    Training: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Testing: 0it [00:00, ?it/s]
+
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+           Test metric             DataLoader 0
+    ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+            test_loss          0.014771309681236744
+      test_metric_accuracy      0.9948338866233826
+       test_metric_f1score      0.9948338866233826
+      test_metric_precision     0.9948338866233826
+       test_metric_recall       0.9948338866233826
+    ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+By observing the results, we see that the model achieves a 99.5% accuracy and 99.5% precision in the test set. Let's explore the model's performance in more detail by plotting the loss, the confusion matrix and the ROC curve:
+
+
+```python
+# examine model performance
+hist = clf.logger.history
+fit_loss = pd.DataFrame.from_records(hist["fit_loss"], columns=["step", "loss"]).assign(
+    stage="fit"
+)
+val_loss = pd.DataFrame.from_records(hist["val_loss"], columns=["step", "loss"]).assign(
+    stage="validation"
+)
+test_loss = pd.DataFrame.from_records(
+    hist["test_loss"], columns=["step", "loss"]
+).assign(stage="test")
+loss = pd.concat((fit_loss, val_loss, test_loss))
+loss = loss.reset_index(drop=True)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+for stage in ["fit", "validation", "test"]:
+    if stage == "test":
+        ax.plot(
+            [0, ax.get_xlim()[1]],
+            [loss[loss.stage == stage].loss, loss[loss.stage == stage].loss],
+            label="test",
+        )
+    else:
+        ax.plot(
+            loss[loss.stage == stage].step,
+            loss[loss.stage == stage].loss,
+            ".-",
+            label=stage,
+        )
+plt.xlabel("Training steps")
+plt.ylabel("Loss")
+ax.legend()
+plt.savefig("loss.pdf", dpi=300)
+```
+
+
+
+
+    <matplotlib.legend.Legend at 0x7fb5eae1c100>
+
+
+
+
+    
+![png](scQUEST_tutorial_files/scQUEST_tutorial_29_1.png)
+    
+
+
+
+```python
+# %% confusion matrix
+dl = clf.datamodule.test_dataloader()
+data = dl.dataset.dataset.data
+y = dl.dataset.dataset.targets
+yhat = clf.model(data)
+
+m = confusion_matrix(y, yhat, normalize="pred")
+m = pd.DataFrame(
+    m, columns=["non-epithelial", "epithelial"], index=["non-epithelial", "epithelial"]
+)
+m.index.name = "True"
+m.columns.name = "Predicted"
+sns.heatmap(m.T * 100, annot=True, fmt=".3f")
+plt.savefig("confusion.pdf", dpi=300)
+
+plt.show()
+```
+
+
+    
+![png](scQUEST_tutorial_files/scQUEST_tutorial_30_0.png)
+    
+
+
+
+```python
+# %% plot ROC curve
+import torch
+
+yhat = clf.model(data)
+yhat1 = clf.model.model(data).detach()  # here we access the actual pytorch model
+yhat1 = torch.softmax(yhat1, dim=1)  # compute propabilities
+tmp = np.array([yhat1[i][yhat[i]] for i in range(len(yhat))])
+score = np.zeros_like(yhat, dtype=float) - 1
+score[yhat == 1] = tmp[yhat == 1]
+score[yhat == 0] = 1 - tmp[yhat == 0]
+fpr, tpr, thresholds = roc_curve(y, score)
+plt.plot(fpr, tpr, ".-")
+plt.xlabel("False Positive Rate")
+plt.ylabel("True Positive Rate")
+plt.plot([0, 1], [0, 1], "b:")
+plt.title("ROC Curve")
+plt.savefig("roc.pdf", dpi=300)
+
+plt.show()
+```
+
+
+    
+![png](scQUEST_tutorial_files/scQUEST_tutorial_31_0.png)
+    
+
+
+### Classify whole dataset
+Once we are confident about the model performance, we can feed the whole dataset to the classifier to predict the epithelial cells:
+
+
+```python
+# prepare the whole dataset for celltype classification
+mask = []
+for m in marker:
+    mask.append(ad.var.desc.str.contains(m))
+mask = pd.concat(mask, axis=1)
+mask = mask.any(1)
+ad.var["used_in_clf"] = mask
+ad_pred = ad[:, ad.var.used_in_clf]
+X = ad_pred.X.copy()
+
+# arcsinh transformation and minmax scaling
+cofactor = 5
+np.divide(X, cofactor, out=X)
+np.arcsinh(X, out=X)
+ad_pred.layers["arcsinh"] = X
+X = minMax.transform(X)
+ad_pred.layers["arcsinh_norm"] = X
+
+# feed the data to the classifier
+clf.predict(ad_pred, layer="arcsinh_norm")
+ad.obs["is_epithelial"] = ad_pred.obs.clf_is_epithelial.values
+```
+
+
+```python
+ad.obs["is_epithelial"].value_counts()
+```
+
+
+
+
+    0    9427458
+    1    3957370
+    Name: is_epithelial, dtype: int64
+
+
+
+Optionally, save all epithelial cells in a .csv file for downstream processing:
+
+
+```python
+mask = ad.obs["is_epithelial"] == 1
+temp = pd.DataFrame(data=ad.X[mask], columns=ad.var["desc"])
+temp.to_csv("all_epithelial_cells.csv")
+ad.obs[mask].to_csv("epithelial_metadata.csv")
+```
+
+Since we do not have cell-level annotations for the large dataset, to evaluate the results we can simply plot all marker distributions and cross-compare them with the annotated dataset:
+
+
+```python
+# create pandas dataframes for plotting with seaborn
+n = 30000
+df1 = pd.DataFrame(data=ad_anno.layers["arcsinh"], columns=ad_anno.var.desc)
+df1.insert(0, "annotated", "true")
+df1.insert(0, "epithelial", ad_anno.obs.is_epithelial.values)
+df_plot1 = df1.groupby("epithelial").sample(n=n)
+
+df2 = pd.DataFrame(data=ad_pred.layers["arcsinh"], columns=ad_pred.var.desc)
+df2.insert(0, "annotated", "predicted")
+df2.insert(0, "epithelial", ad_pred.obs.clf_is_epithelial.values)
+df_plot2 = df2.groupby("epithelial").sample(n=n)
+df_plot = pd.concat([df_plot1, df_plot2])
+df_plot = df_plot.sample(frac=1, replace=False, ignore_index=True)
+multilabel = df_plot["epithelial"].astype(str) + df_plot["annotated"]
+```
+
+
+```python
+# plot marker distributions across all epithelial cells (predicted vs. annotated)
+data = df_plot[df_plot["epithelial"] == 1].iloc[:, 1:].reset_index(drop=True)
+fig = plt.figure(figsize=(20, 20))
+for m in range(1, data.shape[1]):
+    plt.subplot(6, 6, m)
+    sns.histplot(data=data, x=data.columns[m], hue="annotated", stat="percent")
+    plt.title(data.columns[m])
+    plt.xlim([-0.5, 8])
+    plt.xlabel("")
+plt.show()
+
+# plot marker distributions across all non-epithelial cells (predicted vs. annotated)
+data = df_plot[df_plot["epithelial"] == 0].iloc[:, 1:].reset_index(drop=True)
+fig = plt.figure(figsize=(20, 20))
+for m in range(1, data.shape[1]):
+    plt.subplot(6, 6, m)
+    sns.histplot(data=data, x=data.columns[m], hue="annotated", stat="percent")
+    plt.title(data.columns[m])
+    plt.xlim([-0.5, 8])
+    plt.xlabel("")
+plt.show()
+```
+
+
+    
+![png](scQUEST_tutorial_files/scQUEST_tutorial_39_0.png)
+    
+
+
+
+    
+![png](scQUEST_tutorial_files/scQUEST_tutorial_39_1.png)
+    
+
+
+
+```python
+import umap as umap
+
+Y1 = umap.UMAP(n_neighbors=50, min_dist=0.5, metric="euclidean").fit_transform(
+    df_plot.iloc[:, 2:]
+)
+```
+
+
+```python
+labels = list(
+    map(
+        lambda x: x.replace("0", "epithelial_").replace("1", "non-epithelial_"),
+        multilabel,
+    )
+)
+labels_uniq = np.unique(labels)
+palette = dict(zip(labels_uniq, ["blue", "lightblue", "orange", "peachpuff"]))
+```
+
+
+```python
+fig = plt.figure(figsize=(10, 8))
+sns.scatterplot(
+    Y1[:, 0], Y1[:, 1], s=1, hue=labels, palette=palette, hue_order=palette.keys()
+)
+plt.xticks([])
+plt.yticks([])
+plt.xlabel("UMAP_1")
+plt.ylabel("UMAP_2")
+plt.savefig("umap.png", dpi=300)
+plt.show()
+```
+
+
+    
+![png](scQUEST_tutorial_files/scQUEST_tutorial_42_0.png)
+    
+
+
+
+```python
+del ad_pred
+del ad_anno
+```
+
+Finally, we can plot the proportion of epithelial cells per sample, and categorize per tissue type as below:
+
+
+```python
+# plot fraction of epithelial cells
+data = ad.obs.copy()
+frac_epith = (
+    data.groupby(["tissue_type", "breast", "patient_number"])
+    .is_epithelial.mean()
+    .dropna()
+    .reset_index()
+)
+fig, ax = plt.subplots()
+sns.boxplot(y="is_epithelial", x="tissue_type", data=frac_epith, ax=ax, whis=[0, 100])
+sns.stripplot(y="is_epithelial", x="tissue_type", data=frac_epith, ax=ax, color=".3")
+```
+
+
+
+
+    <AxesSubplot:xlabel='tissue_type', ylabel='is_epithelial'>
+
+
+
+
+    
+![png](scQUEST_tutorial_files/scQUEST_tutorial_45_1.png)
+    
+
+
+## Step 3: Phenotypic abnormality
+
+### Prepare dataset
+Let's start by first selecting a list of patients that will be used as a reference input dataset to train the Abnormality autoencoder. Here, we are using only patients for which we have both a juxta-tumoral and tumor sample. We then select a set of markers that will be the features of the input data. 
+
+If using the protocol for other applications, samples used are reference could be normal vs. disease, non-treatment vs. treatment, etc.
+
+
+```python
+patients = [
+    "N_BB013",
+    "N_BB028",
+    "N_BB034",
+    "N_BB035",
+    "N_BB037",
+    "N_BB046",
+    "N_BB051",
+    "N_BB055",
+    "N_BB058",
+    "N_BB064",
+    "N_BB065",
+    "N_BB072",
+    "N_BB073",
+    "N_BB075",
+    "N_BB076",
+    "N_BB090",
+    "N_BB091",
+    "N_BB093",
+    "N_BB094",
+    "N_BB096",
+    "N_BB099",
+    "N_BB101",
+    "N_BB102",
+    "N_BB110",
+    "N_BB120",
+    "N_BB131",
+    "N_BB144",
+    "N_BB147",
+    "N_BB153",
+    "N_BB154",
+    "N_BB155",
+    "N_BB167",
+    "N_BB192",
+    "N_BB194",
+    "N_BB197",
+    "N_BB201",
+    "N_BB204",
+    "N_BB209",
+    "N_BB210",
+    "N_BB214",
+    "N_BB221",
+]
+patients = [i.split("N_")[1] for i in patients]
+
+markers = set(
+    [
+        "Vol7",
+        "H3K27me3",
+        "K5",
+        "PTEN",
+        "CD44",
+        "K8K18",
+        "cMYC",
+        "SMA",
+        "CD24",
+        "HER2",
+        "AR",
+        "BCL2",
+        "p53",
+        "EpCAM",
+        "CyclinB1",
+        "PRB",
+        "CD49f",
+        "Survivin",
+        "EZH2",
+        "Vimentin",
+        "cMET",
+        "AKT",
+        "ERa",
+        "CA9",
+        "ECadherin",
+        "Ki67",
+        "EGFR",
+        "K14",
+        "HLADR",
+        "K7",
+        "panK",
+    ]
+)
+drop_markers = set(["Vol7", "H3K27me3", "CyclinB1", "Ki67"])
+markers = markers - drop_markers
+
+mask = []
+for m in markers:
+    mask.append(ad.var.desc.str.contains(m))
+mask = pd.concat(mask, axis=1)
+mask = mask.any(1)
+ad.var["used_in_abnormality"] = mask
+```
+
+Next, subset the whole dataset to only include epithelial cells from the selected patients and juxta-tumoral (N) tissue, and preprocess the data as before:
+
+
+```python
+ad_train = ad[
+    (ad.obs.patient_number.isin(patients))
+    & (ad.obs.tissue_type == "N")
+    & (ad.obs.is_epithelial == 1),
+    ad.var.used_in_abnormality,
+]
+
+X = ad_train.X.copy()
+cofactor = 5
+np.divide(X, cofactor, out=X)
+np.arcsinh(X, out=X)
+minMax = MinMaxScaler()
+X = minMax.fit_transform(X)
+ad_train.layers["arcsinh_norm"] = X
+```
+
+### Train the abnormality Autoencoder
+
+
+```python
+# Initialize and fit the model
+Abn = scq.Abnormality(n_in=ad_train.shape[1])
+Abn.fit(ad_train, layer="arcsinh_norm", max_epochs=20)
+```
+
+    GPU available: False, used: False
+    TPU available: False, using: 0 TPU cores
+    IPU available: False, using: 0 IPUs
+    HPU available: False, using: 0 HPUs
+    
+      | Name                    | Type             | Params
+    -------------------------------------------------------------
+    0 | model                   | DefaultAE        | 650   
+    1 | loss                    | MSELoss          | 0     
+    2 | metric_meansquarederror | MeanSquaredError | 0     
+    -------------------------------------------------------------
+    650       Trainable params
+    0         Non-trainable params
+    650       Total params
+    0.003     Total estimated model params size (MB)
+
+
+
+    Sanity Checking: 0it [00:00, ?it/s]
+
+
+
+    Training: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Validation: 0it [00:00, ?it/s]
+
+
+
+    Testing: 0it [00:00, ?it/s]
+
+
+    ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+            Test metric                 DataLoader 0
+    ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+             test_loss              0.007171750068664551
+    test_metric_meansquarederror     0.0071717519313097
+    ────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────
+
+
+**Note**: The abnormality model (`Abn.model`) predicts the abnormality a.k.a. reconstruction error, i.e. $X-F(X)$ where $F$ is the autoencoder (prediction results are saved to `ad.layers['abnormality']`). On the other hand, the base torch model (`Abn.model.model`) predicts the reconstruction, i.e. $F(X)$.
+
+
+```python
+# estimate reconstruction error on the training data
+Abn.predict(ad_train, layer="arcsinh_norm")
+mse_train = (ad_train.layers["abnormality"] ** 2).mean(axis=1)
+ad_train.obs["abnormality"] = mse_train
+
+y = ad_train.layers["arcsinh_norm"]
+yhat = Abn.model.model(torch.tensor(y)).detach().numpy()  # access base torch model
+err = ad_train.layers["abnormality"]
+
+fig, axs = plt.subplots(1, 3, figsize=(14, 6))
+for ax, dat, title in zip(
+    axs.flat, [y, yhat, err], ["Input", "Reconstruction", "Error"]
+):
+    ax: plt.Axes
+    cmap = "seismic" if title == "Error" else "magma"
+    vmin = -1 if title == "Error" else 0
+    im = ax.imshow(dat, cmap=cmap, vmin=vmin, vmax=1)
+    ax.set_aspect(dat.shape[1] * 2 / dat.shape[0])
+    ax.set_xticks(range(28), labels=ad_train.var["desc"].values, rotation="vertical")
+    ax.set_xlabel("features")
+    ax.set_title(title)
+    fig.colorbar(im, ax=ax)
+axs[0].set_ylabel("cells")
+fig.show()
+```
+
+
+    
+![png](scQUEST_tutorial_files/scQUEST_tutorial_54_0.png)
+    
+
+
+
+```python
+hist = Abn.logger.history
+fit_loss = pd.DataFrame.from_records(hist["fit_loss"], columns=["step", "loss"]).assign(
+    stage="fit"
+)
+val_loss = pd.DataFrame.from_records(hist["val_loss"], columns=["step", "loss"]).assign(
+    stage="validation"
+)
+test_loss = pd.DataFrame.from_records(
+    hist["test_loss"], columns=["step", "loss"]
+).assign(stage="test")
+loss = pd.concat((fit_loss, val_loss, test_loss))
+loss = loss.reset_index(drop=True)
+
+fig, ax = plt.subplots(figsize=(10, 6))
+for stage in ["fit", "validation", "test"]:
+    if stage == "test":
+        ax.plot(
+            [0, ax.get_xlim()[1]],
+            [loss[loss.stage == stage].loss, loss[loss.stage == stage].loss],
+            label="test",
+        )
+    else:
+        ax.plot(
+            loss[loss.stage == stage].step,
+            loss[loss.stage == stage].loss,
+            ".-",
+            label=stage,
+        )
+plt.xlabel("Training steps")
+plt.ylabel("Loss")
+ax.legend()
+```
+
+
+
+
+    <matplotlib.legend.Legend at 0x7fb5eddcc1c0>
+
+
+
+
+    
+![png](scQUEST_tutorial_files/scQUEST_tutorial_55_1.png)
+    
+
+
+### Reconstruct all cells
+Now let's use the model to reconstruct all epithelial data. The reconstruction errors for each cell are stored in the layer `abnormality`. We define the cell-level abnormality as the mean squared error of the reconstruction.
+
+
+```python
+# %% pre-process for Abnormality prediction
+ad_pred = ad[ad.obs.is_epithelial == 1, ad.var.used_in_abnormality]
+X = ad_pred.X.copy()
+cofactor = 5
+np.divide(X, cofactor, out=X)
+np.arcsinh(X, out=X)
+X = minMax.transform(X)
+ad_pred.layers["arcsinh_norm"] = X
+
+# estimate reconstruction error
+Abn.predict(ad_pred, layer="arcsinh_norm")
+mse = (ad_pred.layers["abnormality"] ** 2).mean(axis=1)
+ad_pred.obs["abnormality"] = mse
+```
+
+To evaluate the results, let's reconstruct all single-cells and visualize the prediction residuals:
+
+
+```python
+y = ad_pred.layers["arcsinh_norm"]
+yhat = Abn.model.model(torch.tensor(y)).detach().numpy()  # access base torch model
+err = ad_pred.layers["abnormality"]
+idx = np.nonzero((ad_pred.obs["tissue_type"] == "N").values)[0]
+y1, y2 = idx.min(), idx.max()
+```
+
+
+```python
+fig, axs = plt.subplots(1, 3, figsize=(20, 10))
+for ax, dat, title in zip(
+    axs.flat, [y, yhat, err], ["Input", "Reconstruction", "Error"]
+):
+    ax: plt.Axes
+    cmap = "seismic" if title == "Error" else "magma"
+    vmin = -1 if title == "Error" else 0
+    im = ax.imshow(dat, cmap=cmap, vmin=vmin, vmax=1)
+    plt.hlines(y1, -0.5, 27.5)
+    plt.hlines(y2, -0.5, 27.5)
+    ax.set_aspect(dat.shape[1] * 2 / dat.shape[0])
+    ax.set_xticks(range(28), labels=ad_pred.var["desc"].values, rotation="vertical")
+    ax.set_xlabel("features")
+    ax.set_title(title)
+    fig.colorbar(im, ax=ax)
+axs[0].set_ylabel("cells")
+plt.savefig("reconstruction.pdf", dpi=300)
+fig.show()
+```
+
+
+    
+![png](scQUEST_tutorial_files/scQUEST_tutorial_60_0.png)
+    
+
+
+Now let's visualize the abnormality for different clinical data: 
+
+
+```python
+clinical_data = [
+    "tissue_type",
+    "Grade",
+    "Estrogen Receptor Status by IHC",
+    "Clinical subtype derived from the receptor status",
+]
+order = [
+    ["H", "N", "T"],
+    ["G1", "G2", "G3"],
+    ["P", "N"],
+    ["LumA", "LumB", "LumB-HER2", "HER2", "TN"],
+]
+
+fig, axs = plt.subplots(1, 4, figsize=(20, 8), sharey=True)
+for i in range(4):
+    dat = (
+        ad_pred.obs.groupby([clinical_data[i], "breast", "patient_number"])
+        .abnormality.agg(np.median)
+        .dropna()
+        .reset_index()
+    )
+    sns.boxplot(
+        data=dat,
+        x=clinical_data[i],
+        y="abnormality",
+        order=order[i],
+        whis=[0, 100],
+        ax=axs.flat[i],
+    )
+    sns.stripplot(
+        data=dat, x=clinical_data[i], y="abnormality", order=order[i], ax=axs.flat[i]
+    )
+plt.savefig("abnormality_boxplots.pdf", dpi=300)
+```
+
+
+    
+![png](scQUEST_tutorial_files/scQUEST_tutorial_62_0.png)
+    
+
+
+## Tumor individuality
+
+For computing the individuality let's start by preparing the dataset. Here, because the k-nn graph construction is computationally intensive, we will randomly select a subset of cells from each sample. 
+
+
+```python
+# preprocessing
+ad_indiv = ad[ad.obs.is_epithelial == 1, ad.var.used_in_abnormality]
+X = ad_indiv.X.copy()
+cofactor = 5
+np.divide(X, cofactor, out=X)
+np.arcsinh(X, out=X)
+ad_indiv.layers["arcsinh"] = X
+
+# generate a sample identifier to enable subsampling
+ad_indiv.obs["sample_id"] = ad_indiv.obs.groupby(
+    ["tissue_type", "breast", "patient_number"]
+).ngroup()
+
+# sub-sampling
+tmp = ad_indiv.obs.groupby(["sample_id"]).indices
+n_cells = 200
+indices = []
+for key, item in tmp.items():
+    size = min(len(item), n_cells)
+    idx = np.random.choice(range(len(item)), size, replace=False)
+    indices.extend(item[idx])
+indices = np.array(indices)
+ad_indiv = ad_indiv[indices]
+```
+
+Let us initialize the individuality model and use it to predict the scores:
+
+
+```python
+Indiv = scq.Individuality()
+Indiv.predict(ad_indiv, ad_indiv.obs.sample_id, layer="arcsinh")
+```
+
+The observation-level scores (one vector per single cell, indicating it's similarity to all other samples) are saved in the `.obsm` attribute of the AnnData object, as a matrix of size `n_cells x n_samples`:
+
+
+```python
+ad_indiv.obsm["individuality"]
+```
+
+
+
+
+    matrix([[0.  , 0.02, 0.04, ..., 0.  , 0.  , 0.  ],
+            [0.02, 0.01, 0.  , ..., 0.  , 0.  , 0.  ],
+            [0.05, 0.  , 0.03, ..., 0.  , 0.  , 0.  ],
+            ...,
+            [0.02, 0.  , 0.  , ..., 0.  , 0.  , 0.13],
+            [0.  , 0.  , 0.01, ..., 0.  , 0.  , 0.62],
+            [0.  , 0.  , 0.  , ..., 0.  , 0.  , 0.48]])
+
+
+
+The aggregated sample-level scores (one vector per sample, indicating a sample's similarity to all other samples) are saved in the `.uns` attribute of the AnnData object, as a matrix of size `n_samples x n_samples`:
+
+
+```python
+# access sample-level aggregated individuality
+ad_indiv.uns["individuality_agg"].head()
+```
+
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>0</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+      <th>4</th>
+      <th>5</th>
+      <th>6</th>
+      <th>7</th>
+      <th>8</th>
+      <th>9</th>
+      <th>...</th>
+      <th>201</th>
+      <th>202</th>
+      <th>203</th>
+      <th>204</th>
+      <th>205</th>
+      <th>206</th>
+      <th>207</th>
+      <th>208</th>
+      <th>209</th>
+      <th>210</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>0.03165</td>
+      <td>0.01095</td>
+      <td>0.00950</td>
+      <td>0.01265</td>
+      <td>0.01020</td>
+      <td>0.00385</td>
+      <td>0.00025</td>
+      <td>0.00070</td>
+      <td>0.00475</td>
+      <td>0.00250</td>
+      <td>...</td>
+      <td>0.00095</td>
+      <td>0.00180</td>
+      <td>0.00610</td>
+      <td>0.01615</td>
+      <td>0.00480</td>
+      <td>0.00885</td>
+      <td>0.00590</td>
+      <td>0.00055</td>
+      <td>0.00155</td>
+      <td>0.00170</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>0.00970</td>
+      <td>0.03995</td>
+      <td>0.00835</td>
+      <td>0.02820</td>
+      <td>0.00550</td>
+      <td>0.00755</td>
+      <td>0.00000</td>
+      <td>0.00120</td>
+      <td>0.00155</td>
+      <td>0.00100</td>
+      <td>...</td>
+      <td>0.00055</td>
+      <td>0.00280</td>
+      <td>0.01625</td>
+      <td>0.00700</td>
+      <td>0.00155</td>
+      <td>0.01080</td>
+      <td>0.00055</td>
+      <td>0.00145</td>
+      <td>0.00160</td>
+      <td>0.00055</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>0.00670</td>
+      <td>0.00860</td>
+      <td>0.04630</td>
+      <td>0.01245</td>
+      <td>0.03975</td>
+      <td>0.00330</td>
+      <td>0.00000</td>
+      <td>0.00180</td>
+      <td>0.01890</td>
+      <td>0.00075</td>
+      <td>...</td>
+      <td>0.00065</td>
+      <td>0.00045</td>
+      <td>0.00580</td>
+      <td>0.00675</td>
+      <td>0.00015</td>
+      <td>0.00555</td>
+      <td>0.01440</td>
+      <td>0.00120</td>
+      <td>0.00060</td>
+      <td>0.00345</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>0.01010</td>
+      <td>0.02590</td>
+      <td>0.00950</td>
+      <td>0.04170</td>
+      <td>0.00960</td>
+      <td>0.00920</td>
+      <td>0.00000</td>
+      <td>0.00085</td>
+      <td>0.00495</td>
+      <td>0.00085</td>
+      <td>...</td>
+      <td>0.00035</td>
+      <td>0.00135</td>
+      <td>0.01000</td>
+      <td>0.00570</td>
+      <td>0.00100</td>
+      <td>0.00995</td>
+      <td>0.00275</td>
+      <td>0.00100</td>
+      <td>0.00140</td>
+      <td>0.00095</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>0.00975</td>
+      <td>0.00835</td>
+      <td>0.04945</td>
+      <td>0.01310</td>
+      <td>0.05810</td>
+      <td>0.00385</td>
+      <td>0.00000</td>
+      <td>0.00210</td>
+      <td>0.03200</td>
+      <td>0.00125</td>
+      <td>...</td>
+      <td>0.00005</td>
+      <td>0.00020</td>
+      <td>0.00540</td>
+      <td>0.00570</td>
+      <td>0.00005</td>
+      <td>0.00805</td>
+      <td>0.01270</td>
+      <td>0.00075</td>
+      <td>0.00040</td>
+      <td>0.00090</td>
+    </tr>
+  </tbody>
+</table>
+<p>5 rows × 211 columns</p>
+</div>
+
+
+
+To assess a sample's uniqueness within the cohort, we will use the diagonal of that matrix:
+
+
+```python
+dat = ad_indiv.uns["individuality_agg"].copy()
+dat = pd.DataFrame(np.diag(dat), index=dat.index, columns=["individuality"])
+```
+
+Now let's assess how individuality scores are related to a patient's clinical data:
+
+
+```python
+res = ad_indiv.obs[
+    [
+        "tissue_type",
+        "breast",
+        "Grade",
+        "Estrogen Receptor Status by IHC",
+        "Clinical subtype derived from the receptor status",
+        "patient_number",
+        "sample_id",
+    ]
+]
+res = res[~res.duplicated()].set_index("sample_id")
+dat = pd.concat((dat, res), axis=1)
+
+clinical_data = [
+    "tissue_type",
+    "Grade",
+    "Estrogen Receptor Status by IHC",
+    "Clinical subtype derived from the receptor status",
+]
+order = [
+    ["H", "N", "T"],
+    ["G1", "G2", "G3"],
+    ["P", "N"],
+    ["LumA", "LumB", "LumB-HER2", "HER2", "TN"],
+]
+
+fig, axs = plt.subplots(1, 4, figsize=(20, 8), sharey=True)
+for i in range(4):
+    sns.boxplot(
+        data=dat,
+        x=clinical_data[i],
+        y="individuality",
+        order=order[i],
+        whis=[0, 100],
+        ax=axs.flat[i],
+    )
+    sns.stripplot(
+        data=dat, x=clinical_data[i], y="individuality", order=order[i], ax=axs.flat[i]
+    )
+plt.savefig("individuality_boxplots.pdf", dpi=300)
+```
+
+
+    
+![png](scQUEST_tutorial_files/scQUEST_tutorial_75_0.png)
+    
+
