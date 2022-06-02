@@ -57,8 +57,7 @@ class AnnDatasetClf(Dataset):
             )
         # ATTENTION: pytorch crossentropy interprest one_hot encoded targets as class probabilities!
         self.targets = (
-            F.one_hot(targets).float(
-            ) if encode_targets_one_hot else targets.long()
+            F.one_hot(targets).float() if encode_targets_one_hot else targets.long()
         )
 
     def __getitem__(self, item) -> (torch.TensorType, torch.TensorType):
@@ -139,13 +138,11 @@ class AnnDataModule(pl.LightningDataModule):
             )
 
             self.train_idx, self.test_idx = next(
-                self.sss_train_test.split(
-                    np.zeros(len(self.dataset)), ad.obs[target])
+                self.sss_train_test.split(np.zeros(len(self.dataset)), ad.obs[target])
             )
             self.fit_idx, self.val_idx = next(
                 self.sss_fit_val.split(
-                    np.zeros(len(self.train_idx)
-                             ), ad.obs[target][self.train_idx]
+                    np.zeros(len(self.train_idx)), ad.obs[target][self.train_idx]
                 )
             )
 

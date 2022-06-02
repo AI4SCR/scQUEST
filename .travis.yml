@@ -38,7 +38,6 @@ jobs:
       install:
         - pip install --progress-bar off -r dev_requirements.txt
         - pip install "git+https://github.com/AI4SCR/scQUEST.git@master"
-      #        - pip install umap-learn
       before_script:
         - jupyter-nbconvert --to markdown --output-dir docs/ ./tutorials/Custom_models.ipynb
         - jupyter-nbconvert --to markdown --output-dir docs/ ./tutorials/scQUEST_tutorial.ipynb
@@ -50,10 +49,8 @@ jobs:
       deploy:
         - provider: pages
           skip_cleanup: true
-          #          github_url: github.ibm.com  # defaults to github.com
           repo: AI4SCR/scQUEST
           github_url: github.com
-          #          github_token: $GITHUB_TOKEN
           github_token: $travis_scQUEST
           local_dir: docs/_build/html
           on:

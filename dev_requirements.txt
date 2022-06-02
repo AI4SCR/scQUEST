@@ -2,7 +2,7 @@
 pytest
 pytest-cov
 # checks
-black
+black==22.3.0
 flake8
 mypy
 # docs

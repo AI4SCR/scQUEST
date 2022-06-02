@@ -116,7 +116,7 @@ class TestIndividuality:
         }
         str_labs = [num2str[i] for i in labs]
 
-        ad = AnnData(X=feat, obs=pd.DataFrame({'labels': str_labs}))
+        ad = AnnData(X=feat, obs=pd.DataFrame({"labels": str_labs}))
 
         # fit
         indv = Individuality(n_neighbors=n_neighbors)
