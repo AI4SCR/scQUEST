@@ -11,7 +11,9 @@ import string
 from itertools import product
 
 import numpy as np
+import pandas as pd
 import pytest
+from anndata import AnnData
 
 from scQUEST import Individuality
 
@@ -114,9 +116,11 @@ class TestIndividuality:
         }
         str_labs = [num2str[i] for i in labs]
 
+        ad = AnnData(X=feat, obs=pd.DataFrame({'labels': str_labs}))
+
         # fit
         indv = Individuality(n_neighbors=n_neighbors)
-        res = indv.predict(feat, str_labs)
+        res = indv.predict(ad, ad.obs.labels)
 
         assert (res.index == np.unique(str_labs)).all()
         assert (res.columns == np.unique(str_labs)).all()
