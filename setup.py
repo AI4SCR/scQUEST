@@ -78,6 +78,7 @@ setup(
         'pandas>=1.3',
         'torch>=1.11',
         'scikit-learn>=1.0',
+        'umap-learn>=0.5.3',
         'numpy>=1.2',
         'pytorch-lightning>=1.6',
         'anndata>0.7',
