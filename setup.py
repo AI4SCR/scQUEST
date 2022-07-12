@@ -40,7 +40,7 @@ except FileNotFoundError:
 
 # TODO: Update these values according to the name of the module.
 setup(
-    name="scQUEST",
+    name="ai4scr-scQUEST",
     version=read_version("scQUEST/__init__.py"),  # single place for version
     description="scQUEST package",
     long_description='scQUEST, an open-source Python library for cell type identification and quantification of tumor ecosystem heterogeneity in patient cohorts.',
