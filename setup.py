@@ -43,9 +43,9 @@ setup(
     name="scQUEST",
     version=read_version("scQUEST/__init__.py"),  # single place for version
     description="scQUEST package",
-    long_description=open("README.md").read(),
+    long_description='scQUEST, an open-source Python library for cell type identification and quantification of tumor ecosystem heterogeneity in patient cohorts.',
     url="https://github.ibm.com/art-zurich/scQUEST",
-    author="Adriano Martinelli",
+    author="Adriano Martinelli, Marianna Rapsomaniki, Johanna Wagner",
     author_email="art@zurich.ibm.com",
     # the following exclusion is to prevent shipping of tests.
     # if you do include them, add pytest to the required packages.
@@ -69,6 +69,7 @@ setup(
             "six",
             "sphinx_rtd_theme",
             "myst-parser",
+            #
         ],
     },
     install_requires=[
